@@ -340,7 +340,7 @@ class CountlyFlutterPlugin {
     final head = querySelector('head');
 
     // try this as module
-    final scriptTag = _createScriptTag('http://127.0.0.1:5500/dist/countly_umd.js');
+    final scriptTag = _createScriptTag('https://cdnjs.cloudflare.com/ajax/libs/countly-sdk-web/24.11.0/countly.min.js');
     head?.children.add(scriptTag);
     await scriptTag.onLoad.first;
 
