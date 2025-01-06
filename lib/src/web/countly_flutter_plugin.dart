@@ -6,8 +6,8 @@ import 'dart:js_interop';
 import 'dart:js_util';
 
 import 'package:countly_flutter/countly_flutter.dart' as cly;
-import 'package:countly_flutter/web/countly_sdk_web_interop.dart';
-import 'package:countly_flutter/web/json_interop.dart';
+import 'package:countly_flutter/src/web/countly_sdk_web_interop.dart';
+import 'package:countly_flutter/src/web/json_interop.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
