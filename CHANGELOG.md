@@ -1,3 +1,34 @@
+## XX.XX.XX
+Added experimental support for the web platform in the Countly Flutter SDK. Some functionalities are not yet fully supported. Below is the list of limitations for the web platform:
+
+* Hybrid sessions are the default; full manual sessions are not supported.
+* Features Not Supported: Push Notifications, APM, and Attribution.
+* Countly.setUserLocation and Countly.disableLocation are unavailable.
+* In Views, the following view-related functions are not supported:
+  * startView
+  * stopViewWithName
+  * stopViewWithID
+  * stopAllViews
+  * pauseViewWithID
+  * resumeViewWithID
+  * addSegmentationToViewWithName
+  * addSegmentationToViewWithID
+  * updateGlobalViewSegmentation
+  * setGlobalViewSegmentation
+* In Remote Config, the clearAll function is unavailable, and caching functionality is not provided.
+* In A/B Testing the following are not supported:
+  * exitABTestsForKeys
+  * Variant-level control
+  * Experiment-level control
+* Star Rating and related configuration options are unavailable.
+* User properties during initialization are not supported.
+* Custom network headers are not supported.
+* Dropping old requests is not supported.
+* Content zone global callback is not supported.
+* Experimental configuration options are not supported.
+
+* Added underlying Web SDK version to 24.11.2
+
 ## 24.11.2
 * Improved view tracking capabilities in iOS.
 
