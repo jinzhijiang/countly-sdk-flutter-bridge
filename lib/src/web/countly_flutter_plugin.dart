@@ -8,13 +8,11 @@ import 'dart:js_util';
 import 'package:countly_flutter/countly_flutter.dart' as cly;
 import 'package:countly_flutter/src/web/countly_sdk_web_interop.dart';
 import 'package:countly_flutter/src/web/json_interop.dart';
+import 'package:countly_flutter/src/web/plugin_config.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 class CountlyFlutterPlugin {
-  static const String TAG = "CountlyFlutterPlugin";
-  static const String COUNTLY_FLUTTER_SDK_VERSION_STRING = "24.11.2";
-  static const String COUNTLY_FLUTTER_SDK_NAME = "dart-flutterb-web";
   List<Map<Object?, Object?>> retrievedWidgetList = [];
   MethodChannel? methodChannel;
 
@@ -340,7 +338,7 @@ class CountlyFlutterPlugin {
     final head = querySelector('head');
 
     // try this as module
-    final scriptTag = _createScriptTag('https://cdnjs.cloudflare.com/ajax/libs/countly-sdk-web/24.11.0/countly.min.js');
+    final scriptTag = _createScriptTag(CountlyFlutterPluginConfig.WEB_SDK_URL);
     head?.children.add(scriptTag);
     await scriptTag.onLoad.first;
 
@@ -573,8 +571,8 @@ class CountlyFlutterPlugin {
     Map<String, dynamic> configMap = {
       'app_key': config['appKey'],
       'url': config['serverURL'],
-      'sdk_name': COUNTLY_FLUTTER_SDK_NAME,
-      'sdk_version': COUNTLY_FLUTTER_SDK_VERSION_STRING,
+      'sdk_name': CountlyFlutterPluginConfig.SDK_NAME,
+      'sdk_version': CountlyFlutterPluginConfig.SDK_VERSION_STRING,
       'debug': config['loggingEnabled'],
       'session_update': config['sessionUpdateTimerDelay'],
       'max_events': config['eventQueueSizeThreshold'],
