@@ -2238,6 +2238,13 @@ class Countly {
       }
 
       /// Experimental END ---------------------------
+      
+      /// Content ---------------------------
+      if (config.content.zoneTimerInterval != null) {
+        log('"_configToJson", value provided for zoneTimerInterval: [${config.content.zoneTimerInterval}]', logLevel: LogLevel.INFO);
+        countlyConfig['zoneTimerInterval'] = config.content.zoneTimerInterval;
+      }
+      /// Content END ---------------------------
 
       /// APM ---------------------------
       if (config.apm.trackAppStartTime) {
