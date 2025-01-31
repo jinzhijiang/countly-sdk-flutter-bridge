@@ -311,6 +311,13 @@ FlutterMethodChannel *_channel;
           result(@"startEvent!");
         });
 
+    } else if ([@"cancelEvent" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          NSString *eventName = [command objectAtIndex:0];
+          [Countly.sharedInstance cancelEvent:eventName];
+          result(@"cancelEvent!");
+        });
+
     } else if ([@"endEvent" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
           NSString *key = [command objectAtIndex:0];
@@ -1766,6 +1773,11 @@ FlutterMethodChannel *_channel;
 
             [_channel invokeMethod:@"contentCallback" arguments:contentCallbackData];
         }];
+
+        NSNumber *zoneTimerInterval = _config[@"zoneTimerInterval"];
+        if (zoneTimerInterval) {
+            [config.content setZoneTimerInterval:[zoneTimerInterval unsignedIntValue]];
+        }
        
     } @catch (NSException *exception) {
         COUNTLY_FLUTTER_LOG(@"[populateConfig], Unable to parse Config object: %@", exception);

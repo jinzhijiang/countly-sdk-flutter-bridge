@@ -513,6 +513,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 String startEvent = args.getString(0);
                 Countly.sharedInstance().events().startEvent(startEvent);
                 result.success("startEvent for: " + startEvent);
+            } else if ("cancelEvent".equals(call.method)) {
+                String cancelEvent = args.getString(0);
+                Countly.sharedInstance().events().cancelEvent(cancelEvent);
+                result.success("cancelEvent for: " + cancelEvent);
             } else if ("endEvent".equals(call.method)) {
                 String key = args.getString(0);
                 int count = Integer.parseInt(args.getString(1));
@@ -1759,8 +1763,13 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         if (_config.has("visibilityTracking")) {
             this.config.experimental.enableVisibilityTracking();
         }
+
         if (_config.has("previousNameRecording")) {
             this.config.experimental.enablePreviousNameRecording();
+        }
+
+        if (_config.has("zoneTimerInterval")) {
+            this.config.content.setZoneTimerInterval(_config.getInt("zoneTimerInterval"));
         }
 
         this.config.content.setGlobalContentCallback(new ContentCallback() {
