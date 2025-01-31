@@ -120,7 +120,11 @@ class Countly {
   /// Flag to determine if manual session is enabled
   static bool _manualSessionControlEnabled = false;
 
-  static Map<String, String> messagingMode = Platform.isAndroid ? {'TEST': '2', 'PRODUCTION': '0'} : {'TEST': '1', 'PRODUCTION': '0', 'ADHOC': '2'};
+  static Map<String, String> messagingMode = kIsWeb
+      ? {}
+      : Platform.isAndroid
+          ? {'TEST': '2', 'PRODUCTION': '0'}
+          : {'TEST': '1', 'PRODUCTION': '0', 'ADHOC': '2'};
 
   static const temporaryDeviceID = 'CLYTemporaryDeviceID';
   @Deprecated('This variable is deprecated, please use "Countly.instance.deviceId.enableTemporaryDeviceID()" instead')
@@ -549,7 +553,7 @@ class Countly {
       log('disablePushNotifications, $_pushDisabledMsg', logLevel: LogLevel.ERROR);
       return _pushDisabledMsg;
     }
-    if (!Platform.isIOS) {
+    if (kIsWeb || !Platform.isIOS) {
       return 'disablePushNotifications : To be implemented';
     }
     final String? result = await _channel.invokeMethod('disablePushNotifications');
@@ -2000,10 +2004,12 @@ class Countly {
       return 'Error : $error';
     }
     Map<String, String> attributionValues = {};
-    if (Platform.isIOS) {
-      attributionValues[AttributionKey.IDFA] = attributionID;
-    } else {
-      attributionValues[AttributionKey.AdvertisingID] = attributionID;
+    if (!kIsWeb) {
+      if (Platform.isIOS) {
+        attributionValues[AttributionKey.IDFA] = attributionID;
+      } else {
+        attributionValues[AttributionKey.AdvertisingID] = attributionID;
+      }
     }
     final String? result = await recordIndirectAttribution(attributionValues);
     return result;
@@ -2284,6 +2290,13 @@ class Countly {
       log('"_configToJson", Exception occur during converting config to json: $e', logLevel: LogLevel.ERROR);
     }
     return countlyConfig;
+  }
+
+  /// This method is for testing purposes only
+  /// Do not use this method in production
+  Future<void> halt() {
+    _countlyState.isInitialized = false;
+    return _channel.invokeMethod('halt');
   }
 }
 

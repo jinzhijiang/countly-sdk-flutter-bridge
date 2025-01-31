@@ -1,4 +1,31 @@
-## XX.XX.XX
+## 25.1.0
+* Added experimental support for the web platform in the Countly Flutter SDK. Some functionalities are not yet fully supported. Below is the list of limitations for the web platform:
+  * Hybrid sessions are the default; full manual sessions are not supported.
+  * Features Not Supported: Push Notifications, APM, and Attribution.
+  * Countly.setUserLocation and Countly.disableLocation are unavailable.
+  * In Views, the following view-related functions are not supported:
+    * startView
+    * stopViewWithName
+    * stopViewWithID
+    * stopAllViews
+    * pauseViewWithID
+    * resumeViewWithID
+    * addSegmentationToViewWithName
+    * addSegmentationToViewWithID
+    * updateGlobalViewSegmentation
+    * setGlobalViewSegmentation
+  * In Remote Config, the clearAll function is unavailable, and caching functionality is not provided.
+  * In A/B Testing the following are not supported:
+    * exitABTestsForKeys
+    * Variant-level control
+    * Experiment-level control
+  * Star Rating and related configuration options are unavailable.
+  * User properties during initialization are not supported.
+  * Custom network headers are not supported.
+  * Dropping old requests is not supported.
+  * Content zone global callback is not supported.
+  * Experimental configuration options are not supported.
+
 * Added 'event' interface for events methods which are
   * recordEvent(String key, [Map<String, Object>? segmentation, int? count, int? sum, int? duration])
   * startEvent(String key)
@@ -11,7 +38,6 @@
   * 'startEvent(key)', instead use 'events.startEvent(key)'
   * 'endEvent(options)', instead use 'events.endEvent(key, [segmentation, count, sum])'
 
-## 25.1.0
 * Improved content size management for better adaptability across devices.
 * Resolved an issue where the action bar overlapped with the content display.
 * Added dynamic resizing functionality for the content zone for enhanced responsiveness.
@@ -23,6 +49,7 @@
 
 * Updated underlying Android SDK version to 25.1.0
 * Updated underlying iOS SDK version to 25.1.0
+* Added underlying Web SDK version to 24.11.4
 
 ## 24.11.2
 * Improved view tracking capabilities in iOS.
