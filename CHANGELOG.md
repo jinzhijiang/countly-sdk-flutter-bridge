@@ -1,3 +1,16 @@
+## XX.XX.XX
+* Added 'event' interface for events methods which are
+  * recordEvent(String key, [Map<String, Object>? segmentation, int? count, int? sum, int? duration])
+  * startEvent(String key)
+  * endEvent(String key, [Map<String, Object>? segmentation, int? count, int? sum])
+  * cancelEvent(String key)
+* Added 'cancelEvent' to cancel a timed event, it is accesible through 'events' interface
+
+* Deprecated the following methods from the Countly
+  * 'recordEvent(options)', instead use 'events.recordEvent(key, [segmentation, count, sum, duration])
+  * 'startEvent(key)', instead use 'events.startEvent(key)'
+  * 'endEvent(options)', instead use 'events.endEvent(key, [segmentation, count, sum])'
+
 ## 25.1.0
 * Improved content size management for better adaptability across devices.
 * Resolved an issue where the action bar overlapped with the content display.
