@@ -1,3 +1,16 @@
+## 25.1.0
+* Improved content size management for better adaptability across devices.
+* Resolved an issue where the action bar overlapped with the content display.
+* Added dynamic resizing functionality for the content zone for enhanced responsiveness.
+* Introduced a configuration option (setZoneTimerInterval) to customize the content zone timer interval.
+
+* Enhanced CertificateTrustManager to support domain-specific configurations with hostname-aware checkServerTrusted calls (Android).
+
+* Fixed an issue where the build UUID and executable name were missing from crash reports (iOS).
+
+* Updated underlying Android SDK version to 25.1.0
+* Updated underlying iOS SDK version to 25.1.0
+
 ## 24.11.2
 * Improved view tracking capabilities in iOS.
 

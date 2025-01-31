@@ -1766,6 +1766,11 @@ FlutterMethodChannel *_channel;
 
             [_channel invokeMethod:@"contentCallback" arguments:contentCallbackData];
         }];
+
+        NSNumber *zoneTimerInterval = _config[@"zoneTimerInterval"];
+        if (zoneTimerInterval) {
+            [config.content setZoneTimerInterval:[zoneTimerInterval unsignedIntValue]];
+        }
        
     } @catch (NSException *exception) {
         COUNTLY_FLUTTER_LOG(@"[populateConfig], Unable to parse Config object: %@", exception);
