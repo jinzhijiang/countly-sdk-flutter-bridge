@@ -411,7 +411,8 @@ class Countly {
       return message;
     }
 
-    return _instance.events.recordEvent(key, segmentation, count, sum, duration);
+    await _instance.events.recordEvent(key, segmentation, count, sum, duration);
+    return 'recordEvent called';
   }
 
   static T _parseValue<T>(Map<String, Object> map, String key, T fallback) {
@@ -1680,7 +1681,8 @@ class Countly {
   /// returns error or success message
   @Deprecated('This function is deprecated, please use "startEvent" of events instead')
   static Future<String?> startEvent(String key) async {
-    return _instance.events.startEvent(key);
+    await _instance.events.startEvent(key);
+    return 'startEvent called';
   }
 
   /// ends a timed event
@@ -1698,7 +1700,8 @@ class Countly {
       return message;
     }
 
-    return _instance.events.endEvent(key, segmentation, count, sum);
+    await _instance.events.endEvent(key, segmentation, count, sum);
+    return 'endEvent called';
   }
 
   /// Call used for testing error handling
@@ -2211,12 +2214,13 @@ class Countly {
       }
 
       /// Experimental END ---------------------------
-      
+
       /// Content ---------------------------
       if (config.content.zoneTimerInterval != null) {
         log('"_configToJson", value provided for zoneTimerInterval: [${config.content.zoneTimerInterval}]', logLevel: LogLevel.INFO);
         countlyConfig['zoneTimerInterval'] = config.content.zoneTimerInterval;
       }
+
       /// Content END ---------------------------
 
       /// APM ---------------------------
