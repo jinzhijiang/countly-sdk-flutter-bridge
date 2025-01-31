@@ -1763,8 +1763,13 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         if (_config.has("visibilityTracking")) {
             this.config.experimental.enableVisibilityTracking();
         }
+
         if (_config.has("previousNameRecording")) {
             this.config.experimental.enablePreviousNameRecording();
+        }
+
+        if (_config.has("zoneTimerInterval")) {
+            this.config.content.setZoneTimerInterval(_config.getInt("zoneTimerInterval"));
         }
 
         this.config.content.setGlobalContentCallback(new ContentCallback() {
