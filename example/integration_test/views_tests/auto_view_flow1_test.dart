@@ -44,28 +44,33 @@ void main() {
     List<String> eventList = await getEventQueue();
 
     printQueues(requestList, eventList);
-    expect(requestList.length, Platform.isAndroid ? 4 : 3);
-    expect(eventList.length, Platform.isAndroid ? anyOf(8, 9) : 3); // 3 for iOS
+    expect(requestList.length, 4);
+    expect(eventList.length, Platform.isAndroid ? anyOf(8, 9) : anyOf(6, 7));
     validateBeginSessionRequest(requestList[0]); // validate begin session on 0th idx
 
     Map<String, List<String>> queryParams = Uri.parse('?${requestList[1]}').queryParametersAll;
     var rqEvents = jsonDecode(queryParams['events']![0]);
     expect(rqEvents.length, Platform.isAndroid ? 3 : 4);
     int index = 0;
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       validateEvent("[CLY]_orientation", <String, dynamic>{'mode': 'portrait'}, eventGiven: rqEvents[index++]);
     }
     validateView("V1", true, true, viewGiven: rqEvents[index++]);
     validateView("V2", false, true, viewGiven: rqEvents[index++]);
-    if(Platform.isIOS){
-      validateView("V1", false, false, viewGiven: rqEvents[index++]);
-      validateView("V2", false, false, viewGiven: rqEvents[index++]);
+    if (Platform.isIOS) {
+      int iCached = index;
+      try {
+        validateView("V1", false, false, viewGiven: rqEvents[index++]);
+        validateView("V2", false, false, viewGiven: rqEvents[index++]);
+      } catch (e) {
+        index = iCached;
+        validateView("V2", false, false, viewGiven: rqEvents[index++]);
+        validateView("V1", false, false, viewGiven: rqEvents[index++]);
+      }
     }
 
     validateEndSessionRequest(requestList[2]); // validate end session on 2nd idx
-    if(Platform.isAndroid) {
-      validateBeginSessionRequest(requestList[3]); // validate begin session on 3rd idx
-    }
+    validateBeginSessionRequest(requestList[3]); // validate begin session on 3rd idx
 
     index = 0;
     if (Platform.isAndroid) {
@@ -82,21 +87,18 @@ void main() {
     validateView("V4", false, true, viewStr: eventList[index++]);
     validateView("V4", false, false, viewStr: eventList[index++]);
     validateView("V3", false, true, viewStr: eventList[index++]);
-    if(Platform.isAndroid){
-      validateEvent("[CLY]_orientation", <String, dynamic>{'mode': 'portrait'}, eventStr: eventList[index++]);
-    }
+    validateEvent("[CLY]_orientation", <String, dynamic>{'mode': 'portrait'}, eventStr: eventList[index++]);
+    
 
     int iCached = index;
-    if (Platform.isAndroid) {
-      try {
-        validateView("V2", true, true, viewStr: eventList[index++]);
-        validateView("V2", false, false, viewStr: eventList[index++]);
-        validateView("V1", false, true, viewStr: eventList[index++]);
-      } catch (e) {
-        index = iCached;
-        validateView("V1", true, true, viewStr: eventList[index++]);
-        validateView("V2", false, true, viewStr: eventList[index++]);
-      }
+    try {
+      validateView("V2", true, true, viewStr: eventList[index++]);
+      validateView("V2", false, false, viewStr: eventList[index++]);
+      validateView("V1", false, true, viewStr: eventList[index++]);
+    } catch (e) {
+      index = iCached;
+      validateView("V1", true, true, viewStr: eventList[index++]);
+      validateView("V2", false, true, viewStr: eventList[index++]);
     }
   });
 }
@@ -105,10 +107,10 @@ void validateView(String name, bool start, bool visit, {String? viewStr, Map<Str
   Map<String, dynamic> segmentation = <String, dynamic>{'name': name, 'segment': Platform.isAndroid ? 'Android' : 'iOS'};
 
   if (visit) {
-    segmentation['visit'] = Platform.isAndroid ? '1': 1;
+    segmentation['visit'] = Platform.isAndroid ? '1' : 1;
   }
   if (start) {
-    segmentation['start'] = Platform.isAndroid ? '1': 1;
+    segmentation['start'] = Platform.isAndroid ? '1' : 1;
   }
   validateEvent("[CLY]_view", segmentation, eventGiven: viewGiven, eventStr: viewStr);
 }

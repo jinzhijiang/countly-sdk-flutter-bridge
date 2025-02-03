@@ -28,7 +28,7 @@ BOOL BUILDING_WITH_PUSH_DISABLED = true;
 
 CLYPushTestMode const CLYPushTestModeProduction = @"CLYPushTestModeProduction";
 
-NSString *const kCountlyFlutterSDKVersion = @"24.11.2";
+NSString *const kCountlyFlutterSDKVersion = @"25.1.0";
 NSString *const kCountlyFlutterSDKName = @"dart-flutterb-ios";
 NSString *const kCountlyFlutterSDKNameNoPush = @"dart-flutterbnp-ios";
 
@@ -309,6 +309,13 @@ FlutterMethodChannel *_channel;
           NSString *eventName = [command objectAtIndex:0];
           [Countly.sharedInstance startEvent:eventName];
           result(@"startEvent!");
+        });
+
+    } else if ([@"cancelEvent" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          NSString *eventName = [command objectAtIndex:0];
+          [Countly.sharedInstance cancelEvent:eventName];
+          result(@"cancelEvent!");
         });
 
     } else if ([@"endEvent" isEqualToString:call.method]) {
@@ -1766,6 +1773,11 @@ FlutterMethodChannel *_channel;
 
             [_channel invokeMethod:@"contentCallback" arguments:contentCallbackData];
         }];
+
+        NSNumber *zoneTimerInterval = _config[@"zoneTimerInterval"];
+        if (zoneTimerInterval) {
+            [config.content setZoneTimerInterval:[zoneTimerInterval unsignedIntValue]];
+        }
        
     } @catch (NSException *exception) {
         COUNTLY_FLUTTER_LOG(@"[populateConfig], Unable to parse Config object: %@", exception);

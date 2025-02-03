@@ -12,6 +12,8 @@ import 'countly_config.dart';
 import 'countly_state.dart';
 import 'device_id.dart';
 import 'device_id_internal.dart';
+import 'events.dart';
+import 'events_internal.dart';
 import 'feedback.dart';
 import 'feedback_internal.dart';
 import 'remote_config.dart';
@@ -67,6 +69,7 @@ class Countly {
     _sessionsInternal = SessionsInternal(_countlyState);
     _contentBuilderInternal = ContentBuilderInternal(_countlyState);
     _feedbackInternal = FeedbackInternal(_countlyState);
+    _eventsInternal = EventsInternal(_countlyState);
   }
   static final instance = _instance;
   static final _instance = Countly._();
@@ -94,6 +97,9 @@ class Countly {
   late final FeedbackInternal _feedbackInternal;
   Feedback get feedback => _feedbackInternal;
 
+  late final EventsInternal _eventsInternal;
+  Events get events => _eventsInternal;
+
   /// ignore: constant_identifier_names
   static const bool BUILDING_WITH_PUSH_DISABLED = false;
   static const String _pushDisabledMsg = 'In this plugin Push notification is disabled, Countly has separate plugin with push notification enabled';
@@ -114,7 +120,11 @@ class Countly {
   /// Flag to determine if manual session is enabled
   static bool _manualSessionControlEnabled = false;
 
-  static Map<String, String> messagingMode = Platform.isAndroid ? {'TEST': '2', 'PRODUCTION': '0'} : {'TEST': '1', 'PRODUCTION': '0', 'ADHOC': '2'};
+  static Map<String, String> messagingMode = kIsWeb
+      ? {}
+      : Platform.isAndroid
+          ? {'TEST': '2', 'PRODUCTION': '0'}
+          : {'TEST': '1', 'PRODUCTION': '0', 'ADHOC': '2'};
 
   static const temporaryDeviceID = 'CLYTemporaryDeviceID';
   @Deprecated('This variable is deprecated, please use "Countly.instance.deviceId.enableTemporaryDeviceID()" instead')
@@ -391,39 +401,38 @@ class Countly {
 
   /// Records an event
   /// returns the error or success message
+  @Deprecated('This function is deprecated, please use "recordEvent" of events instead')
   static Future<String?> recordEvent(Map<String, Object> options) async {
-    if (!_instance._countlyState.isInitialized) {
-      String message = '"initWithConfig" must be called before "recordEvent"';
-      log('recordEvent, $message', logLevel: LogLevel.ERROR);
+    String? key = options['key'] as String?;
+    int? count = _parseValue(options, 'count', 1);
+    double? sum = _parseValue(options, 'sum', 0);
+    int? duration = _parseValue(options, 'duration', 1);
+    Map<String, Object>? segmentation = options['segmentation'] as Map<String, Object>?;
+
+    if (key == null) {
+      String message = 'recordEvent, key is required';
+      log(message, logLevel: LogLevel.ERROR);
       return message;
     }
-    List<Object> args = [];
-    options['key'] ??= '';
-    String eventKey = options['key'].toString();
-    log('Calling "recordEvent":[$eventKey]');
 
-    if (eventKey.isEmpty) {
-      String error = 'recordEvent, Valid Countly event key is required';
-      log(error);
-      return 'Error : $error';
-    }
-    args.add(eventKey);
-    options['count'] ??= '1';
-    args.add(options['count'].toString());
+    await _instance.events.recordEvent(key, segmentation, count, sum, duration);
+    return 'recordEvent called';
+  }
 
-    options['sum'] ??= '0';
-    args.add(options['sum'].toString());
+  static T _parseValue<T>(Map<String, Object> map, String key, T fallback) {
+    Object? value = map[key];
 
-    options['duration'] ??= '0';
-    args.add(options['duration'].toString());
-
-    if (options['segmentation'] != null) {
-      args.add(options['segmentation']!);
+    if (value is T) {
+      return value;
+    } else if (value is String) {
+      if (T == int) {
+        return (int.tryParse(value) ?? fallback) as T;
+      } else if (T == double) {
+        return (double.tryParse(value) ?? fallback) as T;
+      }
     }
 
-    final String? result = await _channel.invokeMethod('recordEvent', <String, dynamic>{'data': json.encode(args)});
-
-    return result;
+    return fallback;
   }
 
   /// Record custom view to Countly.
@@ -544,7 +553,7 @@ class Countly {
       log('disablePushNotifications, $_pushDisabledMsg', logLevel: LogLevel.ERROR);
       return _pushDisabledMsg;
     }
-    if (!Platform.isIOS) {
+    if (kIsWeb || !Platform.isIOS) {
       return 'disablePushNotifications : To be implemented';
     }
     final String? result = await _channel.invokeMethod('disablePushNotifications');
@@ -1674,58 +1683,29 @@ class Countly {
 
   /// starts a timed event
   /// returns error or success message
+  @Deprecated('This function is deprecated, please use "startEvent" of events instead')
   static Future<String?> startEvent(String key) async {
-    if (!_instance._countlyState.isInitialized) {
-      String message = '"initWithConfig" must be called before "startEvent"';
-      log('startEvent, $message', logLevel: LogLevel.ERROR);
-      return message;
-    }
-    log('Calling "startEvent":[$key]');
-    if (key.isEmpty) {
-      String error = "startEvent, Can't start event with empty key";
-      log(error);
-      return 'Error : $error';
-    }
-    List<String> args = [];
-    args.add(key);
-
-    final String? result = await _channel.invokeMethod('startEvent', <String, dynamic>{'data': json.encode(args)});
-
-    return result;
+    await _instance.events.startEvent(key);
+    return 'startEvent called';
   }
 
   /// ends a timed event
   /// returns error or success message
+  @Deprecated('This function is deprecated, please use "endEvent" of events instead')
   static Future<String?> endEvent(Map<String, Object> options) async {
-    if (!_instance._countlyState.isInitialized) {
-      String message = '"initWithConfig" must be called before "endEvent"';
-      log('endEvent, $message', logLevel: LogLevel.ERROR);
+    String? key = options['key'] as String?;
+    Map<String, Object>? segmentation = options['segmentation'] as Map<String, Object>?;
+    int? count = _parseValue(options, 'count', 1);
+    double? sum = _parseValue(options, 'sum', 0);
+
+    if (key == null) {
+      String message = 'endEvent, key cannot be null';
+      log(message);
       return message;
     }
-    String eventKey = options['key'] != null ? options['key'].toString() : '';
-    log('Calling "endEvent":[$eventKey]');
-    List<Object> args = [];
 
-    if (eventKey.isEmpty) {
-      String error = "endEvent, Can't end event with a null or empty key";
-      log(error);
-      return 'Error : $error';
-    }
-    args.add(eventKey);
-
-    options['count'] ??= '1';
-    args.add(options['count'].toString());
-
-    options['sum'] ??= '0';
-    args.add(options['sum'].toString());
-
-    if (options['segmentation'] != null) {
-      args.add(options['segmentation']!);
-    }
-
-    final String? result = await _channel.invokeMethod('endEvent', <String, dynamic>{'data': json.encode(args)});
-
-    return result;
+    await _instance.events.endEvent(key, segmentation, count, sum);
+    return 'endEvent called';
   }
 
   /// Call used for testing error handling
@@ -2024,10 +2004,12 @@ class Countly {
       return 'Error : $error';
     }
     Map<String, String> attributionValues = {};
-    if (Platform.isIOS) {
-      attributionValues[AttributionKey.IDFA] = attributionID;
-    } else {
-      attributionValues[AttributionKey.AdvertisingID] = attributionID;
+    if (!kIsWeb) {
+      if (Platform.isIOS) {
+        attributionValues[AttributionKey.IDFA] = attributionID;
+      } else {
+        attributionValues[AttributionKey.AdvertisingID] = attributionID;
+      }
     }
     final String? result = await recordIndirectAttribution(attributionValues);
     return result;
@@ -2239,6 +2221,14 @@ class Countly {
 
       /// Experimental END ---------------------------
 
+      /// Content ---------------------------
+      if (config.content.zoneTimerInterval != null) {
+        log('"_configToJson", value provided for zoneTimerInterval: [${config.content.zoneTimerInterval}]', logLevel: LogLevel.INFO);
+        countlyConfig['zoneTimerInterval'] = config.content.zoneTimerInterval;
+      }
+
+      /// Content END ---------------------------
+
       /// APM ---------------------------
       if (config.apm.trackAppStartTime) {
         log('"_configToJson", value provided for trackAppStartTime: [${config.apm.trackAppStartTime}]', logLevel: LogLevel.INFO);
@@ -2300,6 +2290,13 @@ class Countly {
       log('"_configToJson", Exception occur during converting config to json: $e', logLevel: LogLevel.ERROR);
     }
     return countlyConfig;
+  }
+
+  /// This method is for testing purposes only
+  /// Do not use this method in production
+  Future<void> halt() {
+    _countlyState.isInitialized = false;
+    return _channel.invokeMethod('halt');
   }
 }
 
