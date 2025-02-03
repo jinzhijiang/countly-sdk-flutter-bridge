@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:html';
 import 'package:countly_flutter_np/countly_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -9,6 +10,10 @@ import 'utils.dart';
 /// Check if we can get stored queues from native side
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  if(!kIsWeb){
+    return;
+  }
 
   group("Device ID change tests", () {
     tearDown(() async {
