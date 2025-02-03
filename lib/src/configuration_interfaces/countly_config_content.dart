@@ -5,9 +5,11 @@ import '../content_builder.dart';
 class CountlyConfigContent {
   /// private variables.
   ContentCallback? _contentCallback;
+  int? _zoneTimerInterval;
 
   /// getters
   ContentCallback? get contentCallback => _contentCallback;
+  int? get zoneTimerInterval => _zoneTimerInterval;
 
   /// setters / methods
 
@@ -15,6 +17,15 @@ class CountlyConfigContent {
   //   Register global completion blocks to be executed on content.
   CountlyConfigContent setGlobalContentCallback(ContentCallback callback) {
     _contentCallback = callback;
+    return this;
+  }
+
+  /// This is an experimental feature and it can have breaking changes
+  /// Set the interval for the automatic content update calls
+  ///
+  /// zoneTimerIntervalSeconds in seconds
+  CountlyConfigContent setZoneTimerInterval(int interval) {
+    _zoneTimerInterval = interval;
     return this;
   }
 }

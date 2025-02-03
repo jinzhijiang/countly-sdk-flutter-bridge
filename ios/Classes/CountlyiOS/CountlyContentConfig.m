@@ -9,6 +9,7 @@
 @interface CountlyContentConfig ()
 #if (TARGET_OS_IOS)
 @property (nonatomic) ContentCallback contentCallback;
+@property (nonatomic) NSUInteger zoneTimerInterval;
 #endif
 @end
 
@@ -32,6 +33,19 @@
 - (ContentCallback) getGlobalContentCallback
 {
     return self.contentCallback;
+}
+
+
+-(void)setZoneTimerInterval:(NSUInteger)zoneTimerIntervalSeconds
+{
+    if (zoneTimerIntervalSeconds > 15) {
+        _zoneTimerInterval = zoneTimerIntervalSeconds;
+    }
+}
+
+- (NSUInteger) getZoneTimerInterval
+{
+    return _zoneTimerInterval;
 }
 #endif
 
