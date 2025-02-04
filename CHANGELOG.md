@@ -46,6 +46,7 @@
 * Enhanced CertificateTrustManager to support domain-specific configurations with hostname-aware checkServerTrusted calls (Android).
 
 * Fixed an issue where the build UUID and executable name were missing from crash reports (iOS).
+* Mitigated an issue while setting zone timer interval for content (iOS).
 
 * Updated underlying Android SDK version to 25.1.1
 * Updated underlying iOS SDK version to 25.1.1
