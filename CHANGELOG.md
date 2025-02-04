@@ -48,7 +48,7 @@
 * Fixed an issue where the build UUID and executable name were missing from crash reports (iOS).
 
 * Updated underlying Android SDK version to 25.1.1
-* Updated underlying iOS SDK version to 25.1.0
+* Updated underlying iOS SDK version to 25.1.1
 * Added underlying Web SDK version to 24.11.4
 
 ## 24.11.2
