@@ -50,7 +50,7 @@
 
 * Updated underlying Android SDK version to 25.1.1
 * Updated underlying iOS SDK version to 25.1.1
-* Added underlying Web SDK version to 24.11.4
+* Added underlying Web SDK version to 25.1.0
 
 ## 24.11.2
 * Improved view tracking capabilities in iOS.
