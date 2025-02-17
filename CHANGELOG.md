@@ -1,3 +1,10 @@
+## 25.1.1-np
+* Removed Android v1 embedding support
+
+* Underlying Android SDK version is 25.1.1
+* Underlying iOS SDK version is 25.1.1
+* Underlying Web SDK version is 25.1.0
+
 ## 25.1.0-np
 * Added experimental support for the web platform in the Countly Flutter SDK. Some functionalities are not yet fully supported. Below is the list of limitations for the web platform:
   * Hybrid sessions are the default; full manual sessions are not supported.
