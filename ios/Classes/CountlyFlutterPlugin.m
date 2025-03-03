@@ -1644,6 +1644,11 @@ FlutterMethodChannel *_channel;
             [config.apm setAppStartTimestampOverride:[startTSOverride longLongValue]];
         }
 
+        NSString *providedServerConfig = _config[@"providedServerConfig"];
+        if(providedServerConfig) {
+            config.serverConfiguration = providedServerConfig;
+        }
+
         // Internal Limits ---------------------
         NSNumber *maxKeyLength = _config[@"maxKeyLength"];
         if (maxKeyLength) {

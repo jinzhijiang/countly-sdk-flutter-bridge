@@ -1,3 +1,6 @@
+## XX.XX.XX
+* Extended server configuration capabilities of the SDK.
+
 ## 25.1.1
 * Removed Android v1 embedding support
 

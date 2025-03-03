@@ -613,6 +613,8 @@ class CountlyFlutterPlugin {
       configMap['remote_config'] = allowInterop((JSAny? error, JSAny? remoteConfigs) => _notifyRemoteConfigDownloadCallback(error, remoteConfigs, true, requestIDGlobalCallback)).jsify();
     }
 
+    configMap['server_configuration'] = config['providedServerConfig'];
+
     configMap.removeWhere((key, value) => value == null);
 
     if (config['disableLocation'] != null && config['disableLocation'] == true) {
