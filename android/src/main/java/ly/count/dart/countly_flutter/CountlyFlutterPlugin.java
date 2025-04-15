@@ -1637,8 +1637,8 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.setStarRatingTextDismiss(_config.getString("starRatingTextDismiss"));
         }
         
-        if (_config.has("providedServerConfig")) {
-            this.config.setServerConfiguration(_config.getString("providedServerConfig"));
+        if (_config.has("sdkBehaviorSettings")) {
+            this.config.setSDKBehaviorSettings(_config.getString("sdkBehaviorSettings"));
         }
 
         // APM ------------------------------------------------

@@ -1644,9 +1644,9 @@ FlutterMethodChannel *_channel;
             [config.apm setAppStartTimestampOverride:[startTSOverride longLongValue]];
         }
 
-        NSString *providedServerConfig = _config[@"providedServerConfig"];
-        if(providedServerConfig) {
-            config.serverConfiguration = providedServerConfig;
+        NSString *sdkBehaviorSettings = _config[@"sdkBehaviorSettings"];
+        if(sdkBehaviorSettings) {
+            config.sdkBehaviorSettings = sdkBehaviorSettings;
         }
 
         // Internal Limits ---------------------

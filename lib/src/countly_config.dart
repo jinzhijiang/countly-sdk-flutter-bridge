@@ -44,7 +44,7 @@ class CountlyConfig {
   bool _enableAllConsents = false;
   bool _autoEnrollABOnDownload = false;
   int? _requestDropAgeHours;
-  String? _providedServerConfig;
+  String? _sdkBehaviorSettings;
 
   /// instance of CountlyConfigApm
   final CountlyConfigApm _countlyConfigApmInstance = CountlyConfigApm();
@@ -135,7 +135,7 @@ class CountlyConfig {
 
   int? get requestDropAgeHours => _requestDropAgeHours;
 
-  String? get providedServerConfig => _providedServerConfig;
+  String? get sdkBehaviorSettings => _sdkBehaviorSettings;
 
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
@@ -376,10 +376,10 @@ class CountlyConfig {
   }
 
   /// Set the provided server config
-  /// [String serverConfiguration] - provided server config
+  /// [String sdkBehaviorSettings] - provided server config
   /// This is used to provide the server config in case the server config is not available in the initializion time
-  CountlyConfig setServerConfiguration(String serverConfiguration) {
-    _providedServerConfig = serverConfiguration;
+  CountlyConfig setSDKBehaviorSettings(String sdkBehaviorSettings) {
+    _sdkBehaviorSettings = sdkBehaviorSettings;
     return this;
   }
 }
