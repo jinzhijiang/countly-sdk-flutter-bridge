@@ -13,7 +13,7 @@ extern NSString* const kCountlySCKeySC;
 + (instancetype)sharedInstance;
 
 - (void)fetchServerConfig:(CountlyConfig *)config;
-- (void)retrieveServerConfigFromStorage:(NSString*) providedServerConfiguration;
+- (void)retrieveServerConfigFromStorage:(NSString*) sdkBehaviorSettings;
 - (void)fetchServerConfigIfTimeIsUp;
 
 - (BOOL)trackingEnabled;
@@ -37,5 +37,6 @@ extern NSString* const kCountlySCKeySC;
 - (NSInteger)requestQueueSize;
 - (BOOL)sessionTrackingEnabled;
 - (BOOL)locationTrackingEnabled;
+- (BOOL)refreshContentZoneEnabled;
 @end
 
