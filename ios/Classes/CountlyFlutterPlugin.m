@@ -1644,6 +1644,11 @@ FlutterMethodChannel *_channel;
             [config.apm setAppStartTimestampOverride:[startTSOverride longLongValue]];
         }
 
+        NSString *sdkBehaviorSettings = _config[@"sdkBehaviorSettings"];
+        if(sdkBehaviorSettings) {
+            config.sdkBehaviorSettings = sdkBehaviorSettings;
+        }
+
         // Internal Limits ---------------------
         NSNumber *maxKeyLength = _config[@"maxKeyLength"];
         if (maxKeyLength) {

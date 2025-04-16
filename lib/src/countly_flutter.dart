@@ -2209,6 +2209,11 @@ class Countly {
         countlyConfig['requestDropAgeHours'] = config.requestDropAgeHours;
       }
 
+      if (config.sdkBehaviorSettings != null) {
+        log('"_configToJson", value provided for sdkBehaviorSettings: [${config.sdkBehaviorSettings}]', logLevel: LogLevel.INFO);
+        countlyConfig['sdkBehaviorSettings'] = config.sdkBehaviorSettings;
+      }
+
       /// Experimental ---------------------------
       if (config.experimental.visibilityTracking) {
         log('"_configToJson", value provided for visibilityTracking: [${config.experimental.visibilityTracking}]', logLevel: LogLevel.INFO);

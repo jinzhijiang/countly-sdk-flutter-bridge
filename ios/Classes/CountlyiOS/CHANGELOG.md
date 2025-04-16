@@ -1,3 +1,11 @@
+## XX.XX.XX
+* Deprecated the experimental configuration function enableServerConfiguration and it will do nothing. It is now enabled by default and can be controlled directly from the server.
+
+* Extended server configuration capabilities of the SDK.
+
+## 25.1.2
+* Mitigated an issue where the safe area resolution was not correctly calculated for the content zone on certain iOS devices.
+
 ## 25.1.1
 * Mitigated an issue while setting zone timer interval for content.
 
