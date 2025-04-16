@@ -1,6 +1,15 @@
-## XX.XX.XX
-* Extended server configuration capabilities of the SDK.
+## 25.4.0
+* ! Minor breaking change ! Removed Secure.ANDROID_ID on Android and UIDevice.currentDevice.identifierForVendor on iOS usages in device id generation. The SDKs now exclusively uses random UUIDs for device id generation.
+
+* Extended server configuration capabilities of the SDK. It is now enabled by default and can be controlled directly from the server.
 * Added a Content feature method "refreshContentZone" that does a manual refresh.
+* Added a config method to provide server config in the initialization "setSDKBehaviorSettings(String)".
+
+* Mitigated an issue on the Android that caused PN message data collision if two message with same ID was received.
+
+* Underlying Android SDK version is 25.4.0
+* Underlying iOS SDK version is 25.4.0
+* Underlying Web SDK version is 25.4.0
 
 ## 25.1.1
 * Removed Android v1 embedding support
