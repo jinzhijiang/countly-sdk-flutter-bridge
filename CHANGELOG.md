@@ -1,5 +1,6 @@
 ## XX.XX.XX
 * Extended server configuration capabilities of the SDK.
+* Added a Content feature method "refreshContentZone" that does a manual refresh.
 
 ## 25.1.1
 * Removed Android v1 embedding support

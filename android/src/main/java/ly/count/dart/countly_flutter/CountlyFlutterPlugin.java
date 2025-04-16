@@ -1410,6 +1410,9 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("exitContentZone".equals(call.method)) {
                 Countly.sharedInstance().contents().exitContentZone();
                 result.success(null);
+            } else if ("refreshContentZone".equals(call.method)) {
+                Countly.sharedInstance().contents().refreshContentZone();
+                result.success(null);
             }
             //------------------End------------------------------------
 
