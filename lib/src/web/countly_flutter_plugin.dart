@@ -306,6 +306,8 @@ class CountlyFlutterPlugin {
       CountlyContent.enterContentZone();
     } else if (call.method == 'exitContentZone') {
       CountlyContent.exitContentZone();
+    } else if (call.method == 'refreshContentZone') {
+      CountlyContent.refreshContentZone();
     } else {
       cly.Countly.log('[CountlyFlutterPluginWeb] handleMethodCall, The method ${call.method} does not implemented', logLevel: cly.LogLevel.ERROR);
     }

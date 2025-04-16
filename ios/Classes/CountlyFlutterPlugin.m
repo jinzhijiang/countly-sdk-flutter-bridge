@@ -1373,16 +1373,17 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance.content enterContentZone];
             result(nil);
         });
-
-        // setRequiresConsent
     } else if ([@"exitContentZone" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [Countly.sharedInstance.content exitContentZone];
             result(nil);
         });
-
-        // setRequiresConsent
-    } else {
+    }  else if ([@"refreshContentZone" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Countly.sharedInstance.content refreshContentZone];
+            result(nil);
+        });
+    }  else {
         result(FlutterMethodNotImplemented);
     }
 }

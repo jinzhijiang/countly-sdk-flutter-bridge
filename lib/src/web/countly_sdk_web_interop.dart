@@ -61,6 +61,7 @@ class Countly {
 class CountlyContent {
   external static void enterContentZone();
   external static void exitContentZone();
+  external static void refreshContentZone();
 }
 
 @JS('Countly.userData') // Bind to 'Countly.userData'
