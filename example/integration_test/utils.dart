@@ -31,7 +31,7 @@ void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);
   expect(
       requestObject['sdk_name']?[0],
-      "dart-flutterb-${kIsWeb ? 'web' : Platform.isIOS ? 'ios' : 'android'}");
+      "dart-flutterbnp-${kIsWeb ? 'web' : Platform.isIOS ? 'ios' : 'android'}");
   expect(requestObject['sdk_version']?[0], '25.4.0');
   expect(
       requestObject['av']?[0],
