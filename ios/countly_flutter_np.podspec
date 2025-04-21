@@ -2,8 +2,8 @@
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 Pod::Spec.new do |s|
-  s.name = 'countly_flutter'
-  s.version = '25.4.0-np'
+  s.name = 'countly_flutter_np'
+  s.version = '25.4.0'
   s.summary = 'Countly is an innovative, real-time, open source mobile analytics platform.'
   s.homepage = 'https://github.com/Countly/countly-sdk-flutter-bridge'
   s.social_media_url = 'https://twitter.com/gocountly'

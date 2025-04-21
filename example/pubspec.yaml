@@ -4,10 +4,10 @@ publish_to: 'none'
 version: 1.0.0
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.15.0 <4.0.0"
 
 dependencies:
-  countly_flutter:
+  countly_flutter_np:
     path: ../
   # for no push variation use the line below instead of countly_flutter:
   # countly_flutter_np:
@@ -27,7 +27,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_foreground_task: 6.0.0+1
+  flutter_foreground_task: ^8.0.0
   flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
