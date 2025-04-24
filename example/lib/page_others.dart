@@ -90,6 +90,10 @@ class OthersPage extends StatelessWidget {
     Countly.instance.content.exitContentZone();
   }
 
+  void refreshContentZone() {
+    Countly.instance.content.refreshContentZone();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +107,7 @@ class OthersPage extends StatelessWidget {
           children: [
             MyButton(text: 'Enter Content Zone', color: 'olive', onPressed: enterContentZone),
             MyButton(text: 'Exit Content Zone', color: 'olive', onPressed: exitContentZone),
+            MyButton(text: 'Refresh Content Zone', color: 'olive', onPressed: refreshContentZone),
             MyButton(text: 'Record Direct Attribution', color: 'olive', onPressed: recordDirectAttribution),
             MyButton(text: 'Record Indirect Attribution', color: 'olive', onPressed: recordIndirectAttribution),
             MyButton(text: 'Push Notification', color: 'blue', onPressed: askForNotificationPermission),
