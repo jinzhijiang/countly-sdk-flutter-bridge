@@ -613,7 +613,7 @@ class CountlyFlutterPlugin {
       configMap['remote_config'] = allowInterop((JSAny? error, JSAny? remoteConfigs) => _notifyRemoteConfigDownloadCallback(error, remoteConfigs, true, requestIDGlobalCallback)).jsify();
     }
 
-    configMap['sdkBehaviorSettings'] = config['sdkBehaviorSettings'];
+    configMap['behavior_settings'] = config['sdkBehaviorSettings'];
 
     configMap.removeWhere((key, value) => value == null);
 

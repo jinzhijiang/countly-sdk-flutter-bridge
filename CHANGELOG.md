@@ -1,6 +1,15 @@
-## XX.XX.XX
-* Extended server configuration capabilities of the SDK.
-* Added a Content feature method "refreshContentZone" that does a manual refresh.
+## 25.4.0
+* ! Minor breaking change ! Removed Secure.ANDROID_ID on Android and UIDevice.currentDevice.identifierForVendor on iOS usages in device ID generation. The SDKs now exclusively uses random UUIDs for device ID generation.
+* ! Minor breaking change ! SDK now has Server Configuration feature and it is enabled by default. Changes made on SDK Manager > SDK Configuration on your server will affect SDK behavior directly.
+
+* Added `refreshContentZone` method to Content interface for refreshing Content Zone requests.
+* Added `setSDKBehaviorSettings(String)` init config method for providing server configuration during first initialization.
+
+* Mitigated an issue on Android that caused PN message data collision if two message with same ID was received.
+
+* Updated underlying Android SDK version to 25.4.0
+* Updated underlying iOS SDK version to 25.4.0
+* Updated underlying Web SDK version to 25.4.0
 
 ## 25.1.1
 * Removed Android v1 embedding support
