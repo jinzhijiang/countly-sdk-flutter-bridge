@@ -1,3 +1,14 @@
+## 25.4.0-np
+* ! Minor breaking change ! Removed Secure.ANDROID_ID on Android and UIDevice.currentDevice.identifierForVendor on iOS usages in device ID generation. The SDKs now exclusively uses random UUIDs for device ID generation.
+* ! Minor breaking change ! SDK now has Server Configuration feature and it is enabled by default. Changes made on SDK Manager > SDK Configuration on your server will affect SDK behavior directly.
+
+* Added `refreshContentZone` method to Content interface for refreshing Content Zone requests.
+* Added `setSDKBehaviorSettings(String)` init config method for providing server configuration during first initialization.
+
+* Updated underlying Android SDK version to 25.4.0
+* Updated underlying iOS SDK version to 25.4.0
+* Updated underlying Web SDK version to 25.4.0
+
 ## 25.1.1-np
 * Removed Android v1 embedding support
 

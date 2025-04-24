@@ -28,6 +28,16 @@ class ContentBuilderInternal implements ContentBuilder {
     await _countlyState.channel.invokeMethod('exitContentZone');
   }
 
+  @override
+  Future<void> refreshContentZone() async {
+    if (!_countlyState.isInitialized) {
+      Countly.log('refreshContentZone, "initWithConfig" must be called before "clear"', logLevel: LogLevel.ERROR);
+      return;
+    }
+    Countly.log('Calling "refreshContentZone"');
+    await _countlyState.channel.invokeMethod('refreshContentZone');
+  }
+
   void registerContentCallback(ContentCallback callback) {
     _contentCallback = callback;
   }

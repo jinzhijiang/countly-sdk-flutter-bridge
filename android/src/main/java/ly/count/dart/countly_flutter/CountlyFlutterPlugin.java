@@ -62,7 +62,7 @@ import ly.count.android.sdk.messaging.CountlyPush;
  */
 public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, ActivityAware, DefaultLifecycleObserver {
     private static final String TAG = "CountlyFlutterPlugin";
-    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "25.1.1";
+    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "25.4.0";
     private final String COUNTLY_FLUTTER_SDK_NAME = "dart-flutterb-android";
     private final String COUNTLY_FLUTTER_SDK_NAME_NO_PUSH = "dart-flutterbnp-android";
 
@@ -1391,6 +1391,9 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("exitContentZone".equals(call.method)) {
                 Countly.sharedInstance().contents().exitContentZone();
                 result.success(null);
+            } else if ("refreshContentZone".equals(call.method)) {
+                Countly.sharedInstance().contents().refreshContentZone();
+                result.success(null);
             }
             //------------------End------------------------------------
 
@@ -1617,6 +1620,11 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         if (_config.has("starRatingTextDismiss")) {
             this.config.setStarRatingTextDismiss(_config.getString("starRatingTextDismiss"));
         }
+        
+        if (_config.has("sdkBehaviorSettings")) {
+            this.config.setSDKBehaviorSettings(_config.getString("sdkBehaviorSettings"));
+        }
+
         // APM ------------------------------------------------
         if (_config.has("trackAppStartTime")) {
             this.config.apm.enableAppStartTimeTracking();

@@ -28,7 +28,7 @@ BOOL BUILDING_WITH_PUSH_DISABLED = true;
 
 CLYPushTestMode const CLYPushTestModeProduction = @"CLYPushTestModeProduction";
 
-NSString *const kCountlyFlutterSDKVersion = @"25.1.1";
+NSString *const kCountlyFlutterSDKVersion = @"25.4.0";
 NSString *const kCountlyFlutterSDKName = @"dart-flutterb-ios";
 NSString *const kCountlyFlutterSDKNameNoPush = @"dart-flutterbnp-ios";
 
@@ -1373,16 +1373,17 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance.content enterContentZone];
             result(nil);
         });
-
-        // setRequiresConsent
     } else if ([@"exitContentZone" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [Countly.sharedInstance.content exitContentZone];
             result(nil);
         });
-
-        // setRequiresConsent
-    } else {
+    }  else if ([@"refreshContentZone" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Countly.sharedInstance.content refreshContentZone];
+            result(nil);
+        });
+    }  else {
         result(FlutterMethodNotImplemented);
     }
 }
@@ -1642,6 +1643,11 @@ FlutterMethodChannel *_channel;
         NSNumber *startTSOverride = _config[@"startTSOverride"];
         if (startTSOverride) {
             [config.apm setAppStartTimestampOverride:[startTSOverride longLongValue]];
+        }
+
+        NSString *sdkBehaviorSettings = _config[@"sdkBehaviorSettings"];
+        if(sdkBehaviorSettings) {
+            config.sdkBehaviorSettings = sdkBehaviorSettings;
         }
 
         // Internal Limits ---------------------
