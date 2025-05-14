@@ -109,23 +109,37 @@ Future<DeviceIdType> testDeviceIDType(DeviceIdType givenType) async {
   return type!;
 }
 
-/// Start a server to receive the requests from the SDK and store them in a provided List
-/// Use http://0.0.0.0:8080 as the server url
-void createServer(List requestArray) async {
-  // Start a server to receive the requests from the SDK
+/// Start a server to receive the requests from the SDK and store them in a provided List.
+/// Use http://0.0.0.0:8080 as the server url.
+/// You can specify a delay in seconds for the server response.
+/// You can also provide a custom handler for the server response.
+void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, void Function(HttpRequest, HttpResponse)? customHandler}) async {
   var server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
-  server.listen((HttpRequest request) {
-    print(request.uri.queryParametersAll.toString());
+  print('Server running on http://${server.address.address}:${server.port}');
+
+  server.listen((HttpRequest request) async {
+    final queryParams = request.uri.queryParametersAll;
+    print(queryParams.toString());
+    // Delay the response if specified
+    if (delay > 0) {
+      await Future.delayed(Duration(seconds: delay));
+    }
 
     // Store the request parameters for later verification
-    requestArray.add(request.uri.queryParametersAll);
+    requestArray.add(queryParams);
 
-    // Send a response
-    request.response.statusCode = HttpStatus.ok;
-    request.response.headers.contentType = ContentType.json;
-    request.response.headers.set('Access-Control-Allow-Origin', '*');
-    request.response.write(jsonEncode({'result': 'Success'}));
-    request.response.close();
+    if (customHandler != null) {
+      customHandler(request, request.response);
+    } else {
+      // Default response
+      request.response
+        ..statusCode = HttpStatus.ok
+        ..headers.contentType = ContentType.json
+        ..headers.set('Access-Control-Allow-Origin', '*')
+        ..write(jsonEncode({'result': 'Success'}));
+    }
+    
+    await request.response.close();
   });
 }
 
