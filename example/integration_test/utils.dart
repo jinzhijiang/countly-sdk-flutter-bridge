@@ -125,10 +125,6 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
   server.listen((HttpRequest request) async {
     final queryParams = request.uri.queryParametersAll;
     print(queryParams.toString());
-    // Delay the response if specified
-    if (delay > 0) {
-      await Future.delayed(Duration(seconds: delay));
-    }
 
     // Store the request parameters for later verification
     requestArray.add(queryParams);
@@ -136,6 +132,10 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
     if (customHandler != null) {
       customHandler(request, request.response);
     } else {
+      // Delay the response if specified
+      if (delay > 0) {
+        await Future.delayed(Duration(seconds: delay));
+      }
       // Default response
       request.response
         ..statusCode = HttpStatus.ok
