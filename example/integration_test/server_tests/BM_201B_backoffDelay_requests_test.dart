@@ -5,14 +5,18 @@ import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('timeout the request', (WidgetTester tester) async {
+  testWidgets('BM_201B_backoffDelay_requests', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, delay: 10);
+    createServer(requestArray, delay: 9);
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true).setMaxRequestQueueSize(5);
     await Countly.initWithConfig(config); // generates 0.begin_session
 
-    Countly.instance.sessions.beginSession();
+    Countly.instance.sessions.beginSession(); // this should be sent to the server
+    await Future.delayed(const Duration(seconds: 2));
+    Countly.instance.sessions.updateSession(); // this should be sent to the server
+    await Future.delayed(const Duration(seconds: 2));
+    Countly.instance.sessions.endSession(); // this should be backed off
 
     // Get request and event queues from native side
     List<String> requestList = await getRequestQueue(); // List of strings
@@ -24,19 +28,15 @@ void main() {
     var i = 0;
     printQueues(requestList, eventList);
     while (requestList.isNotEmpty) {
-      await Future.delayed(const Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 9));
       requestList = await getRequestQueue(); // List of strings
       i++;
-      if(i >= 2) {
-        // if we wait for 2 times, the request should be in the request queue
-        // and never able to sent to the server, then we can break, test is done
+      if(i >= 4) {
+        // wait for requests to be sent
         break;
       }
     }
 
-
-    expect(1, requestList.length);
-    expect(requestList[0], contains("begin_session"));
-    expect(true, i >= 2);
+    expect(requestList.length, 0);
   });
 }
