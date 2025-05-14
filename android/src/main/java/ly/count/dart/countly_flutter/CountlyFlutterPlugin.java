@@ -1401,6 +1401,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("getEventQueue".equals(call.method)) {
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
                 result.success(Arrays.asList(countlyStore.getEvents()));
+            } else if ("addRequest".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                countlyStore.addRequest(args.getString(0), true);
+                result.success("addRequest: success");
             } else if ("halt".equals(call.method)) {
                 Countly.sharedInstance().halt();
                 result.success("halt: success");

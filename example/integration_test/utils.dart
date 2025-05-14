@@ -26,6 +26,11 @@ Future<List<String>> getEventQueue() async {
   return eq.cast<String>();
 }
 
+/// Add request to native sides
+void addRequest(Map<String, dynamic> request) async {
+  await _channelTest.invokeMethod('addRequest', <String, dynamic>{'data': json.encode([Uri(queryParameters: request).query])});
+}
+
 /// Verify the common request queue parameters
 void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);
