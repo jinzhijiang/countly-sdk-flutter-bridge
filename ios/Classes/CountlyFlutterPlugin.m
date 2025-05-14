@@ -1650,6 +1650,11 @@ FlutterMethodChannel *_channel;
             config.sdkBehaviorSettings = sdkBehaviorSettings;
         }
 
+        NSNumber *backoffMechanismDisabled = _config[@"backoffMechanismDisabled"];
+        if(backoffMechanismDisabled && [backoffMechanismDisabled boolValue]) {
+            config.disableBackoffMechanism = YES;
+        }
+
         // Internal Limits ---------------------
         NSNumber *maxKeyLength = _config[@"maxKeyLength"];
         if (maxKeyLength) {

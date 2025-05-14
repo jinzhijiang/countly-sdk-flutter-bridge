@@ -1644,6 +1644,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.setSDKBehaviorSettings(_config.getString("sdkBehaviorSettings"));
         }
 
+        if (_config.has("backoffMechanismDisabled")) {
+            this.config.disableBackoffMechanism();
+        }
+
         // APM ------------------------------------------------
         if (_config.has("trackAppStartTime")) {
             this.config.apm.enableAppStartTimeTracking();
