@@ -45,6 +45,7 @@ class CountlyConfig {
   bool _autoEnrollABOnDownload = false;
   int? _requestDropAgeHours;
   String? _sdkBehaviorSettings;
+  bool _backoffMechanismDisabled = false;
 
   /// instance of CountlyConfigApm
   final CountlyConfigApm _countlyConfigApmInstance = CountlyConfigApm();
@@ -136,6 +137,8 @@ class CountlyConfig {
   int? get requestDropAgeHours => _requestDropAgeHours;
 
   String? get sdkBehaviorSettings => _sdkBehaviorSettings;
+
+  bool get backoffMechanismDisabled => _backoffMechanismDisabled;
 
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
@@ -380,6 +383,14 @@ class CountlyConfig {
   /// This is used to provide the server config in case the server config is not available in the initializion time
   CountlyConfig setSDKBehaviorSettings(String sdkBehaviorSettings) {
     _sdkBehaviorSettings = sdkBehaviorSettings;
+    return this;
+  }
+
+
+  /// Disable the backoff mechanism
+  /// This is used to provide the server config in case the server config is not available in the initializion time
+  CountlyConfig disableBackoffMechanism() {
+    _backoffMechanismDisabled = true;
     return this;
   }
 }
