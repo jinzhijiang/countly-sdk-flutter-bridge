@@ -132,7 +132,7 @@ FlutterMethodChannel *_channel;
             result(recordedEventsJSON);
         });
         
-    } else if ([@"addRequest" isEqualToString:call.method]) {
+    } else if ([@"storeRequest" isEqualToString:call.method]) {
          dispatch_async(dispatch_get_main_queue(), ^{
             NSString *request = [command objectAtIndex:0];
             NSMutableArray*  queuedRequests = [CountlyPersistency.sharedInstance queuedRequests];

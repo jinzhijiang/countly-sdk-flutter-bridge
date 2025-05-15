@@ -27,8 +27,8 @@ Future<List<String>> getEventQueue() async {
 }
 
 /// Add request to native sides
-void addRequest(Map<String, dynamic> request) async {
-  await _channelTest.invokeMethod('addRequest', <String, dynamic>{'data': json.encode([Uri(queryParameters: request).query])});
+void storeRequest(Map<String, dynamic> request) async {
+  await _channelTest.invokeMethod('storeRequest', <String, dynamic>{'data': json.encode([Uri(queryParameters: request).query])});
 }
 
 /// Verify the common request queue parameters
@@ -118,7 +118,7 @@ Future<DeviceIdType> testDeviceIDType(DeviceIdType givenType) async {
 /// Use http://0.0.0.0:8080 as the server url.
 /// You can specify a delay in seconds for the server response.
 /// You can also provide a custom handler for the server response.
-void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, void Function(HttpRequest, HttpResponse)? customHandler}) async {
+void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, Future<void> Function(HttpRequest, HttpResponse)? customHandler}) async {
   var server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
   print('Server running on http://${server.address.address}:${server.port}');
 
@@ -130,7 +130,7 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
     requestArray.add(queryParams);
 
     if (customHandler != null) {
-      customHandler(request, request.response);
+      await customHandler(request, request.response);
     } else {
       // Delay the response if specified
       if (delay > 0) {

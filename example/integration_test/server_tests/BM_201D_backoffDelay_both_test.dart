@@ -13,28 +13,28 @@ void main() {
     CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true).setMaxRequestQueueSize(5);
     await Countly.initWithConfig(config); 
 
-    addRequest({
+    storeRequest({
       "azd": "begin_session",
       "timestamp": "1747083600000",
       "app_key": APP_KEY,
       "device_id": "1234567890",
     });
 
-    addRequest({
+    storeRequest({
       "yuz": "ttf",
       "timestamp": "1747083600000",
       "app_key": APP_KEY,
       "device_id": "1234567890",
     });
 
-    addRequest({
+    storeRequest({
       "hgj": "sss",
       "timestamp": "1747083600000",
       "app_key": APP_KEY,
       "device_id": "1234567890",
     });
 
-    addRequest({
+    storeRequest({
       "ffg": "aaa",
       "timestamp": "1747083600000",
       "app_key": APP_KEY,
