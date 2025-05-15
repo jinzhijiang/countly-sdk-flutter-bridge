@@ -77,3 +77,10 @@ Flow:
 - Call update session, wait 2 secs
 - Call end session
 - Validate that request queue is empty
+
+## BM_203_doubleBackoffScenario
+Server will respond with below delays in a row, we expect one backoff to be occured.
+
+2, 9, 5, 7, 1, 0, 9, 9
+
+Flow:

@@ -1405,6 +1405,15 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
                 countlyStore.addRequest(args.getString(0), true);
                 result.success("storeRequest: success");
+            } else if ("addDirectRequest".equals(call.method)) {
+                JSONObject jsonObject = args.getJSONObject(0);
+                Map<String, String> requestMap = new HashMap<>();
+                for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    requestMap.put(key, jsonObject.get(key).toString());
+                }
+                Countly.sharedInstance().requestQueue().addDirectRequest(requestMap);
+                result.success("addDirectRequest: success");
             } else if ("halt".equals(call.method)) {
                 Countly.sharedInstance().halt();
                 result.success("halt: success");
@@ -1649,7 +1658,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         }
 
         if (_config.has("backoffMechanismDisabled")) {
-            this.config.disableBackoffMechanism();
+            //this.config.disableBackoffMechanism();
         }
 
         // APM ------------------------------------------------

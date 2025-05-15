@@ -117,7 +117,6 @@ FlutterMethodChannel *_channel;
             NSMutableArray*  queuedRequests = [CountlyPersistency.sharedInstance queuedRequests];
             result(queuedRequests);
         });
-        
     } else if ([@"getEventQueue" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSMutableArray*  recordedEvents = [CountlyPersistency.sharedInstance recordedEvents];
@@ -131,16 +130,20 @@ FlutterMethodChannel *_channel;
             }
             result(recordedEventsJSON);
         });
-        
     } else if ([@"storeRequest" isEqualToString:call.method]) {
          dispatch_async(dispatch_get_main_queue(), ^{
             NSString *request = [command objectAtIndex:0];
             NSMutableArray*  queuedRequests = [CountlyPersistency.sharedInstance queuedRequests];
             [queuedRequests addObject:request];
             [CountlyPersistency.sharedInstance saveToFile];
+            result(@"stored request");
+        });
+    } else if ([@"addDirectRequest" isEqualToString:call.method]) {
+         dispatch_async(dispatch_get_main_queue(), ^{
+            NSMutableDictionary *requestMap = [command objectAtIndex:0];
+            [Countly.sharedInstance addDirectRequest:requestMap];
             result(@"added request to queue");
         });
-        
     } else if ([@"recordEvent" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
           NSString *key = [command objectAtIndex:0];
