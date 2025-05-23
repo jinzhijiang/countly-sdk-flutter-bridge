@@ -2214,6 +2214,11 @@ class Countly {
         countlyConfig['sdkBehaviorSettings'] = config.sdkBehaviorSettings;
       }
 
+      if (config.sdkBehaviorSettingsDisabled) {
+        log('"_configToJson", value provided for sdkBehaviorSettingsDisabled: [${config.sdkBehaviorSettingsDisabled}]', logLevel: LogLevel.INFO);
+        countlyConfig['sdkBehaviorSettingsDisabled'] = config.sdkBehaviorSettingsDisabled;
+      }
+
       /// Experimental ---------------------------
       if (config.experimental.visibilityTracking) {
         log('"_configToJson", value provided for visibilityTracking: [${config.experimental.visibilityTracking}]', logLevel: LogLevel.INFO);
