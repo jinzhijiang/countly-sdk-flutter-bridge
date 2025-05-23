@@ -1650,6 +1650,10 @@ FlutterMethodChannel *_channel;
             config.sdkBehaviorSettings = sdkBehaviorSettings;
         }
 
+        if (_config[@"sdkBehaviorSettingsDisabled"]) {
+            config.disableSDKBehaviorSettings = YES;
+        }
+
         // Internal Limits ---------------------
         NSNumber *maxKeyLength = _config[@"maxKeyLength"];
         if (maxKeyLength) {
