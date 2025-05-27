@@ -4,11 +4,11 @@ All automatic calls are disabled to validate internal request triggering.
 
 ## BM_200_timeoutDelay
 Respond from the mock server with a timeout which will give timeout exception.
-Our current timeout is 10 seconds, providing 10 would be timed out the requests
+Our current timeout is 30 seconds, providing 30 would be timed out the requests
 
 Flow:
 - Call begin session
-- wait for 30 seconds 
+- wait for 90 seconds 
 - validate that begin session request is still there
 
 ## BM_201A_backoffDelay
@@ -16,7 +16,7 @@ Respond from the mock server with a timeout which will trigger backoff mechanism
 there are requests less then %10 of max request queue
 
 Config:
-delay is 9 seconds
+delay is 11 seconds
 
 Flow:
 - Call begin session, wait 2 secs
@@ -29,7 +29,7 @@ Respond from the mock server with a timeout which will trigger backoff mechanism
 there are requests greater then %10 of max request queue
 
 Config:
-delay is 9 seconds
+delay is 11 seconds
 max request queue size is 5
 
 Flow:
@@ -43,7 +43,7 @@ Respond from the mock server with a timeout which will trigger backoff mechanism
 there are requests less then %10 of max request queue
 
 Config:
-delay is 9 seconds
+delay is 11 seconds
 queue has couple of requests that is older then 12 hours
 
 Flow:
@@ -55,7 +55,7 @@ Respond from the mock server with a timeout which will trigger backoff mechanism
 there are requests greater then %10 of max request queue
 
 Config:
-delay is 9 seconds
+delay is 11 seconds
 max request queue size is 5
 queue has couple of requests that is older then 12 hours
 

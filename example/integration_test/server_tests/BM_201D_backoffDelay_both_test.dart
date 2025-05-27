@@ -7,7 +7,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('BM_201D_backoffDelay_both', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, delay: 9);
+    createServer(requestArray, delay: 11);
   
     // Initialize the SDK
     CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true).setMaxRequestQueueSize(5);
@@ -53,7 +53,7 @@ void main() {
     var i = 0;
     printQueues(requestList, eventList);
     while (requestList.isNotEmpty) {
-      await Future.delayed(const Duration(seconds: 9));
+      await Future.delayed(const Duration(seconds: 11));
       requestList = await getRequestQueue(); // List of strings
       i++;
       if(i >= 6) { // why 6 lifetime? because of the health check and server config requests

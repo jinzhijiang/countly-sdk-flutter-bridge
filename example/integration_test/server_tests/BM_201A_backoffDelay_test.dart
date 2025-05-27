@@ -7,7 +7,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('BM_201A_backoffDelay', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, delay: 9);
+    createServer(requestArray, delay: 11);
     // Initialize the SDK
     CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config); // generates 0.begin_session
@@ -39,7 +39,7 @@ void main() {
     }
 
 
-    expect(requestList.length, 2);
+    expect(requestList.length, 11);
     // 0 is the orientation
     expect(requestList[1], contains("end_session"));
     expect(true, i >= 2);
