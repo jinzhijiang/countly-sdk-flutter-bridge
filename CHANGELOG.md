@@ -1,5 +1,5 @@
 ## XX.XX.XX
-* Added a config method to disable server config in the initialization "disableSDKBehaviorSettings()".
+* Added a config method to disable server config in the initialization "disableSDKBehaviorSettingsUpdates()".
 
 ## 25.4.0
 * ! Minor breaking change ! Removed Secure.ANDROID_ID on Android and UIDevice.currentDevice.identifierForVendor on iOS usages in device ID generation. The SDKs now exclusively uses random UUIDs for device ID generation.

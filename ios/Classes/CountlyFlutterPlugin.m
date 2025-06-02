@@ -1650,8 +1650,8 @@ FlutterMethodChannel *_channel;
             config.sdkBehaviorSettings = sdkBehaviorSettings;
         }
 
-        if (_config[@"sdkBehaviorSettingsDisabled"]) {
-            config.disableSDKBehaviorSettings = YES;
+        if (_config[@"sdkBehaviorSettingsUpdatesDisabled"]) {
+            config.disableSDKBehaviorSettingsUpdates = YES;
         }
 
         // Internal Limits ---------------------

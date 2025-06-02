@@ -614,7 +614,7 @@ class CountlyFlutterPlugin {
     }
 
     configMap['behavior_settings'] = config['sdkBehaviorSettings'];
-    configMap['disable_behavior_settings'] = config['sdkBehaviorSettingsDisabled'];
+    configMap['disable_behavior_settings_updates'] = config['sdkBehaviorSettingsUpdatesDisabled'];
 
     configMap.removeWhere((key, value) => value == null);
 

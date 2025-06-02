@@ -2214,9 +2214,9 @@ class Countly {
         countlyConfig['sdkBehaviorSettings'] = config.sdkBehaviorSettings;
       }
 
-      if (config.sdkBehaviorSettingsDisabled) {
-        log('"_configToJson", value provided for sdkBehaviorSettingsDisabled: [${config.sdkBehaviorSettingsDisabled}]', logLevel: LogLevel.INFO);
-        countlyConfig['sdkBehaviorSettingsDisabled'] = config.sdkBehaviorSettingsDisabled;
+      if (config.sdkBehaviorSettingsUpdatesDisabled) {
+        log('"_configToJson", value provided for sdkBehaviorSettingsUpdatesDisabled: [${config.sdkBehaviorSettingsUpdatesDisabled}]', logLevel: LogLevel.INFO);
+        countlyConfig['sdkBehaviorSettingsUpdatesDisabled'] = config.sdkBehaviorSettingsUpdatesDisabled;
       }
 
       /// Experimental ---------------------------

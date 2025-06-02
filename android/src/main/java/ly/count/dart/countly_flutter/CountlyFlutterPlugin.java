@@ -1644,8 +1644,8 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.setSDKBehaviorSettings(_config.getString("sdkBehaviorSettings"));
         }
 
-        if (_config.has("sdkBehaviorSettingsDisabled")) {
-            this.config.disableSDKBehaviorSettings();
+        if (_config.has("sdkBehaviorSettingsUpdatesDisabled")) {
+            this.config.disableSDKBehaviorSettingsUpdates();
         }
 
         // APM ------------------------------------------------

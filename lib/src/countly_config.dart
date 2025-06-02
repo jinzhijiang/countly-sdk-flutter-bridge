@@ -45,7 +45,7 @@ class CountlyConfig {
   bool _autoEnrollABOnDownload = false;
   int? _requestDropAgeHours;
   String? _sdkBehaviorSettings;
-  bool _sdkBehaviorSettingsDisabled = false;
+  bool _sdkBehaviorSettingsUpdatesDisabled = false;
 
   /// instance of CountlyConfigApm
   final CountlyConfigApm _countlyConfigApmInstance = CountlyConfigApm();
@@ -138,7 +138,7 @@ class CountlyConfig {
 
   String? get sdkBehaviorSettings => _sdkBehaviorSettings;
   
-  bool get sdkBehaviorSettingsDisabled => _sdkBehaviorSettingsDisabled;
+  bool get sdkBehaviorSettingsUpdatesDisabled => _sdkBehaviorSettingsUpdatesDisabled;
   
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
@@ -386,9 +386,9 @@ class CountlyConfig {
     return this;
   }
 
-  /// Disable the server config
-  CountlyConfig disableSDKBehaviorSettings() {
-    _sdkBehaviorSettingsDisabled = true;
+  /// Disable the server config updates to the server
+  CountlyConfig disableSDKBehaviorSettingsUpdates() {
+    _sdkBehaviorSettingsUpdatesDisabled = true;
     return this;
   }
 }
