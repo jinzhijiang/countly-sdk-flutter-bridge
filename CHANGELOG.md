@@ -1,7 +1,9 @@
 ## XX.XX.XX
-* Improved request queue handling, added a backoff mechanism to the SDK to better handle cases where the server responds slowly, enabled by default.
-* Added a config method to disable backoff mechanism "disableBackoffMechanism()"
-* Added a config method to disable server config in the initialization "disableSDKBehaviorSettingsUpdates()".
+* Added fullscreen support for feedback widgets.
+* Added disableSDKBehaviorSettingsUpdates() init config method to disable server config updates.
+* Improved request queue handling with a built-in backoff mechanism which is enabled by default.
+* Added disableBackoffMechanism() init config method to disable backoff behavior.
+* Added support for SDK health checks after initialization
 
 * Mitigated an issue when an install referrer triggered.
 
