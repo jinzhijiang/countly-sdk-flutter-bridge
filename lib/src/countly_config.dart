@@ -392,6 +392,8 @@ class CountlyConfig {
   /// Disable the backoff mechanism
   CountlyConfig disableBackoffMechanism() {
     _backoffMechanismDisabled = true;
+    return this;
+  }
 
   /// Disable the server config updates to the server
   CountlyConfig disableSDKBehaviorSettingsUpdates() {
