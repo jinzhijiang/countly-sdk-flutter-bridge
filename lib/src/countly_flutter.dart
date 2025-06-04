@@ -2219,6 +2219,11 @@ class Countly {
         countlyConfig['backoffMechanismDisabled'] = config.backoffMechanismDisabled;
       }
 
+      if (config.sdkBehaviorSettingsUpdatesDisabled) {
+        log('"_configToJson", value provided for sdkBehaviorSettingsUpdatesDisabled: [${config.sdkBehaviorSettingsUpdatesDisabled}]', logLevel: LogLevel.INFO);
+        countlyConfig['sdkBehaviorSettingsUpdatesDisabled'] = config.sdkBehaviorSettingsUpdatesDisabled;
+      }
+
       /// Experimental ---------------------------
       if (config.experimental.visibilityTracking) {
         log('"_configToJson", value provided for visibilityTracking: [${config.experimental.visibilityTracking}]', logLevel: LogLevel.INFO);
