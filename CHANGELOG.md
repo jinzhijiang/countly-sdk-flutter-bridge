@@ -1,4 +1,5 @@
 ## XX.XX.XX
+* Mitigated an issue when an install referrer triggered.
 * Added a config method to disable server config in the initialization "disableSDKBehaviorSettingsUpdates()".
 
 ## 25.4.0
