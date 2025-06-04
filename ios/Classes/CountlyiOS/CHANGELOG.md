@@ -1,3 +1,13 @@
+## XX.XX.XX
+* Added fullscreen support for feedback widgets.
+* Added "disableSDKBehaviorSettingsUpdates()" init config method to disable server config updates.
+* Improved request queue handling with a built-in backoff mechanism which is enabled by default.
+* Added "disableBackoffMechanism()" init config method to disable backoff behavior.
+* Added support for SDK health checks after initialization
+
+## 25.4.1
+* Mitigated an issue that could occur while serializing events to improve stability, performance and memory usage.
+
 ## 25.4.0
 * ! Minor breaking change ! Removed UIDevice.currentDevice.identifierForVendor usage in device id generation. The SDK now exclusively uses random UUIDs for device id generation.
 * ! Minor breaking change ! Server Configuration is now enabled by default. Changes made on SDK Manager > SDK Configuration on your server will affect SDK behavior directly.
