@@ -15,6 +15,7 @@ extern NSString* const kCountlySCKeySC;
 - (void)fetchServerConfig:(CountlyConfig *)config;
 - (void)retrieveServerConfigFromStorage:(NSString*) sdkBehaviorSettings;
 - (void)fetchServerConfigIfTimeIsUp;
+- (void)disableSDKBehaviourSettings;
 
 - (BOOL)trackingEnabled;
 - (BOOL)networkingEnabled;
@@ -39,5 +40,9 @@ extern NSString* const kCountlySCKeySC;
 - (BOOL)locationTrackingEnabled;
 - (BOOL)refreshContentZoneEnabled;
 - (BOOL)backoffMechanism;
+- (NSInteger)bomAcceptedTimeoutSeconds;
+- (double)bomRQPercentage;
+- (NSInteger)bomRequestAge;
+- (NSInteger)bomDuration;
 @end
 
