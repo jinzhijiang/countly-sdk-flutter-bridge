@@ -1,11 +1,14 @@
-## XX.XX.XX
+## 25.4.1
 * Added fullscreen support for feedback widgets.
 * Added "disableSDKBehaviorSettingsUpdates()" init config method to disable server config updates.
 * Improved request queue handling with a built-in backoff mechanism which is enabled by default.
 * Added "disableBackoffMechanism()" init config method to disable backoff behavior.
-* Added support for SDK health checks after initialization
+* Added support for SDK health checks after initialization for iOS.
 
 * Mitigated an issue when an install referrer triggered.
+
+* Updated underlying Android SDK version to 25.4.1
+* Updated underlying iOS SDK version to 25.4.2
 
 ## 25.4.0
 * ! Minor breaking change ! Removed Secure.ANDROID_ID on Android and UIDevice.currentDevice.identifierForVendor on iOS usages in device ID generation. The SDKs now exclusively uses random UUIDs for device ID generation.
