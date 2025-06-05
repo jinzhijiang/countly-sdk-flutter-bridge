@@ -3,45 +3,78 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import '../utils.dart';
+
+Future<void> verifyQueuesAfterDelay({
+  required int expectedRequestCount,
+  required List<String> expectedRequestContains,
+  required int expectedEventCount,
+  int delaySeconds = 30,
+}) async {
+  await Future.delayed(Duration(seconds: delaySeconds));
+
+  final requestList = await getRequestQueue();
+  final eventList = await getEventQueue();
+  printQueues(requestList, eventList);
+
+  expect(requestList.length, expectedRequestCount);
+  for (int i = 0; i < expectedRequestContains.length; i++) {
+    expect(requestList[i], contains(expectedRequestContains[i]));
+  }
+  expect(eventList.length, expectedEventCount);
+}
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   testWidgets('BM_201A_backoffDelay', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
     createServer(requestArray, delay: 11);
+
     // Initialize the SDK
     CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config); // generates 0.begin_session
 
+    // Perform session operations
     Countly.instance.sessions.beginSession(); // this should be sent to the server
     await Future.delayed(const Duration(seconds: 2));
-    Countly.instance.sessions.updateSession(); // this should be sent to the server
+    Countly.instance.sessions.updateSession(); // this should back off
     await Future.delayed(const Duration(seconds: 2));
-    Countly.instance.sessions.endSession(); // this should be backed off
+    Countly.instance.sessions.endSession(); // this should be still backed off
 
-    // Get request and event queues from native side
-    List<String> requestList = await getRequestQueue(); // List of strings
-    List<String> eventList = await getEventQueue(); // List of json objects
+    // Get initial request and event queues from native side
+    await getRequestQueue();
+    await getEventQueue();
 
-    // Some logs for debugging
-    // wait until request times out, the begin session should be in the request queue
-    // and never able to sent to the server
-    var i = 0;
-    printQueues(requestList, eventList);
-    while (requestList.isNotEmpty) {
-      await Future.delayed(const Duration(seconds: 9));
-      requestList = await getRequestQueue(); // List of strings
-      i++;
-      if(i >= 2) {
-        // if we wait for 2 times, the request should be in the request queue
-        // and never able to sent to the server, then we can break, test is done
-        break;
-      }
-    }
+    // begin session sent. backed off, 30 seconds later nothing sent
+    await verifyQueuesAfterDelay(
+      expectedRequestCount: 3,
+      expectedRequestContains: ['session_duration', 'events', 'end_session'],
+      expectedEventCount: 0,
+    );
 
+    // 30 more seconds later, still nothing sent
+    await verifyQueuesAfterDelay(
+      expectedRequestCount: 3,
+      expectedRequestContains: ['session_duration', 'events', 'end_session'],
+      expectedEventCount: 0,
+    );
 
-    expect(requestList.length, 11);
-    // 0 is the orientation
-    expect(requestList[1], contains("end_session"));
-    expect(true, i >= 2);
+    // session update sent, backed off, 30 seconds later nothing sent
+    await verifyQueuesAfterDelay(
+      expectedRequestCount: 2,
+      expectedRequestContains: ['events', 'end_session'],
+      expectedEventCount: 0,
+    );
+
+    changeServerDelay(0);
+
+    // 60 seconds later, after non delayed responses everything sent
+    await verifyQueuesAfterDelay(
+      expectedRequestCount: 0,
+      expectedRequestContains: [],
+      expectedEventCount: 0,
+      delaySeconds: 60,
+    );
+
   });
 }

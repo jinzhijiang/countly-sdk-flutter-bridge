@@ -13,30 +13,32 @@ void main() {
     await Countly.initWithConfig(config); // generates 0.begin_session
 
     Countly.instance.sessions.beginSession();
+    await Future.delayed(const Duration(seconds: 5));
 
     // Get request and event queues from native side
     List<String> requestList = await getRequestQueue(); // List of strings
     List<String> eventList = await getEventQueue(); // List of json objects
+    expect(requestList.isNotEmpty, true);
+    expect(requestList.length, 1);
+    expect(eventList.isNotEmpty, true);
+    expect(eventList.length, 1);
 
-    // Some logs for debugging
-    // wait until request times out, the begin session should be in the request queue
-    // and never able to sent to the server
-    var i = 0;
-    printQueues(requestList, eventList);
-    while (requestList.isNotEmpty) {
-      await Future.delayed(const Duration(seconds: 30));
-      requestList = await getRequestQueue(); // List of strings
-      i++;
-      if(i >= 2) {
-        // if we wait for 2 times, the request should be in the request queue
-        // and never able to sent to the server, then we can break, test is done
-        break;
-      }
-    }
+    // check the queues are not empty
+    await Future.delayed(const Duration(seconds: 90));
+    print(requestArray);
+    requestList = await getRequestQueue(); // List of strings
+    eventList = await getEventQueue(); // List of json objects
 
-
-    expect(1, requestList.length);
+    expect(requestList.length, 2);
+    expect(eventList.isEmpty, true);
     expect(requestList[0], contains("begin_session"));
-    expect(true, i >= 2);
+
+    // request array should contain 5 requests: 2 sc, hc and 2 begin_session
+    expect(requestArray.length, 5);
+    expect(requestArray[0]['method'], contains("sc"));
+    expect(requestArray[1]['begin_session'], ['1']);
+    expect(requestArray[2]['hc'], isNotNull);
+    expect(requestArray[3]['begin_session'], ['1']);
+    expect(requestArray[4]['method'], contains("sc"));
   });
 }
