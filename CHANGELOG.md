@@ -3,7 +3,7 @@
 * Added "disableSDKBehaviorSettingsUpdates()" init config method to disable server config updates.
 * Improved request queue handling with a built-in backoff mechanism which is enabled by default.
 * Added "disableBackoffMechanism()" init config method to disable backoff behavior.
-* Added support for SDK health checks after initialization
+* Added support for SDK health checks after initialization for iOS.
 
 * Mitigated an issue when an install referrer triggered.
 
