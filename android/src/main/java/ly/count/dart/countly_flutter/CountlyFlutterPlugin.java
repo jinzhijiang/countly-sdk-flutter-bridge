@@ -334,7 +334,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().deviceId().enableTemporaryIdMode();
                 result.success("enableTemporaryIDMode success");
             } // END DEVICE ID METHODS
-
+            else if ("attemptToSendStoredRequests".equals(call.method)) {
+                Countly.sharedInstance().requestQueue().attemptToSendStoredRequests();
+                result.success("attemptToSendStoredRequests success!");
+            }
             else if ("setHttpPostForced".equals(call.method)) {
                 boolean isEnabled = args.getBoolean(0);
                 this.config.setHttpPostForced(isEnabled);

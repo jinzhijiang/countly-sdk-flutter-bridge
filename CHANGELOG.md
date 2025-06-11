@@ -3,6 +3,7 @@
 * Added "disableSDKBehaviorSettingsUpdates()" init config method to disable server config updates.
 * Improved request queue handling with a built-in backoff mechanism which is enabled by default.
 * Added "disableBackoffMechanism()" init config method to disable backoff behavior.
+* Added "attemptToSendStoredRequests()" method for events that needs quick sending.
 * Added support for SDK health checks after initialization
 
 * Mitigated an issue when an install referrer triggered.

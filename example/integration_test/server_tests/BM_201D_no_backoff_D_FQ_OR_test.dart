@@ -5,12 +5,11 @@ import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('BM_201C_backoffDelay_oldRequests', (WidgetTester tester) async {
+  testWidgets('BM_201D_backoffDelay_both', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, delay: 11);
   
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true).setMaxRequestQueueSize(5);
     await Countly.initWithConfig(config); 
 
     storeRequest({
@@ -46,26 +45,16 @@ void main() {
     // Get request and event queues from native side
     List<String> requestList = await getRequestQueue(); // List of strings
     List<String> eventList = await getEventQueue(); // List of json objects
+    expect(requestList.length, 5);
+    expect(eventList.length, 1);
 
-    // Some logs for debugging
-    // wait until request times out, the begin session should be in the request queue
-    // and never able to sent to the server
-    var i = 0;
-    printQueues(requestList, eventList);
-    while (requestList.isNotEmpty) {
-      await Future.delayed(const Duration(seconds: 11));
-      requestList = await getRequestQueue(); // List of strings
-      i++;
-      if(i >= 5) { // why 5 lifetime? because of the health check and server config requests
-        // wait for requests to be sent
-        break;
-      }
-    }
+    createServer(requestArray, delay: 11);
+    Countly.instance.attemptToSendStoredRequests();
 
-    expect(requestList.length, 1);
-    expect(requestList[0], contains("begin_session"));
-    // why? because last two response is above timeout limits
-    // and we are not able to send only the begin session request
-    // because the others are older than the 12 hours
+    await Future.delayed(const Duration(seconds: 90));
+    requestList = await getRequestQueue();
+    eventList = await getEventQueue();
+    expect(requestList.length, 1); // backed off after session req
+    expect(eventList.length, 0);
   });
 }

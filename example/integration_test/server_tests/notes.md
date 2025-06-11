@@ -2,85 +2,32 @@ Server tests that tries the scenarios of server responses
 
 All automatic calls are disabled to validate internal request triggering.
 
-## BM_200_timeoutDelay
-Respond from the mock server with a timeout which will give timeout exception.
-Our current timeout is 30 seconds, providing 30 would be timed out the requests
+1. check 30 sec timeout works (request are not removed): (200)
+2. check back off works (all conditions met):
+    1. D |    |    : backs off (201A)
+3. check back off not used (for each combination of conditions)
+    2. D | FQ |    : - (201B)
+    6. D |    | OR : - (201C)
+    3. D | FQ | OR : - (201D)
+    5.   | FQ | OR : - (202A)
+    4.   | FQ |    : - (202B)
+    7.   |    | OR : - (202C)
+4. check base server works normally
+    8.   |    |    : - (000)
+ 
+condition combinations (response over 10 secs, queue over %50, request age over 24 hours):
+delay = D
+fullish queue = FQ
+old req = OR
 
-Flow:
-- Call begin session
-- wait for 90 seconds 
-- validate that begin session request is still there
+## Current Tests
 
-## BM_201A_backoffDelay
-Respond from the mock server with a timeout which will trigger backoff mechanism and request are younger than 12 hours and 
-there are requests less then %10 of max request queue
-
-Config:
-delay is 11 seconds
-
-Flow:
-- Call begin session, wait 2 secs
-- Call update session, wait 2 secs
-- Call end session
-- Validate that queue have 2 requests and first one is orientation, second one is end session request
-
-## BM_201B_backoffDelay_requests
-Respond from the mock server with a timeout which will trigger backoff mechanism and request are younger than 12 hours but
-there are requests greater then %10 of max request queue
-
-Config:
-delay is 11 seconds
-max request queue size is 5
-
-Flow:
-- Call begin session, wait 2 secs
-- Call update session, wait 2 secs
-- Call end session
-- Validate that request queue is empty
-
-## BM_201C_backoffDelay_oldRequests
-Respond from the mock server with a timeout which will trigger backoff mechanism and request are older than 12 hours but
-there are requests less then %10 of max request queue
-
-Config:
-delay is 11 seconds
-queue has couple of requests that is older then 12 hours
-
-Flow:
-- Call begin session for triggering RQ
-- Validate that request queue is empty
-
-## BM_201D_backoffDelay_both
-Respond from the mock server with a timeout which will trigger backoff mechanism and request are older than 12 hours and
-there are requests greater then %10 of max request queue
-
-Config:
-delay is 11 seconds
-max request queue size is 5
-queue has couple of requests that is older then 12 hours
-
-Flow:
-- Call begin session for triggering RQ
-- Validate that request queue is empty
-
-## BM_202_normalDelay
-Respond from the mock server with a timeout which will not trigger backoff mechanism and request are older than 12 hours and
-there are requests greater then %10 of max request queue
-
-Config:
-delay is 9 seconds
-max request queue size is 10
-queue has couple of requests that is older then 12 hours
-
-Flow:
-- Call begin session, wait 2 secs
-- Call update session, wait 2 secs
-- Call end session
-- Validate that request queue is empty
-
-## BM_203_doubleBackoffScenario
-Server will respond with below delays in a row, we expect one backoff to be occured.
-
-2, 9, 5, 7, 1, 0, 9, 9
-
-Flow:
+- **BM_000_base_test.dart**: Verifies mock server operation and initial request queue handling.
+- **BM_200_timeout_test.dart**: Ensures session request and events persist after 30-second server timeout.
+- **BM_201A_backoff_D_test.dart**: Verifies backoff is applied when all backoff conditions are met (delay = 11s).
+- **BM_201B_no_backoff_D_FQ_test.dart**: Checks backoff is skipped when queue is 50% or more full even if other conditions are satisfied.
+- **BM_201C_no_backoff_D_OR_test.dart**: Ensures backoff is skipped if requests are older than 24 hours.
+- **BM_201D_no_backoff_D_FQ_OR_test.dart**: Validates correct backoff behavior with a mix of old requests and fullish queue.
+- **BM_202A_no_backoff_FQ_OR_test.dart**: Checks backoff is skipped when without a delay and FQ and OR.
+- **BM_202B_no_backoff_FQ_test.dart**: Checks backoff is skipped when without a delay and FQ.
+- **BM_202C_no_backoff_OR_test.dart**: Checks backoff is skipped when without a delay and OR.

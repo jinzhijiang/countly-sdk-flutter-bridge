@@ -1681,6 +1681,17 @@ class Countly {
     return result;
   }
 
+  /// Attempt to send all stored requests to the server.  
+  Future<void> attemptToSendStoredRequests() async {
+    if (!_instance._countlyState.isInitialized) {
+      String message = '"initWithConfig" must be called before "attemptToSendStoredRequests"';
+      log('attemptToSendStoredRequests, $message', logLevel: LogLevel.ERROR);
+      return;
+    }
+    log('Calling "attemptToSendStoredRequests"');
+    await _channel.invokeMethod('attemptToSendStoredRequests');
+  }
+
   /// starts a timed event
   /// returns error or success message
   @Deprecated('This function is deprecated, please use "startEvent" of events instead')

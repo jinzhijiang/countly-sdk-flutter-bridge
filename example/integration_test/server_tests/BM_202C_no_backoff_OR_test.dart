@@ -5,12 +5,11 @@ import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('BM_201D_backoffDelay_both', (WidgetTester tester) async {
+  testWidgets('BM_202C_normalDelay', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, delay: 11);
   
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true).setMaxRequestQueueSize(5);
+    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config); 
 
     storeRequest({
@@ -41,27 +40,22 @@ void main() {
       "device_id": "1234567890",
     });
 
-    Countly.instance.sessions.beginSession();
+    Countly.instance.sessions.beginSession(); 
+    Countly.instance.sessions.updateSession(); 
+    Countly.instance.sessions.endSession(); 
+    await Future.delayed(const Duration(seconds: 10));
 
-    // Get request and event queues from native side
     List<String> requestList = await getRequestQueue(); // List of strings
     List<String> eventList = await getEventQueue(); // List of json objects
+    expect(requestList.length, 7);
+    expect(eventList.length, 0);
 
-    // Some logs for debugging
-    // wait until request times out, the begin session should be in the request queue
-    // and never able to sent to the server
-    var i = 0;
-    printQueues(requestList, eventList);
-    while (requestList.isNotEmpty) {
-      await Future.delayed(const Duration(seconds: 11));
-      requestList = await getRequestQueue(); // List of strings
-      i++;
-      if(i >= 6) { // why 6 lifetime? because of the health check and server config requests
-        // wait for requests to be sent
-        break;
-      }
-    }
-
-    expect(requestList.length, 0);
+    createServer(requestArray, delay: 1);
+    Countly.instance.attemptToSendStoredRequests();
+    await Future.delayed(const Duration(seconds: 20));
+    requestList = await getRequestQueue(); // List of strings
+    eventList = await getEventQueue(); // List of json objects
+    expect(requestList.length, 0); // 3 requests sent
+    expect(eventList.length, 0); // no events sent
   });
 }
