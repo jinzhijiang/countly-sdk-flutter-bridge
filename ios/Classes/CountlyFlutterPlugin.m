@@ -1385,6 +1385,11 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance.content refreshContentZone];
             result(nil);
         });
+    } else if ([@"attemptToSendStoredRequests" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Countly.sharedInstance attemptToSendStoredRequests];
+        });
+        result(@"attemptToSendStoredRequests: success");
     }  else {
         result(FlutterMethodNotImplemented);
     }

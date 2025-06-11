@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import '../utils.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('BM_000_base', (WidgetTester tester) async {
@@ -22,13 +23,14 @@ void main() {
     printQueues(requestList, eventList);
     expect(requestList.isNotEmpty, true);
     expect(eventList.isNotEmpty, true);
+    Countly.instance.attemptToSendStoredRequests();
 
     // check queues are empty
-    await Future.delayed(const Duration(seconds: 90));
+    await Future.delayed(const Duration(seconds: 10));
     requestList = await getRequestQueue();
     eventList = await getEventQueue();
     printQueues(requestList, eventList);
     expect(requestList.isEmpty, true);
-    expect(eventList.isEmpty, true);    
+    expect(eventList.isEmpty, true);
   });
 }
