@@ -5,6 +5,7 @@
 // Please visit www.count.ly for more information.
 
 #import "CountlyCommon.h"
+#import <stdatomic.h>
 
 @interface CountlyConnectionManager ()
 {
@@ -16,6 +17,8 @@
 @property (nonatomic) NSURLSession* URLSession;
 
 @property (nonatomic, strong) NSDate *startTime;
+@property (nonatomic, assign) atomic_bool backoff;
+
 
 @end
 
@@ -102,6 +105,7 @@ static dispatch_once_t onceToken;
     {
         unsentSessionLength = 0.0;
         isSessionStarted = NO;
+        atomic_init(&_backoff, NO);
     }
 
     return self;
@@ -177,6 +181,12 @@ static dispatch_once_t onceToken;
         return;
     }
     
+    BOOL backoffFlag = atomic_load(&_backoff) ? YES : NO;
+    if (backoffFlag) {
+        CLY_LOG_I(@"%s, currently backed off, skipping proceeding the queue", __FUNCTION__);
+        return;
+    }
+    
     if (!self.startTime) {
         self.startTime = [NSDate date]; // Record start time only when it's not already recorded
         CLY_LOG_D(@"Proceeding on queue started, queued request count %lu", [CountlyPersistency.sharedInstance remainingRequestCount]);
@@ -213,6 +223,8 @@ static dispatch_once_t onceToken;
         return;
     }
 
+    _URLSessionConfiguration.timeoutIntervalForRequest = CONNECTION_TIMEOUT;
+    _URLSessionConfiguration.timeoutIntervalForResource = CONNECTION_TIMEOUT;
     NSString* queryString = firstItemInQueue;
     NSString* endPoint = kCountlyEndpointI;
     
@@ -272,11 +284,12 @@ static dispatch_once_t onceToken;
     }
 
     request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-
+    NSDate *startTimeRequest = [NSDate date];
     self.connection = [self.URLSession dataTaskWithRequest:request completionHandler:^(NSData * data, NSURLResponse * response, NSError * error)
     {
         self.connection = nil;
-
+        NSDate *endTimeRequest = [NSDate date];
+        long duration = (long)[endTimeRequest timeIntervalSinceDate:startTimeRequest];
         
         CLY_LOG_V(@"Approximate received data size for request <%p> is %ld bytes.", (id)request, (long)data.length);
         
@@ -295,8 +308,15 @@ static dispatch_once_t onceToken;
                 [CountlyPersistency.sharedInstance removeFromQueue:firstItemInQueue];
 
                 [CountlyPersistency.sharedInstance saveToFile];
+                
+                if(CountlyServerConfig.sharedInstance.backoffMechanism && [self backoff:duration queryString:queryString]){
+                    CLY_LOG_D(@"%s, backed off dropping proceeding the queue", __FUNCTION__);
+                    self.startTime = nil;
+                    [self backoffCountdown];
+                } else {
+                    [self proceedOnQueue];
 
-                [self proceedOnQueue];
+                }
             }
             else
             {
