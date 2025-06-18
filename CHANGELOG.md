@@ -5,11 +5,13 @@
 * Added "disableBackoffMechanism()" init config method to disable backoff behavior.
 * Added "attemptToSendStoredRequests()" method for events that needs quick sending.
 * Added support for SDK health checks after initialization for iOS.
+* Added timezone support for Web.
 
 * Mitigated an issue when an install referrer triggered.
 
 * Updated underlying Android SDK version to 25.4.1
 * Updated underlying iOS SDK version to 25.4.2
+* Updated underlying Web SDK version to 25.4.1
 
 ## 25.4.0
 * ! Minor breaking change ! Removed Secure.ANDROID_ID on Android and UIDevice.currentDevice.identifierForVendor on iOS usages in device ID generation. The SDKs now exclusively uses random UUIDs for device ID generation.
