@@ -580,6 +580,8 @@ class CountlyFlutterPlugin {
       'force_post': config['httpPostForced'] ?? false,
       'require_consent': config['shouldRequireConsent'],
       'salt': config['tamperingProtectionSalt'],
+      'disable_sdk_behavior_settings_updates': config['sdkBehaviorSettingsUpdatesDisabled'] ?? false,
+      'disable_backoff_mechanism': config['backoffMechanismDisabled'] ?? false,
     };
 
     var deviceID = config['deviceID'];
