@@ -26,6 +26,15 @@ Future<List<String>> getEventQueue() async {
   return eq.cast<String>();
 }
 
+/// Add request to native sides
+void storeRequest(Map<String, dynamic> request) async {
+  await _channelTest.invokeMethod('storeRequest', <String, dynamic>{'data': json.encode([Uri(queryParameters: request).query])});
+}
+
+void addDirectRequest(Map<String, String> request) async {
+  await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{'data': json.encode([request])});
+}
+
 /// Verify the common request queue parameters
 void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);
@@ -109,24 +118,54 @@ Future<DeviceIdType> testDeviceIDType(DeviceIdType givenType) async {
   return type!;
 }
 
-/// Start a server to receive the requests from the SDK and store them in a provided List
-/// Use http://0.0.0.0:8080 as the server url
-void createServer(List requestArray) async {
-  // Start a server to receive the requests from the SDK
+var _serverDelay = 0;
+
+/// Start a server to receive the requests from the SDK and store them in a provided List.
+/// Use http://0.0.0.0:8080 as the server url.
+/// You can specify a delay in seconds for the server response.
+/// You can also provide a custom handler for the server response.
+void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, Future<void> Function(HttpRequest, HttpResponse)? customHandler}) async {
   var server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
-  server.listen((HttpRequest request) {
-    print(request.uri.queryParametersAll.toString());
+  print('[Test Server]Server running on http://${server.address.address}:${server.port}');
+  _serverDelay = delay;
+  server.listen((HttpRequest request) async {
+    final requestTime = DateTime.now();
+    print('[Test Server][${requestTime.toIso8601String()}] Request received: ${request.method} ${request.uri}');
+
+    final queryParams = request.uri.queryParametersAll;
+    print(queryParams.toString());
 
     // Store the request parameters for later verification
-    requestArray.add(request.uri.queryParametersAll);
+    requestArray.add(queryParams);
 
-    // Send a response
-    request.response.statusCode = HttpStatus.ok;
-    request.response.headers.contentType = ContentType.json;
-    request.response.headers.set('Access-Control-Allow-Origin', '*');
-    request.response.write(jsonEncode({'result': 'Success'}));
-    request.response.close();
+    if (customHandler != null) {
+      await customHandler(request, request.response);
+    } else {
+      if (_serverDelay > 0) {
+        print('[Test Server][${DateTime.now().toIso8601String()}] Applying delay of ${_serverDelay} seconds');
+        await Future.delayed(Duration(seconds: _serverDelay));
+      }
+      // Default response
+      request.response
+        ..statusCode = HttpStatus.ok
+        ..headers.contentType = ContentType.json
+        ..headers.set('Access-Control-Allow-Origin', '*')
+        ..write(jsonEncode({'result': 'Success'}));
+    }
+
+    // Log when response is sent
+    final responseTime = DateTime.now();
+    final totalDuration = responseTime.difference(requestTime);
+    print('[Test Server][${responseTime.toIso8601String()}] Response sent with status ${request.response.statusCode}');
+    print('[Test Server]Total processing time: ${totalDuration.inMilliseconds}ms (delay: ${_serverDelay}s)');
+
+    await request.response.close();
   });
+}
+
+void changeServerDelay(int delay) {
+  _serverDelay = delay;
+  print('[Test Server]Server delay changed to $_serverDelay seconds');
 }
 
 /// halts the sdk

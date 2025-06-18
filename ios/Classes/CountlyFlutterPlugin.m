@@ -117,7 +117,6 @@ FlutterMethodChannel *_channel;
             NSMutableArray*  queuedRequests = [CountlyPersistency.sharedInstance queuedRequests];
             result(queuedRequests);
         });
-        
     } else if ([@"getEventQueue" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSMutableArray*  recordedEvents = [CountlyPersistency.sharedInstance recordedEvents];
@@ -131,8 +130,21 @@ FlutterMethodChannel *_channel;
             }
             result(recordedEventsJSON);
         });
-        
-    }  else if ([@"recordEvent" isEqualToString:call.method]) {
+    } else if ([@"storeRequest" isEqualToString:call.method]) {
+         dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *request = [command objectAtIndex:0];
+            NSMutableArray*  queuedRequests = [CountlyPersistency.sharedInstance queuedRequests];
+            [queuedRequests addObject:request];
+            [CountlyPersistency.sharedInstance saveToFile];
+            result(@"stored request");
+        });
+    } else if ([@"addDirectRequest" isEqualToString:call.method]) {
+         dispatch_async(dispatch_get_main_queue(), ^{
+            NSMutableDictionary *requestMap = [command objectAtIndex:0];
+            [Countly.sharedInstance addDirectRequest:requestMap];
+            result(@"added request to queue");
+        });
+    } else if ([@"recordEvent" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
           NSString *key = [command objectAtIndex:0];
           NSString *countString = [command objectAtIndex:1];
@@ -750,17 +762,7 @@ FlutterMethodChannel *_channel;
           [Countly.sharedInstance giveAllConsents];
           result(@"giveAllConsent!");
         });
-    } else if ([@"getRequestQueue" isEqualToString:call.method]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-          // TODO: implement
-          result(@"RQ");
-        });
-    } else if ([@"getEventQueue" isEqualToString:call.method]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-          // TODO: implement
-          result(@"EQ");
-        });
-    }  else if ([@"removeAllConsent" isEqualToString:call.method]) {
+    } else if ([@"removeAllConsent" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
           [Countly.sharedInstance cancelConsentForAllFeatures];
           result(@"removeAllConsent!");
@@ -1383,6 +1385,11 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance.content refreshContentZone];
             result(nil);
         });
+    } else if ([@"attemptToSendStoredRequests" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Countly.sharedInstance attemptToSendStoredRequests];
+        });
+        result(@"attemptToSendStoredRequests: success");
     }  else {
         result(FlutterMethodNotImplemented);
     }
@@ -1648,6 +1655,11 @@ FlutterMethodChannel *_channel;
         NSString *sdkBehaviorSettings = _config[@"sdkBehaviorSettings"];
         if(sdkBehaviorSettings) {
             config.sdkBehaviorSettings = sdkBehaviorSettings;
+        }
+
+        NSNumber *backoffMechanismDisabled = _config[@"backoffMechanismDisabled"];
+        if(backoffMechanismDisabled && [backoffMechanismDisabled boolValue]) {
+            config.disableBackoffMechanism = YES;
         }
 
         if (_config[@"sdkBehaviorSettingsUpdatesDisabled"]) {

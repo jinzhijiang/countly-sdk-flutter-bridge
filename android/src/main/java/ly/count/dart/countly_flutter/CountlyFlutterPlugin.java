@@ -334,7 +334,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().deviceId().enableTemporaryIdMode();
                 result.success("enableTemporaryIDMode success");
             } // END DEVICE ID METHODS
-
+            else if ("attemptToSendStoredRequests".equals(call.method)) {
+                Countly.sharedInstance().requestQueue().attemptToSendStoredRequests();
+                result.success("attemptToSendStoredRequests success!");
+            }
             else if ("setHttpPostForced".equals(call.method)) {
                 boolean isEnabled = args.getBoolean(0);
                 this.config.setHttpPostForced(isEnabled);
@@ -1401,6 +1404,19 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("getEventQueue".equals(call.method)) {
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
                 result.success(Arrays.asList(countlyStore.getEvents()));
+            } else if ("storeRequest".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                countlyStore.addRequest(args.getString(0), true);
+                result.success("storeRequest: success");
+            } else if ("addDirectRequest".equals(call.method)) {
+                JSONObject jsonObject = args.getJSONObject(0);
+                Map<String, String> requestMap = new HashMap<>();
+                for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    requestMap.put(key, jsonObject.get(key).toString());
+                }
+                Countly.sharedInstance().requestQueue().addDirectRequest(requestMap);
+                result.success("addDirectRequest: success");
             } else if ("halt".equals(call.method)) {
                 Countly.sharedInstance().halt();
                 result.success("halt: success");
