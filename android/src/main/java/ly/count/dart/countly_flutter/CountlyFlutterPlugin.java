@@ -62,7 +62,7 @@ import ly.count.android.sdk.messaging.CountlyPush;
  */
 public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, ActivityAware, DefaultLifecycleObserver {
     private static final String TAG = "CountlyFlutterPlugin";
-    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "25.4.0";
+    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "25.4.1";
     private final String COUNTLY_FLUTTER_SDK_NAME = "dart-flutterb-android";
     private final String COUNTLY_FLUTTER_SDK_NAME_NO_PUSH = "dart-flutterbnp-android";
 
@@ -329,7 +329,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().deviceId().enableTemporaryIdMode();
                 result.success("enableTemporaryIDMode success");
             } // END DEVICE ID METHODS
-
+            else if ("attemptToSendStoredRequests".equals(call.method)) {
+                Countly.sharedInstance().requestQueue().attemptToSendStoredRequests();
+                result.success("attemptToSendStoredRequests success!");
+            }
             else if ("setHttpPostForced".equals(call.method)) {
                 boolean isEnabled = args.getBoolean(0);
                 this.config.setHttpPostForced(isEnabled);
@@ -1382,6 +1385,19 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("getEventQueue".equals(call.method)) {
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
                 result.success(Arrays.asList(countlyStore.getEvents()));
+            } else if ("storeRequest".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                countlyStore.addRequest(args.getString(0), true);
+                result.success("storeRequest: success");
+            } else if ("addDirectRequest".equals(call.method)) {
+                JSONObject jsonObject = args.getJSONObject(0);
+                Map<String, String> requestMap = new HashMap<>();
+                for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    requestMap.put(key, jsonObject.get(key).toString());
+                }
+                Countly.sharedInstance().requestQueue().addDirectRequest(requestMap);
+                result.success("addDirectRequest: success");
             } else if ("halt".equals(call.method)) {
                 Countly.sharedInstance().halt();
                 result.success("halt: success");
@@ -1623,6 +1639,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         
         if (_config.has("sdkBehaviorSettings")) {
             this.config.setSDKBehaviorSettings(_config.getString("sdkBehaviorSettings"));
+        }
+
+        if (_config.has("sdkBehaviorSettingsUpdatesDisabled")) {
+            this.config.disableSDKBehaviorSettingsUpdates();
         }
 
         // APM ------------------------------------------------
