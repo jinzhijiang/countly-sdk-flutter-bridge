@@ -20,6 +20,7 @@
 @property (nonatomic) BOOL consentRequired;
 @property (nonatomic) BOOL locationTracking;
 @property (nonatomic) BOOL refreshContentZone;
+@property (nonatomic) BOOL backoffMechanism;
 
 @property (nonatomic) NSInteger limitKeyLength;
 @property (nonatomic) NSInteger limitValueSize;
@@ -63,6 +64,7 @@ NSString *const kRSessionTracking = @"st";
 NSString *const kRViewTracking = @"vt";
 NSString *const kRLocationTracking = @"lt";
 NSString *const kRRefreshContentZone = @"rcz";
+NSString *const kRbackoffMechanism = @"bom";
 
 NSString *const kRLimitKeyLength = @"lkl";
 NSString *const kRLimitValueSize = @"lvs";
@@ -298,6 +300,10 @@ NSString *const kRBOMDuration = @"bom_d";
     if (!_locationTracking && !CountlyLocationManager.sharedInstance.isLocationInfoDisabled)
     {
         [CountlyLocationManager.sharedInstance disableLocationInfo];
+    }
+    
+    if(_backoffMechanism && config.disableBackoffMechanism){
+        _backoffMechanism = NO;
     }
 }
 
