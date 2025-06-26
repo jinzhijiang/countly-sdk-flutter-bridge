@@ -28,15 +28,21 @@ Future<List<String>> getEventQueue() async {
 
 /// Add request to native sides
 void storeRequest(Map<String, dynamic> request) async {
-  await _channelTest.invokeMethod('storeRequest', <String, dynamic>{'data': json.encode([Uri(queryParameters: request).query])});
+  await _channelTest.invokeMethod('storeRequest', <String, dynamic>{
+    'data': json.encode([Uri(queryParameters: request).query])
+  });
 }
 
 void addDirectRequest(Map<String, String> request) async {
-  await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{'data': json.encode([request])});
+  await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{
+    'data': json.encode([request])
+  });
 }
 
 void setServerConfig(Map<String, dynamic> serverConfig) async {
-  await _channelTest.invokeMethod('setServerConfig', <String, dynamic>{'data': json.encode([serverConfig])});
+  await _channelTest.invokeMethod('setServerConfig', <String, dynamic>{
+    'data': json.encode([serverConfig])
+  });
 }
 
 /// Verify the common request queue parameters
@@ -136,9 +142,14 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
     final requestTime = DateTime.now();
     print('[Test Server][${requestTime.toIso8601String()}] Request received: ${request.method} ${request.uri}');
 
-    final queryParams = request.uri.queryParametersAll;
-    print(queryParams.toString());
+    var queryParams = request.uri.queryParametersAll;
 
+    if (request.method == 'POST') {
+      final body = await utf8.decodeStream(request);
+      queryParams = Uri.parse('?$body').queryParametersAll; // Update queryParams with POST body
+    }
+
+    print('[Test Server] queryParams: ${queryParams.toString()}');
     // Store the request parameters for later verification
     requestArray.add(queryParams);
 
