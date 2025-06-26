@@ -35,6 +35,10 @@ void addDirectRequest(Map<String, String> request) async {
   await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{'data': json.encode([request])});
 }
 
+void setServerConfig(Map<String, dynamic> serverConfig) async {
+  await _channelTest.invokeMethod('setServerConfig', <String, dynamic>{'data': json.encode([serverConfig])});
+}
+
 /// Verify the common request queue parameters
 void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);

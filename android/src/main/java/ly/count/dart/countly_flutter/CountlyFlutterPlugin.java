@@ -1408,6 +1408,11 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
                 countlyStore.addRequest(args.getString(0), true);
                 result.success("storeRequest: success");
+            } else if ("setServerConfig".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                JSONObject jsonObject = args.getJSONObject(0);
+                countlyStore.setServerConfig(jsonObject.toString());
+                result.success("setServerConfig: success");
             } else if ("addDirectRequest".equals(call.method)) {
                 JSONObject jsonObject = args.getJSONObject(0);
                 Map<String, String> requestMap = new HashMap<>();
@@ -1420,7 +1425,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("halt".equals(call.method)) {
                 Countly.sharedInstance().halt();
                 result.success("halt: success");
-            } else if ("enterContentZone".equals(call.method)) {
+            } 
+            //------------------End------------------------------------
+
+            else if ("enterContentZone".equals(call.method)) {
                 Countly.sharedInstance().contents().enterContentZone();
                 result.success(null);
             } else if ("exitContentZone".equals(call.method)) {
@@ -1430,7 +1438,6 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().contents().refreshContentZone();
                 result.success(null);
             }
-            //------------------End------------------------------------
 
             else {
                 result.notImplemented();
