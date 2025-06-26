@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'event_tests/event_utils.dart';
+
 const MethodChannel _channelTest = MethodChannel('countly_flutter');
 
 // Base config options for tests
@@ -134,7 +136,7 @@ var _serverDelay = 0;
 /// Use http://0.0.0.0:8080 as the server url.
 /// You can specify a delay in seconds for the server response.
 /// You can also provide a custom handler for the server response.
-void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, Future<void> Function(HttpRequest, HttpResponse)? customHandler}) async {
+void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, Future<void> Function(HttpRequest, Map<String, List<String>>, HttpResponse)? customHandler}) async {
   var server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
   print('[Test Server]Server running on http://${server.address.address}:${server.port}');
   _serverDelay = delay;
@@ -154,7 +156,7 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
     requestArray.add(queryParams);
 
     if (customHandler != null) {
-      await customHandler(request, request.response);
+      await customHandler(request, queryParams, request.response);
     } else {
       if (_serverDelay > 0) {
         print('[Test Server][${DateTime.now().toIso8601String()}] Applying delay of ${_serverDelay} seconds');
@@ -191,6 +193,48 @@ void changeServerDelay(int delay) {
 // Currently it seems like the app is destroyed after each test, so this is not needed
 Future<void> halt() async {
   await _channelTest.invokeMethod('halt');
+}
+
+void validateImmediateCounts(Map<String, int> immediates, List<Map<String, List<String>>> requestArray) {
+  Map<String, int> actualImmediates = <String, int>{};
+
+  // key is method values are the switch cases
+  for (var request in requestArray) {
+    if (request.containsKey('method')) {
+      String method = request['method']![0];
+      actualImmediates[method] = (actualImmediates[method] ?? 0) + 1;
+    } else if (request.containsKey('hc')) {
+      actualImmediates['hc'] = (actualImmediates['hc'] ?? 0) + 1;
+    }
+  }
+
+  expect(actualImmediates.length, immediates.length, reason: 'Mismatch in number of immediate methods');
+  // Validate the counts
+  for (var entry in immediates.entries) {
+    expect(actualImmediates[entry.key], entry.value, reason: 'Mismatch for method ${entry.key}');
+  }
+}
+
+void validateInternalEventCounts(Map<String, int> internalEventsCounts, List<Map<String, List<String>>> requestArray) {
+  Map<String, int> actualCounts = <String, int>{};
+
+  // key is method values are the switch cases
+  for (var request in requestArray) {
+    if (request.containsKey('events')) {
+      List<Map<String, dynamic>> events = (jsonDecode(request['events']![0]) as List).cast<Map<String, dynamic>>();
+      for (var event in events) {
+        if (event['key'].toString().startsWith('[CLY]')) {
+          actualCounts[event['key']] = (actualCounts[event['key']] ?? 0) + 1;
+        }
+      }
+    }
+  }
+
+  expect(actualCounts.length, internalEventsCounts.length, reason: 'Mismatch in number of internal event methods actual: $actualCounts, expected: $internalEventsCounts');
+  // Validate the counts
+  for (var entry in internalEventsCounts.entries) {
+    expect(actualCounts['[CLY]_${entry.key}'], entry.value, reason: 'Mismatch for method ${entry.key}');
+  }
 }
 
 /// Get and print elements with wanted param from event queue
@@ -283,6 +327,56 @@ Future<void> createMixViewsAndEvents({bool inForeground = true}) async {
   await Countly.recordEvent(event2);
   await Countly.instance.views.startAutoStoppedView("V2${inForeground ? '_FG' : '_BG'}");
   await Countly.recordEvent(event3);
+}
+
+Future<void> callAllFeatures() async {
+  await Countly.getAvailableFeedbackWidgets();
+
+  await Countly.giveAllConsent();
+  await Countly.instance.sessions.beginSession();
+  await createTruncableEvents();
+  await generateEvents();
+  await Countly.setUserLocation(countryCode: 'TR', city: 'Istanbul', gpsCoordinates: '41.0082,28.9784', ipAddress: '10.2.33.12');
+  await Countly.instance.events.recordEvent('Event With Sum And Segment', {'Country': 'Turkey', 'Age': 28884}, 1, 0.99); // not legacy code
+  Map<String, Object> segmentation = {
+    "country": "Germany",
+    "app_version": "1.0",
+    "rating": 10,
+    "precision": 324.54678,
+    "timestamp": 1234567890,
+    "clicked": false,
+    "languages": ["en", "de", "fr"],
+    "sub_names": ["John", "Doe", "Jane"]
+  };
+  final String? viewID = await Countly.instance.views.startView("Dashboard", segmentation);
+
+  // IMMEDIATE CALLS
+  await Countly.instance.content.enterContentZone();
+  await Countly.instance.remoteConfig.downloadAllKeys((rResult, error, fullValueUpdate, downloadedValues) {
+    if (rResult == RequestResult.success) {
+      // do sth
+    } else {
+      // do sth
+    }
+  });
+
+  await Countly.instance.remoteConfig.enrollIntoABTestsForKeys(['key1', 'key2']);
+  await Countly.instance.remoteConfig.exitABTestsForKeys(['key1', 'key2']);
+
+  // END IMMEDIATE CALLS
+  await Countly.reportFeedbackWidgetManually(CountlyPresentableFeedback('test', 'nps', 'test'), {}, {});
+
+  await Future.delayed(const Duration(seconds: 2));
+  await Countly.instance.sessions.updateSession();
+  await Countly.instance.views.stopViewWithID(viewID!);
+  await Countly.instance.content.refreshContentZone();
+
+  await Future.delayed(const Duration(seconds: 2));
+  await Countly.instance.sessions.endSession();
+
+  await Countly.instance.attemptToSendStoredRequests();
+  // check queues are empty and all requests are sent
+  await Future.delayed(const Duration(seconds: 10));
 }
 
 /// Creates truncable events (which covers all possible truncable situations)
