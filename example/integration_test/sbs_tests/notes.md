@@ -1,10 +1,10 @@
 SDK Behavior Settings tests
 
 And where to check values, which is affected:
-from_server
-storage
-provided
-dev_provided
+from_server = FS
+storage = S
+provided = P
+dev_provided = DP
 
 Order validation
 200X tests are feature validation tests
@@ -82,6 +82,8 @@ First do not disable backoff, and try other parameters
 
 stop the sdk and re init it with disabling backoff. Now try that backoff mechanism is not triggered.
 
+---------------------------------------------------------------------------------------------------------------------------------
+
 201X tests order validation
 where
 - A
@@ -103,3 +105,10 @@ trigger server fetch and validate that all values from_server
 - E
 configure all configurables, store SBS before initializing, provide SBS via CountlyConfig, validate that provided values have the precedence
 trigger server fetch and validate that all values from_server
+
+tests are:
+- 201A_DP_FS
+- 201B_DP_P
+- 201C_DP_P_FS
+- 201D_DP_S_FS
+- 201E_DP_S_P_FS
