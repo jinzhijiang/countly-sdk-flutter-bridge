@@ -77,16 +77,16 @@ Future<void> callAllFeatures() async {
   await Countly.setUserLocation(countryCode: 'TR', city: 'Istanbul', gpsCoordinates: '41.0082,28.9784', ipAddress: '10.2.33.12');
   await Countly.instance.events.recordEvent('Event With Sum And Segment', {'Country': 'Turkey', 'Age': 28884}, 1, 0.99); // not legacy code
   Map<String, Object> segmentation = {
-    "country": "Germany",
-    "app_version": "1.0",
-    "rating": 10,
-    "precision": 324.54678,
-    "timestamp": 1234567890,
-    "clicked": false,
-    "languages": ["en", "de", "fr"],
-    "sub_names": ["John", "Doe", "Jane"]
+    'country': 'Germany',
+    'app_version': '1.0',
+    'rating': 10,
+    'precision': 324.54678,
+    'timestamp': 1234567890,
+    'clicked': false,
+    'languages': ['en', 'de', 'fr'],
+    'sub_names': ['John', 'Doe', 'Jane']
   };
-  final String? viewID = await Countly.instance.views.startView("Dashboard", segmentation);
+  await Countly.instance.views.startView('Dashboard', segmentation);
 
   // IMMEDIATE CALLS
   await Countly.instance.content.enterContentZone();
@@ -106,7 +106,7 @@ Future<void> callAllFeatures() async {
 
   await Future.delayed(const Duration(seconds: 2));
   await Countly.instance.sessions.updateSession();
-  await Countly.instance.views.stopViewWithID(viewID!);
+  await Countly.instance.views.stopViewWithName('Dashboard');
   await Countly.instance.content.refreshContentZone();
 
   await Future.delayed(const Duration(seconds: 2));
