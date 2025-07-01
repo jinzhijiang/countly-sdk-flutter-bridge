@@ -45,6 +45,12 @@ void setServerConfig(Map<String, dynamic> serverConfig) async {
   });
 }
 
+/// Retrieve the server configuration from the native side
+Future<Map<String, dynamic>> getServerConfig() async {
+  final Map<Object?, Object?> sc = await _channelTest.invokeMethod('getServerConfig');
+  return Map<String, dynamic>.from(sc);
+}
+
 /// Verify the common request queue parameters
 void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);

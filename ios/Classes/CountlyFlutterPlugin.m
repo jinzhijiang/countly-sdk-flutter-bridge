@@ -151,7 +151,20 @@ FlutterMethodChannel *_channel;
             [NSUserDefaults.standardUserDefaults synchronize];
             result(@"setServerConfig: success");
         });
-    }else if ([@"recordEvent" isEqualToString:call.method]) {
+    }else if ([@"getServerConfig" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          NSDictionary *storedConfig = [NSUserDefaults.standardUserDefaults objectForKey:@"kCountlyServerConfigPersistencyKey"];
+
+          NSMutableDictionary *serverConfig = nil;
+          if ([storedConfig isKindOfClass:[NSDictionary class]]) {
+              serverConfig = [storedConfig mutableCopy];
+          } else {
+              serverConfig = [NSMutableDictionary new];
+          }
+
+          result(serverConfig);
+        });
+    } else if ([@"recordEvent" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
           NSString *key = [command objectAtIndex:0];
           NSString *countString = [command objectAtIndex:1];

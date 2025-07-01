@@ -1413,6 +1413,15 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 JSONObject jsonObject = args.getJSONObject(0);
                 countlyStore.setServerConfig(jsonObject.toString());
                 result.success("setServerConfig: success");
+            } else if ("getServerConfig".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                String sc = countlyStore.getServerConfig();
+                Map<String, Object> serverConfigMap = new HashMap<>();
+                try {
+                    serverConfigMap = toMap(new JSONObject(sc));
+                } catch (JSONException ignored) {
+                }
+                result.success(serverConfigMap);
             } else if ("addDirectRequest".equals(call.method)) {
                 JSONObject jsonObject = args.getJSONObject(0);
                 Map<String, String> requestMap = new HashMap<>();
