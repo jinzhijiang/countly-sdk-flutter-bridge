@@ -116,3 +116,29 @@ Future<void> callAllFeatures() async {
   // check queues are empty and all requests are sent
   await Future.delayed(const Duration(seconds: 10));
 }
+
+/// Validates the request counts in the request array.
+/// This function checks the number of requests for each method recorded in the request array
+/// and compares them with the expected counts provided in the `requests` map.
+/// It expects the keys in the `requests` map to be the method names (like 'events', 'location', 'crash', etc.)
+/// and the values to be the expected counts of those methods.
+/// @param requests A map where keys are the names of the request methods and values are the expected counts. like {'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1}
+/// @param requestArray The array of requests to validate against.
+void validateRequestCounts(Map<String, int> requests, List<Map<String, List<String>>> requestArray) {
+  Map<String, int> actualRequests = <String, int>{};
+
+  // key is method values are the switch cases
+  for (var request in requestArray) {
+    for (var entry in requests.entries) {
+      if (request.containsKey(entry.key)) {
+        actualRequests[entry.key] = (actualRequests[entry.key] ?? 0) + 1;
+      }
+    }
+  }
+
+  expect(actualRequests.length, requests.length, reason: 'Mismatch in number of request methods');
+  // Validate the counts
+  for (var entry in requests.entries) {
+    expect(actualRequests[entry.key], entry.value, reason: 'Mismatch for method ${entry.key}');
+  }
+}
