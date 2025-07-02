@@ -42,7 +42,7 @@ void main() {
     List<String> EQ = await getEventQueue();
     expect(RQ.length, 0);
     expect(EQ.length, 0);
-    validateRequestCounts({'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1}, requestArray);
+    validateRequestCounts({'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1}, requestArray);
     validateInternalEventCounts({'orientation': 1, 'view': 6}, requestArray);
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
 
@@ -59,7 +59,7 @@ void main() {
     await Countly.instance.attemptToSendStoredRequests(); // this will not take effect
     expect(requestArray.length, 1);
 
-    await Future.delayed(const Duration(seconds: 75));
+    await Future.delayed(const Duration(seconds: 90)); // iOS required more time then Android
     validateRequestCounts({'begin_session': 1, 'end_session': 1}, requestArray);
   });
 }

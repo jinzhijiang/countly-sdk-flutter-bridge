@@ -112,3 +112,8 @@ tests are:
 - 201C_DP_P_FS
 - 201D_DP_S_FS
 - 201E_DP_S_P_FS
+
+Notes iOS:
+In the base test iOS required more time then Android at the end
+
+Sometimes iOS duplicates the requests but I could not find the main reason behind it.
