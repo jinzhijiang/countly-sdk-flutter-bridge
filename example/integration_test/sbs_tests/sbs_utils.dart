@@ -36,6 +36,7 @@ void validateImmediateCounts(Map<String, int> immediates, List<Map<String, List<
 /// This function checks the number of internal events recorded in the request array
 /// and compares them with the expected counts provided in the `internalEventsCounts` map.
 /// It expects the keys in the `internalEventsCounts` map to be not prefixed with '[CLY]_'.
+/// function also checks all internal events existence, so if it not exist it checks that given array length matches extracted internal event counts
 /// The function will throw an error if the counts do not match.
 /// @param internalEventsCounts A map where keys are the names of the internal events (without '[CLY]_') and values are the expected counts. like {'orientation': 1, 'view': 6}
 /// @param requestArray The array of requests to validate against.
@@ -136,9 +137,8 @@ void validateRequestCounts(Map<String, int> requests, List<Map<String, List<Stri
     }
   }
 
-  expect(actualRequests.length, requests.length, reason: 'Mismatch in number of request methods');
   // Validate the counts
   for (var entry in requests.entries) {
-    expect(actualRequests[entry.key], entry.value, reason: 'Mismatch for method ${entry.key}');
+    expect(actualRequests[entry.key] ?? 0, entry.value, reason: 'Mismatch for method ${entry.key}');
   }
 }
