@@ -159,13 +159,13 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
     // Store the request parameters for later verification
     requestArray.add(queryParams);
 
-    if (_serverDelay > 0) {
-      print('[Test Server][${DateTime.now().toIso8601String()}] Applying delay of ${_serverDelay} seconds');
-      await Future.delayed(Duration(seconds: _serverDelay));
-    }
     if (customHandler != null) {
       await customHandler(request, queryParams, request.response);
     } else {
+      if (_serverDelay > 0) {
+        print('[Test Server][${DateTime.now().toIso8601String()}] Applying delay of ${_serverDelay} seconds');
+        await Future.delayed(Duration(seconds: _serverDelay));
+      }
       // Default response
       request.response
         ..statusCode = HttpStatus.ok
