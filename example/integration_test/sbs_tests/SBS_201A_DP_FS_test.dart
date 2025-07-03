@@ -8,6 +8,16 @@ import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
 import 'sbs_utils.dart';
 
+/// Test calls all possible configuration features and shows that:
+/// - All internal limits are overridden by FS SBS and stored correctly
+/// - FS overrides consent requirement to false, bom to true, request age drop hours to from 5 to 12, crash reporting to false, view reporting to false
+/// - This test shows that FS is prior than DP
+/// How it affects the SDK:
+/// - event requests are increased if we compare it with base test
+/// - location requests are increased because location is disabled in DP then later enabled while calling all features
+/// - crash requests are not sent
+/// - consent requests increased by one because it was enabled and disabled later
+/// - no view events are sent
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('SBS_201A_DP_FS_test', (WidgetTester tester) async {

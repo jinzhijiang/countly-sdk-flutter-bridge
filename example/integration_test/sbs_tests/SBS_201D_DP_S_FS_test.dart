@@ -8,6 +8,18 @@ import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
 import 'sbs_utils.dart';
 
+/// Test calls all possible configuration features and shows that:
+/// - Key length limit is overridden by S and stored correctly because FS does not include it
+/// - FS overrides other limits and stored correctly
+/// - S overrides RQ and EQ limits and stored correctly
+/// - FS overrides consent requirement to false, bom to true, request age drop hours to from 5>12>21, crash reporting to false, view reporting to false
+/// How it affects the SDK:
+/// - event requests are reduced compared to EQ is 5 tests, because S is prior than DP
+/// - location requests are increased because location is disabled in DP then later enabled while calling all features
+/// - crash requests are not sent
+/// - no consent request here because SDK did not wait for server response here, it already had it
+/// - no view events are sent
+/// This test shows than FS is prior than S, S is prior than DP
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('SBS_201D_DP_S_FS_test', (WidgetTester tester) async {
@@ -21,7 +33,7 @@ void main() {
           responseJson = {
             'v': 1,
             't': 1750748806695,
-            'c': {'crt': false, 'vt': false, 'st': true, 'cr': false, 'cet': true, 'log': true, 'dort': 21, 'lkl': 67, 'lvs': 79, 'lsv': 90, 'lbc': 88, 'ltlpt': 34, 'ltl': 250, 'rcz': true, 'bom': true}
+            'c': {'crt': false, 'vt': false, 'st': true, 'cr': false, 'cet': true, 'log': true, 'dort': 21, 'lvs': 79, 'lsv': 90, 'lbc': 88, 'ltlpt': 34, 'ltl': 250, 'rcz': true, 'bom': true}
           };
         }
       }
@@ -51,7 +63,7 @@ void main() {
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,
-      'c': {'crt': false, 'vt': false, 'st': true, 'rqs': 100, 'eqs': 20, 'cr': false, 'cet': true, 'log': true, 'dort': 21, 'lkl': 67, 'lvs': 79, 'lsv': 90, 'lbc': 88, 'ltlpt': 34, 'ltl': 250, 'rcz': true, 'bom': true}
+      'c': {'crt': false, 'vt': false, 'st': true, 'rqs': 100, 'eqs': 20, 'cr': false, 'cet': true, 'log': true, 'dort': 21, 'lkl': 120, 'lvs': 79, 'lsv': 90, 'lbc': 88, 'ltlpt': 34, 'ltl': 250, 'rcz': true, 'bom': true}
     });
 
     validateRequestCounts({'events': 3, 'location': 3, 'crash': 0, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1, 'consent': 0}, requestArray);
