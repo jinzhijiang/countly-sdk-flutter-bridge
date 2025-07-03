@@ -38,6 +38,7 @@ void main() {
       'c': {'crt': false, 'vt': false, 'st': true, 'rqs': 100, 'cr': false, 'cet': true, 'log': false, 'dort': 12, 'lkl': 120, 'lvs': 255, 'lsv': 99, 'lbc': 99, 'ltlpt': 29, 'ltl': 199, 'rcz': true, 'bom': true}
     });
     // Initialize the SDK
+    // in here eqs will not set because there is already stored SBS
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     config.setSDKBehaviorSettings('{"v":1,"t":1750748806695,"c":{"crt":true,"vt":false,"eqs": 30,"st":true,"cr":false,"cet":true,"log":false,"dort":12,"lkl":120,"lvs":255,"lsv":99,"lbc":99,"ltlpt":29,"ltl":199,"rcz":true,"bom":true}}');
     config.setMaxRequestQueueSize(5).setEventQueueSizeToSend(5).disableBackoffMechanism().setRequiresConsent(true).disableLocation().setRequestDropAgeHours(5).setUpdateSessionTimerDelay(75);
@@ -49,7 +50,7 @@ void main() {
 
     await callAllFeatures();
 
-// EQS not exist because there are already stored SBS
+    // EQS not exist because there are already stored SBS
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,

@@ -115,5 +115,5 @@ tests are:
 
 Notes iOS:
 In the base test iOS required more time then Android at the end
-
-Sometimes iOS duplicates the requests but I could not find the main reason behind it.
+Because there is a probability for iOS to duplicate requests, checking request counts were not good
+getAvaliableFeedbackWidgets= if no consent it broken iOS
