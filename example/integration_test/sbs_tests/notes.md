@@ -9,78 +9,52 @@ dev_provided = DP
 Order validation
 200X tests are feature validation tests
 where
-A = SDK internal limits
-B = Tracking - will not affect SC request
-C = Networking - will not affect SC request
-D = Request Queue + Event Queue + Session Update Interval
-E = Session Tracking + Crash Tracking + Location Tracking
-F = Custom Event Tracking + View Tracking
-G = Consent + Drop old request + Server config update interval
-H = Content Zone + Content Zone Interval + Refresh Content Zone
-I = Backoff
+A = SDK internal limits + Content Zone + Content Zone Interval + Refresh Content Zone + Backoff Mechanism Enabled
+B = Tracking + Server Config Update Interval - will not affect SC request
+C = Networking + Consent + Request Queue + Session Update Interval + Drop old request - will not affect SC request
+D = Session Tracking + Custom Event Tracking + Event Queue + View Tracking + Location Tracking + Crash Tracking + Backoff Configs
 
 Tests
 
-- A variants: from_server, provided, dev_provided, storage
-Change all SDK internal limits, respond them from the ${variant} and validate that all truncable things cool
-at the end validate all queues are empty
+- A
+Call all features
+Provide SBS from server {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'cz': true, 'czi': 16, 'bom': false}
+Change all SDK internal limits and validate that all are applied
+Trigger two requests that their response duration is above 10 seconds
+Validate that:
+- content zone is called after init
+- provided zone timer interval is not default one and 16
+- refresh content zone call is disabled
+- backoff mechanism is disabled and two requests are passed
+- validate the constraints for the backoff before sending requests
 
 - B
-Provide SBS through config, that it disables tracking
-call all functions, validate server request list only contains server config and queues are empty
-
-Stop the SDK, clear stored SBS, provide SDK config through config again with tracking disabled
-but let server respond tracking enabled, call all functions, validate queues are empty, all requests are sent
-
-This also validates server response sbs > provided sbs
+Call all features
+Provide SBS from server {'tracking': false, 'scui': 1}
+Validate that:
+- No requests exist in the sent requestArray in mock server
+- RQ is empty
+- Only SBS requests are existing
+- Validate that next SBS fetch called in 1 hours
 
 - C
-Provide SBS through config, that it disables networking
-call all functions, validate server request list only contains server config and queues are containing all features' requests
+Call all features
+Provide SBS from server {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10, 'dort': 1}
+Store couple of requests before starting the SDK and show that they are deleted by drop request age
+Validate that:
+- No requests exist in the sent requestArray in mock server
+- RQ contains items
+- Features that requires consent is not called and did not recorded things in RQ
+- every 10 seconds session triggered
 
-Stop the SDK, clear stored SBS, provide SDK config through config again with networking disabled
-but let server respond networking enabled, call all functions, validate queues are empty, all requests are sent
-
-This also validates server response sbs > provided sbs
-
-- D variants: from_server, provided, dev_provided, storage
-Provide SBS through ${variant}, validate that:
-Request queue is clipped with new limit
-Event queue is clipped with new limit
-Session update times are same as new limit
-
-- E variants: from_server, provided, storage
-Call all features, respond from the ${variant} with disabling features
-Validate that session and crash are not existing in the server request list
-And location is existing as location disabled request
-Validate RQ is not containing any crash and session requests
-
-To validate location works with/without session
-stop the SDK, re init it with enabling session and validate begin_session contains location which is empty strinh
-
-- F
-Call all functions validate that all called views and custom events are no containig in the EQ, RQ and server request list
-
-Stop the SDK, re init with views enabled, now validate views are existing in all the queues because they must not be affected
-with custom event tracking
-
-- G variants: from_server, provided, dev_provided, storage
-Add some old requests to the storage
-Validate RQ containing old requests
-Call all functions, validate that all consent required features are disabled and do not generate any request.
-And validate that RQ is not containing old requests
-???Somehow give server config update time very low and validate SC is triggered again
-
-- H variants: from_server, provided, dev_provided, storage
-Call all functions, validate that content zone is entered automatically in the init
-And validate that refresh content zone is not called
-And validate content zone called again after configured time
-
-- I variants: from_server, provided, dev_provided, storage
-call all functions with a delay where backoff would be triggered with changed parameters.
-First do not disable backoff, and try other parameters
-
-stop the sdk and re init it with disabling backoff. Now try that backoff mechanism is not triggered.
+- D
+Call all features
+Provide SBS from server {'st': false, 'cet': false, 'vt': false, 'eqs': 5, 'lt': false, 'crt': false, 'bom_at': 5, 'bom_d': 30, 'bom_rqp': 0.01, 'bom_ra': 1}
+Validate that:
+- Session, custom events, location, crashes, views are not recorded
+- Internal events are recorded and clipped by EQ limit
+- Views are not affected by custom event tracking
+- Backoff mechanism configs are applied
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
