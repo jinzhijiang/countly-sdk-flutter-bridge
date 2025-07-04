@@ -618,6 +618,8 @@ class CountlyFlutterPlugin {
     configMap['behavior_settings'] = config['sdkBehaviorSettings'];
     configMap['disable_behavior_settings_updates'] = config['sdkBehaviorSettingsUpdatesDisabled'];
 
+    configMap['headers'] = config['customNetworkRequestHeaders'];
+
     configMap.removeWhere((key, value) => value == null);
 
     if (config['disableLocation'] != null && config['disableLocation'] == true) {
