@@ -9,15 +9,17 @@ import '../../event_tests/event_utils.dart';
 import '../../utils.dart';
 
 /// Test records an event with a key and segmentation values that exceeds the maximum key length set by the SDK's internal limits server SBS limit.
-/// - Key length limit is 3 and value size is 5i segmentation values 2 on DP
-/// - key length 8, segmentation values 4 in P
-/// - Only key length in P is FS
+/// - Key length limit is 3, value size is 5 and segmentation values 2 on DP
+/// - key length 8, segmentation values 4 in S
+/// - Only key length in FS is 8
+/// - Key length 10, value size 56 and breadcrumb count 99 in P
 /// - The event is recorded with the key truncated to 8 #FS
 /// - Values in segmentation are truncated to 5 characters #DP
-/// - Segmentation values are truncated to 4 characters #P
+/// - Segmentation values are truncated to 4 characters #S
+/// - Provided SBS is omitted because already stored SBS
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('SBS_201C_DP_P_FS_test', (WidgetTester tester) async {
+  testWidgets('SBS_201C_DP_S_P_FS_test', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
     createServer(requestArray, customHandler: (request, queryParams, response) async {
       Map<String, Object> responseJson = {'result': 'Success'};
@@ -37,9 +39,15 @@ void main() {
         ..write(jsonEncode(responseJson));
     });
 
+    setServerConfig({
+      'v': 1,
+      't': 1750748806695,
+      'c': {'lkl': 6, 'lsv': 4}
+    });
+
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
-    config.setSDKBehaviorSettings('{"v":1,"t":1750748806695,"c":{"lkl":6, "lsv": 4}}');
+    config.setSDKBehaviorSettings('{"v":1,"t":1750748806695,"c":{"lkl":10, "lsv": 56, "lbc": 99}}');
     config.sdkInternalLimits.setMaxKeyLength(3).setMaxValueSize(5).setMaxSegmentationValues(2);
 
     await Countly.initWithConfig(config);
