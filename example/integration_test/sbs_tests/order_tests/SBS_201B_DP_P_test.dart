@@ -5,8 +5,8 @@ import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import '../utils.dart';
-import 'sbs_utils.dart';
+import '../../utils.dart';
+import '../sbs_utils.dart';
 
 /// Test calls all possible configuration features and shows that:
 /// - All internal limits are overridden by P SBS and stored correctly
