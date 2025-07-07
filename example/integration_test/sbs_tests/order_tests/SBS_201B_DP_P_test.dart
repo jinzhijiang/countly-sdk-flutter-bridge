@@ -1,62 +1,43 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+import '../../event_tests/event_utils.dart';
 import '../../utils.dart';
-import '../sbs_utils.dart';
 
-/// Test calls all possible configuration features and shows that:
-/// - All internal limits are overridden by P SBS and stored correctly
-/// - P overrides consent requirement to false, bom to true, request age drop hours to from 5 to 12, crash reporting to false, view reporting to false
-/// - This test shows that P is prior than DP
-/// How it affects the SDK:
-/// - event requests are increased if we compare it with base test
-/// - location requests are increased because location is disabled in DP then later enabled while calling all features
-/// - crash requests are not sent
-/// - no consent request here because SDK did not wait for server response here, it got no time to form a consent request
-/// - no view events are sent
+/// Test records an event with a key and segmentation values that exceeds the maximum key length set by the SDK's internal limits server SBS limit.
+/// - Key length limit is 3 and value size is 5 on DP
+/// - Only key length in P is 8
+/// - The event is recorded with the key truncated to 8 #P
+/// - Values in segmentation are truncated to 5 characters #DP
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('SBS_201B_DP_P_test', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, customHandler: (request, queryParams, response) async {
-      Map<String, Object> responseJson = {'result': 'Success'};
-      if (queryParams.containsKey('method')) {
-        if (queryParams['method']!.first == 'feedback') {
-          responseJson = {'result': []};
-        }
-      }
-      response
-        ..statusCode = HttpStatus.ok
-        ..headers.contentType = ContentType.json
-        ..headers.set('Access-Control-Allow-Origin', '*')
-        ..write(jsonEncode(responseJson));
-    });
+    createServer(requestArray);
 
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
-    config.setSDKBehaviorSettings('{"v":1,"t":1750748806695,"c":{"crt":false,"vt":false,"st":true,"cr":false,"cet":true,"log":false,"dort":12,"lkl":120,"lvs":255,"lsv":99,"lbc":99,"ltlpt":29,"ltl":199,"rcz":true,"bom":true}}');
-    config.setMaxRequestQueueSize(5).setEventQueueSizeToSend(5).disableBackoffMechanism().setRequiresConsent(true).disableLocation().setRequestDropAgeHours(5).setUpdateSessionTimerDelay(75);
-    config.content.setZoneTimerInterval(17);
-    config.sdkInternalLimits.setMaxBreadcrumbCount(1).setMaxKeyLength(3).setMaxSegmentationValues(3).setMaxValueSize(5).setMaxStackTraceLineLength(300).setMaxStackTraceLinesPerThread(2);
+    config.setSDKBehaviorSettings('{"v":1,"t":1750748806695,"c":{"lkl":8}}');
+    config.sdkInternalLimits.setMaxKeyLength(3).setMaxValueSize(5);
 
     await Countly.initWithConfig(config);
     await Future.delayed(const Duration(seconds: 2));
 
-    await callAllFeatures();
+    await Countly.instance.events.recordEvent('ThisWillCLIPPED_BY_FS', {'no1': 'valueCLIPPED_BY_DP', 'no2': 'valueCLIPPED_BY_DP', 'no3': 'valueCLIPPED_BY_DP'});
+    List<String> rq = await getRequestQueue();
+    List<String> eq = await getEventQueue();
+    expect(rq.length, 0);
+    expect(eq.length, 1);
+
+    validateEvent(event: jsonDecode(eq.first), key: 'ThisWill', segmentation: {'no1': 'value', 'no2': 'value', 'no3': 'value'});
 
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,
-      'c': {'crt': false, 'vt': false, 'st': true, 'cr': false, 'cet': true, 'log': false, 'dort': 12, 'lkl': 120, 'lvs': 255, 'lsv': 99, 'lbc': 99, 'ltlpt': 29, 'ltl': 199, 'rcz': true, 'bom': true}
+      'c': {'lkl': 8}
     });
-
-    validateRequestCounts({'events': 8, 'location': 3, 'crash': 0, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1, 'consent': 0}, requestArray);
-    validateInternalEventCounts({'orientation': 1}, requestArray);
-    validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
-    // validate key lenght
   });
 }
