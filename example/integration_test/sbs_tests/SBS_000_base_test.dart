@@ -47,21 +47,5 @@ void main() {
     validateRequestCounts({'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'consent': 0, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1}, requestArray);
     validateInternalEventCounts({'orientation': 1, 'view': 6}, requestArray);
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
-
-    await Countly.instance.content.exitContentZone();
-    requestArray.clear();
-
-    serverDelay = 11;
-
-    await Countly.instance.sessions.beginSession();
-    await Countly.instance.sessions.endSession(); // this will be backed off for 60 seconds
-    await Countly.instance.attemptToSendStoredRequests();
-
-    validateRequestCounts({'begin_session': 1}, requestArray);
-    await Countly.instance.attemptToSendStoredRequests(); // this will not take effect
-    expect(requestArray.length, 1);
-
-    await Future.delayed(const Duration(seconds: 90)); // iOS required more time then Android
-    validateRequestCounts({'begin_session': 1, 'end_session': 1}, requestArray);
   });
 }

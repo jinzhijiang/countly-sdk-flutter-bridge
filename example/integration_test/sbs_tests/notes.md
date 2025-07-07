@@ -6,7 +6,6 @@ storage = S
 provided = P
 dev_provided = DP
 
-Order validation
 200X tests are feature validation tests
 where
 A = SDK internal limits + Content Zone + Content Zone Interval + Refresh Content Zone + Backoff Mechanism Enabled
