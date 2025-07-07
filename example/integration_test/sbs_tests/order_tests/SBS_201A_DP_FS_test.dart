@@ -14,7 +14,7 @@ import 'sbs_utils.dart';
 /// - This test shows that FS is prior than DP
 /// How it affects the SDK:
 /// - event requests are increased if we compare it with base test
-/// - location requests are increased because location is disabled in DP then later enabled while calling all features
+/// - location requests are decreased because location is disabled in DP then later enabled while calling all features
 /// - crash requests are not sent
 /// - consent requests increased by one because it was enabled and disabled later
 /// - no view events are sent
@@ -62,5 +62,6 @@ void main() {
     validateRequestCounts({'events': 8, 'location': 2, 'crash': 0, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1, 'consent': 1}, requestArray);
     validateInternalEventCounts({'orientation': 1}, requestArray);
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
+    // validate key lengths
   });
 }
