@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +6,7 @@ import 'package:integration_test/integration_test.dart';
 
 import '../../event_tests/event_utils.dart';
 import '../../utils.dart';
+import '../sbs_utils.dart';
 
 /// Test records an event with a key and segmentation values that exceeds the maximum key length set by the SDK's internal limits server SBS limit.
 /// - Key length limit is 3, value size is 5 and segmentation values 2 on DP
@@ -21,22 +21,10 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('SBS_201D_DP_S_P_FS_test', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, customHandler: (request, queryParams, response) async {
-      Map<String, Object> responseJson = {'result': 'Success'};
-      if (queryParams.containsKey('method')) {
-        if (queryParams['method']!.first == 'sc') {
-          responseJson = {
-            'v': 1,
-            't': 1750748806695,
-            'c': {'lkl': 8}
-          };
-        }
-      }
-      response
-        ..statusCode = HttpStatus.ok
-        ..headers.contentType = ContentType.json
-        ..headers.set('Access-Control-Allow-Origin', '*')
-        ..write(jsonEncode(responseJson));
+    createServerWithConfig(requestArray, {
+      'v': 1,
+      't': 1750748806695,
+      'c': {'lkl': 8}
     });
 
     setServerConfig({

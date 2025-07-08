@@ -152,3 +152,21 @@ void validateRequestCounts(Map<String, int> requests, List<Map<String, List<Stri
     }
   }
 }
+
+/// Creates a server with a custom handler that responds to requests based on the provided configuration.
+/// The server will respond with a JSON object containing the result of the request.
+void createServerWithConfig(List<Map<String, List<String>>> requestArray, Map<String, Object> serverConfig) {
+  createServer(requestArray, customHandler: (request, queryParams, response) async {
+    Map<String, Object> responseJson = {'result': 'Success'};
+    if (queryParams.containsKey('method')) {
+      if (queryParams['method']!.first == 'sc') {
+        responseJson = serverConfig;
+      }
+    }
+    response
+      ..statusCode = HttpStatus.ok
+      ..headers.contentType = ContentType.json
+      ..headers.set('Access-Control-Allow-Origin', '*')
+      ..write(jsonEncode(responseJson));
+  });
+}
