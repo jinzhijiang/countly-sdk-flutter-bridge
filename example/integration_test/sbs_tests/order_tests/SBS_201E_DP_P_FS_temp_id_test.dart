@@ -40,7 +40,7 @@ void main() {
 
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true).enableTemporaryDeviceIDMode();
-    config.setSDKBehaviorSettings('{"v":1,"t":1750748806695,"c":{"lkl":6, "lsv": 4, "lbc": 99}}');
+    config.setSDKBehaviorSettings('{"v":1,"t":1750748806691,"c":{"lkl":6, "lsv": 4, "lbc": 99}}');
     config.sdkInternalLimits.setMaxKeyLength(3).setMaxValueSize(5).setMaxSegmentationValues(2);
 
     await Countly.initWithConfig(config);
