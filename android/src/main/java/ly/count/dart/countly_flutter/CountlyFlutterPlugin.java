@@ -72,6 +72,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     private final String COUNTLY_FLUTTER_SDK_NAME_NO_PUSH = "dart-flutterbnp-android";
 
     private final boolean BUILDING_WITH_PUSH_DISABLED = false;
+    private static final int DATA_SCHEMA_VERSIONS = 4;
 
     public void notifyPublicChannelRCDL(RequestResult downloadResult, String error, boolean fullValueUpdate, Map<String, RCData> downloadedValues, Integer requestID) {
         Map<String, Object> data = new HashMap<>();
@@ -1412,6 +1413,12 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
                 JSONObject jsonObject = args.getJSONObject(0);
                 countlyStore.setServerConfig(jsonObject.toString());
+                // Why this added here, it is that because when it is set something in storage
+                // sdk assumes that it is an older version so it start migrations that needs to be done
+                // but in this case we only want to use setting server config and do not want migrations
+                // to mess up our process flow. So in here we are setting it to latest known to get away with it.
+                // Normally in a fresh install migrations are first to run and they run once.
+                countlyStore.setDataSchemaVersion(DATA_SCHEMA_VERSIONS);
                 result.success("setServerConfig: success");
             } else if ("getServerConfig".equals(call.method)) {
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
