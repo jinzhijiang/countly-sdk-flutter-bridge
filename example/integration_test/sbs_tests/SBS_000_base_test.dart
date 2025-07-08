@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:countly_flutter/countly_flutter.dart';
@@ -13,26 +12,8 @@ import 'sbs_utils.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('SBS_000_base', (WidgetTester tester) async {
-    int serverDelay = 0;
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, customHandler: (request, queryParams, response) async {
-      Map<String, Object> responseJson = {'result': 'Success'};
-      if (queryParams.containsKey('method') && queryParams['method']!.first == 'feedback') {
-        responseJson = {'result': []};
-      }
-
-      if (serverDelay > 0 && !queryParams.containsKey('events')) {
-        // this orientation check for avoiding delay on backoff check
-        // to validate end session sent after 60 seconds
-        await Future.delayed(Duration(seconds: serverDelay));
-      }
-
-      response
-        ..statusCode = HttpStatus.ok
-        ..headers.contentType = ContentType.json
-        ..headers.set('Access-Control-Allow-Origin', '*')
-        ..write(jsonEncode(responseJson));
-    });
+    createServerWithConfig(requestArray, {});
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config);

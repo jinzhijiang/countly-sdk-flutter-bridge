@@ -153,6 +153,8 @@ void validateRequestCounts(Map<String, int> requests, List<Map<String, List<Stri
   }
 }
 
+int sbsServerDelay = 0;
+
 /// Creates a server with a custom handler that responds to requests based on the provided configuration.
 /// The server will respond with a JSON object containing the result of the request.
 void createServerWithConfig(List<Map<String, List<String>>> requestArray, Map<String, Object> serverConfig) {
@@ -161,8 +163,15 @@ void createServerWithConfig(List<Map<String, List<String>>> requestArray, Map<St
     if (queryParams.containsKey('method')) {
       if (queryParams['method']!.first == 'sc') {
         responseJson = serverConfig;
+      } else if (queryParams['method']!.first == 'feedback') {
+        responseJson = {'result': []};
       }
     }
+
+    if (sbsServerDelay > 0) {
+      await Future.delayed(Duration(seconds: sbsServerDelay));
+    }
+
     response
       ..statusCode = HttpStatus.ok
       ..headers.contentType = ContentType.json
