@@ -60,31 +60,62 @@ Validate that:
 201X tests order validation
 where
 - A
-configure all configurables via CountlyConfig validate that all set
-then trigger server fetch and validate that server values changed the dev_provided configs
+configure couple of internal limits in the CountlyConfig
+Provide couple of internal limits in the provided SBS and return one internal limit from FS
+Validate order is working and values applied
+DP P FS Final
+a        a
+b. b1    b1
+c. c1 c2 c2
 
 - B
-configure all configurables and provide SBS via CountlyConfig.
-Validate that all dev_provided is overridden by provided.
+configure couple of internal limits in the CountlyConfig
+Provide couple of internal limits in the stored SBS and return one internal limit from FS
+Validate order is working and values applied
+DP S FS Final
+a        a
+b. b1    b1
+c. c1 c2 c2
 
 - C
-configure all configurables, and provide SBS via CountlyConfig
-and respond from the server, validate that server values are precedence.
+configure couple of internal limits in the CountlyConfig
+Provide couple of internal limits in the provided SBS, stored SBS and return one internal limit from FS
+Validate provided SBS is not applied because stored existing
+Validate order is working and values applied
+DP P  S  FS  Final
+a            a
+b. b1        b
+c. c1 c2     c2
+d. d1 d2 d3. d3
 
 - D
-configure all configurables, store SBS before initializing, validate that stored values have the precedence
-trigger server fetch and validate that all values from_server
+configure couple of internal limits in the CountlyConfig and enable temporary id mode
+Provide couple of internal limits in the provided SBS, stored SBS and return one internal limit from FS
+Validate provided SBS is not applied because stored existing
+Validate order is working and values applied
+Also validate FS not fetched because temporary id mode
+DP P  S  FS  Final
+a            a
+b. b1        b
+c. c1 c2     c2
+d. d1 d2 d3. d2
 
 - E
-configure all configurables, store SBS before initializing, provide SBS via CountlyConfig, validate that provided values have the precedence
-trigger server fetch and validate that all values from_server
+configure couple of internal limits in the CountlyConfig and enable temporary id mode
+Provide couple of internal limits in the provided SBS and return one internal limit from FS
+Validate order is working and values applied
+Validate FS not fetched because temporary id mode
+DP P FS Final
+a        a
+b. b1    b1
+c. c1 c2 c1
 
 tests are:
-- 201A_DP_FS
-- 201B_DP_P
-- 201C_DP_P_FS
-- 201D_DP_S_FS
-- 201E_DP_S_P_FS
+- 201A_DP_P_FS
+- 201B_DP_S_FS
+- 201C_DP_P_S_FS
+- 201D_DP_P_S_FS_temp_id
+- 201E_DP_P_FS_temp_id
 
 Notes iOS:
 In the base test iOS required more time then Android at the end
