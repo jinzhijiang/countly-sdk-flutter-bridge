@@ -69,7 +69,7 @@ void validateInternalEventCounts(Map<String, int> internalEventsCounts, List<Map
 /// It also includes the things that are affected by the SDK internal limits, such as truncable events
 /// This function is used in integration tests to validate the functionality of the Countly SDK with the SBS
 /// At the end of the function, it triggers sending requests to the queue and waits for 10 seconds to ensure all requests are sent and queues are empty
-Future<void> callAllFeatures() async {
+Future<void> callAllFeatures({bool disableEnterContent = false}) async {
   await Countly.giveAllConsent();
   await Countly.getAvailableFeedbackWidgets();
   await Countly.instance.sessions.beginSession();
@@ -90,7 +90,9 @@ Future<void> callAllFeatures() async {
   await Countly.instance.views.startView('Dashboard', segmentation);
 
   // IMMEDIATE CALLS
-  await Countly.instance.content.enterContentZone();
+  if (!disableEnterContent) {
+    await Countly.instance.content.enterContentZone();
+  }
   await Countly.instance.remoteConfig.downloadAllKeys((rResult, error, fullValueUpdate, downloadedValues) {
     if (rResult == RequestResult.success) {
       // do sth
@@ -168,7 +170,7 @@ void createServerWithConfig(List<Map<String, List<String>>> requestArray, Map<St
       }
     }
 
-    if (sbsServerDelay > 0) {
+    if (sbsServerDelay > 0 && !queryParams.containsKey('events')) {
       await Future.delayed(Duration(seconds: sbsServerDelay));
     }
 
