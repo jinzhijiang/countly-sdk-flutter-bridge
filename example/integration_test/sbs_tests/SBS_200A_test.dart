@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -24,11 +27,65 @@ void main() {
     await callAllFeatures(disableEnterContent: true);
 
     validateRequestCounts({'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1, 'consent': 0}, requestArray);
-    validateInternalEventCounts({'orientation': 1, 'view': 6}, requestArray);
+    validateInternalEventCounts({'orientation': 1, 'view': 5}, requestArray); // 6 android
     // enter content zone is not called, but a content zone request is sent it is because server config is set cz to true
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
 
-    // VALIDATE INTERNAL LIMITS
+    for (var queryParams in requestArray) {
+      if (queryParams.containsKey('method') || queryParams.containsKey('hc')) {
+        continue; // skip immediate requests
+      }
+      testCommonRequestParams(queryParams); // checks general params
+      if (queryParams.containsKey('apm')) {
+        Map<String, dynamic> apm = json.decode(queryParams['apm']![0]);
+        expect(apm['name'].toString().length <= 5, isTrue);
+      } else if (queryParams.containsKey('crash')) {
+        Map<String, dynamic> crash = json.decode(queryParams['crash']![0]);
+        Map<String, dynamic> crashDetails = crash['_custom'];
+        expect(crashDetails.length <= 5, isTrue);
+        List<String> logs = crash['_logs'].split('\n');
+        expect(logs.length <= 5, isTrue);
+        for (var log in logs) {
+          expect(log.length <= 5, isTrue);
+        }
+        // iOS crash limits are not applied to the stack trace
+        if (Platform.isAndroid) {
+          List<String> stackTraces = crash['_error'].split('\n');
+          expect(stackTraces.length <= 5, isTrue);
+          for (var stackTrace in stackTraces) {
+            expect(stackTrace.length <= 5, isTrue);
+          }
+          expect(crash['_error'].length <= 5 * 5, isTrue);
+        }
+
+        for (var key in crashDetails.keys) {
+          expect(key.length <= 5, isTrue);
+          expect(crashDetails[key].toString().length <= 5, isTrue);
+        }
+      } else if (queryParams.containsKey('events')) {
+        var eventRaw = json.decode(queryParams['events']![0]);
+        for (var event in eventRaw) {
+          validateInternalLimitsForEvents(event, 5, 5, 5);
+        }
+      } else if (queryParams.containsKey('user_details')) {
+        Map<String, dynamic> userDetails = json.decode(queryParams['user_details']![0]);
+        if (userDetails['custom'] != null && userDetails['custom'].length <= 2) {
+          // operators are not truncated with segmentation values limit
+          expect((userDetails['custom'].values.where((v) => v is! Map).length ?? 0) <= 5, isTrue);
+          expect(userDetails['custom']['speci'], 'somet');
+          expect(userDetails['custom']['not_s'], 'somet');
+        }
+
+        // in iOS user data requests are formed in a different request
+        if (userDetails['custom'].length > 2) {
+          checkUnchangingUserData(userDetails, 5, 5);
+        }
+
+        if (Platform.isAndroid || (Platform.isIOS && userDetails['custom'] == null)) {
+          checkUnchangingUserPropeties(userDetails, 5);
+        }
+      }
+    }
 
     await Countly.instance.content.refreshContentZone(); // this will not affect because refresh disabled
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);

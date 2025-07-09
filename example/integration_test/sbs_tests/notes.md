@@ -17,7 +17,7 @@ Tests
 
 - A
 Call all features
-Provide SBS from server {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'cz': true, 'czi': 16, 'bom': false}
+Provide SBS from server {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false}
 Change all SDK internal limits and validate that all are applied
 Trigger two requests that their response duration is above 10 seconds
 Validate that:
