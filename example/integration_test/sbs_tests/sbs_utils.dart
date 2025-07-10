@@ -225,3 +225,17 @@ void validateInternalLimitsForEvents(Map<String, dynamic> event, int maxKeyLengt
     }
   }
 }
+
+/// Retrieves the request queue from the server.
+/// And parses it into a list of maps with query parameters.
+Future<List<Map<String, List<String>>>> getRequestQueueParsed() async {
+  List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
+  List<String> rq = await getRequestQueue();
+  if (rq.isNotEmpty) {
+    requestArray = rq.map((item) {
+      Uri parsed = Uri.parse('https://count.ly?' + item);
+      return parsed.queryParametersAll;
+    }).toList();
+  }
+  return requestArray;
+}

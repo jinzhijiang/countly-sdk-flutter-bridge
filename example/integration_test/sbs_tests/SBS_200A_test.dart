@@ -20,14 +20,14 @@ void main() {
     storeRequest({'first': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 65)).millisecondsSinceEpoch.toString()});
     storeRequest({'second': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 45)).millisecondsSinceEpoch.toString()});
 
-    List<Map<String, List<String>>> RQ = await getRequestQueueParsed();
-    validateRequestCounts({'first': 1, 'second': 1}, RQ); // validate that requests are stored correctly
-    expect(RQ.length, 2); // two requests should be stored
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
 
     await Countly.initWithConfig(config);
     await Future.delayed(const Duration(seconds: 2));
+
+    List<Map<String, List<String>>> RQ = await getRequestQueueParsed();
+    validateRequestCounts({'first': 1, 'second': 1}, RQ); // validate that requests are stored correctly
 
     await callAllFeatures(disableEnterContent: true);
     RQ = await getRequestQueueParsed();

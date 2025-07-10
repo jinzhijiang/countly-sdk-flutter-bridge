@@ -20,7 +20,6 @@ void main() {
 
     await callAllFeatures();
 
-    print(requestArray);
     List<String> RQ = await getRequestQueue();
     List<String> EQ = await getEventQueue();
     expect(RQ.length, 0);
