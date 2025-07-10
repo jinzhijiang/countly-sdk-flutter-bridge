@@ -146,6 +146,12 @@ NSString * const requestKeyConsecutiveBackoffRequest = @"cbom";
     if (CountlyDeviceInfo.sharedInstance.isDeviceIDTemporary) {
         CLY_LOG_W(@"%s, currently in temporary id mode, omitting", __FUNCTION__);
     }
+
+    if (!CountlyServerConfig.sharedInstance.networkingEnabled)
+    {
+        CLY_LOG_D(@"'sendHealthCheck' is aborted: SDK Networking is disabled from server config!");
+        return;
+    }
     
     if (!_healthCheckEnabled || _healthCheckSent) {
         CLY_LOG_D(@"%s, health check status, sent: %d, not_enabled: %d", __FUNCTION__, _healthCheckSent, _healthCheckEnabled);
