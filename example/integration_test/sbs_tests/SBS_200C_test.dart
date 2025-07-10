@@ -13,19 +13,10 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('SBS_200C_test', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-    createServer(requestArray, customHandler: (request, queryParams, response) async {
-      Map<String, Object> responseJson = {'result': 'Success'};
-      if (queryParams.containsKey('method')) {
-        if (queryParams['method']!.first == 'feedback') {
-          responseJson = {'result': []};
-        }
-      }
-
-      response
-        ..statusCode = HttpStatus.ok
-        ..headers.contentType = ContentType.json
-        ..headers.set('Access-Control-Allow-Origin', '*')
-        ..write(jsonEncode(responseJson));
+    createServerWithConfig(requestArray, {
+      'v': 1,
+      't': 1750748806695,
+      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
     });
 
     setServerConfig({
