@@ -6,6 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 import '../event_tests/event_utils.dart';
 import '../utils.dart';
 
+/// internal event key: [reserved segmentation keys : is it truncable]
+/// For example mode in orientation is not truncable, but name in view is truncable
+Map<String, Map<String, bool>> reservedSegmentationKeys = {
+  '[CLY]_view': {'name': true, 'visit': false, 'start': false, 'segment': false},
+  '[CLY]_orientation': {'mode': false}
+};
+
 /// Validates the immediate counts in the request array.
 /// This function checks the number of immediate methods recorded in the request array
 /// and compares them with the expected counts provided in the `immediates` map.
@@ -69,10 +76,15 @@ void validateInternalEventCounts(Map<String, int> internalEventsCounts, List<Map
 /// It also includes the things that are affected by the SDK internal limits, such as truncable events
 /// This function is used in integration tests to validate the functionality of the Countly SDK with the SBS
 /// At the end of the function, it triggers sending requests to the queue and waits for 10 seconds to ensure all requests are sent and queues are empty
-Future<void> callAllFeatures({bool disableEnterContent = false}) async {
+Future<void> callAllFeatures({bool disableEnterContent = false, bool disableSend = false}) async {
   await Countly.giveAllConsent();
   await Countly.getAvailableFeedbackWidgets();
   await Countly.instance.sessions.beginSession();
+  await Countly.addCrashLog('First Breadcrumb'); // breadcrumb
+  await Countly.addCrashLog('Launched app'); // breadcrumb
+  await Countly.addCrashLog('Came to end'); // breadcrumb
+  await Countly.addCrashLog('Not done yet'); // breadcrumb
+  await Countly.addCrashLog('Will enter soon'); // breadcrumb
   await createTruncableEvents();
   await generateEvents();
   await Countly.setUserLocation(countryCode: 'TR', city: 'Istanbul', gpsCoordinates: '41.0082,28.9784', ipAddress: '10.2.33.12');
@@ -114,7 +126,10 @@ Future<void> callAllFeatures({bool disableEnterContent = false}) async {
 
   await Future.delayed(const Duration(seconds: 2));
   await Countly.instance.sessions.endSession();
-
+  if (disableSend) {
+    // if send is disabled, we will not send the requests to the server
+    return;
+  }
   await Countly.instance.attemptToSendStoredRequests();
   // check queues are empty and all requests are sent
   await Future.delayed(const Duration(seconds: 10));
@@ -180,4 +195,33 @@ void createServerWithConfig(List<Map<String, List<String>>> requestArray, Map<St
       ..headers.set('Access-Control-Allow-Origin', '*')
       ..write(jsonEncode(responseJson));
   });
+}
+
+/// Validates the internal limits for events based on the provided event data.
+/// This function checks the key length, value size, and segmentation values
+void validateInternalLimitsForEvents(Map<String, dynamic> event, int maxKeyLength, int maxValueSize, int maxSegmentationValues) {
+  // Validate key length
+  Map<String, bool> validationSetForKey = reservedSegmentationKeys[event['key']] ?? {};
+  bool isReservedKey = validationSetForKey.isNotEmpty;
+
+  if (!isReservedKey) {
+    // internal keys like '[CLY]_view' are not truncated
+    expect(event['key'].toString().length <= maxKeyLength, isTrue);
+  }
+
+  if (event['segmentation'] != null) {
+    // Validate segmentation keys and values
+    Map<String, dynamic> segmentation = event['segmentation'];
+    expect(segmentation.length <= maxSegmentationValues + validationSetForKey.length, isTrue);
+    for (var key in segmentation.keys) {
+      bool checkValueSizeLimit = validationSetForKey[key] ?? true;
+      if (validationSetForKey[key] == null) {
+        expect(key.length <= maxKeyLength, isTrue);
+      }
+
+      if (checkValueSizeLimit && segmentation[key] is String) {
+        expect(segmentation[key].toString().length <= maxValueSize, isTrue);
+      }
+    }
+  }
 }

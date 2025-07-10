@@ -5,6 +5,7 @@ import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
 import 'sbs_utils.dart';
 
+/// Currently it is not possible to test SCUI, we only test its value validations
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('SBS_200B_test', (WidgetTester tester) async {
@@ -41,5 +42,9 @@ void main() {
       't': 1750748806695,
       'c': {'tracking': false, 'scui': 1}
     });
+
+    await Future.delayed(const Duration(seconds: 60));
+    // wait one minute and ensure no sc requests sent
+    validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 4, 'rc': 1}, requestArray);
   });
 }

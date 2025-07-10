@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -397,9 +398,10 @@ void checkUnchangingUserData(userDetails, MAX_KEY_LENGTH, MAX_VALUE_SIZE) {
 }
 
 /// Truncate a string to a given limit
-String truncate(string, limit) {
-  var length = string.length;
+String truncate(String string, int limit) {
+  int length = string.length;
   limit = limit != null ? limit : length;
+  limit = min(length, limit);
   return string.substring(0, limit);
 }
 
