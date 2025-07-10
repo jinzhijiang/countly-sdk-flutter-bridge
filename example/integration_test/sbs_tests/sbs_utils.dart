@@ -76,8 +76,10 @@ void validateInternalEventCounts(Map<String, int> internalEventsCounts, List<Map
 /// It also includes the things that are affected by the SDK internal limits, such as truncable events
 /// This function is used in integration tests to validate the functionality of the Countly SDK with the SBS
 /// At the end of the function, it triggers sending requests to the queue and waits for 10 seconds to ensure all requests are sent and queues are empty
-Future<void> callAllFeatures({bool disableEnterContent = false, bool disableSend = false}) async {
-  await Countly.giveAllConsent();
+Future<void> callAllFeatures({bool disableEnterContent = false, bool disableSend = false, bool disableConsentCall = false}) async {
+  if (!disableConsentCall) {
+    await Countly.giveAllConsent();
+  }
   await Countly.getAvailableFeedbackWidgets();
   await Countly.instance.sessions.beginSession();
   await Countly.addCrashLog('First Breadcrumb'); // breadcrumb
