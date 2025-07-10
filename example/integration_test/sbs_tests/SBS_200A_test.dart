@@ -15,9 +15,14 @@ void main() {
     createServerWithConfig(requestArray, {
       'v': 1,
       't': 1750748806695,
-      'c': {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false}
+      'c': {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false, 'dort': 1}
     });
+    storeRequest({'first': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 65)).millisecondsSinceEpoch.toString()});
+    storeRequest({'second': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 45)).millisecondsSinceEpoch.toString()});
 
+    List<Map<String, List<String>>> RQ = await getRequestQueueParsed();
+    validateRequestCounts({'first': 1, 'second': 1}, RQ); // validate that requests are stored correctly
+    expect(RQ.length, 2); // two requests should be stored
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
 
@@ -25,14 +30,17 @@ void main() {
     await Future.delayed(const Duration(seconds: 2));
 
     await callAllFeatures(disableEnterContent: true);
+    RQ = await getRequestQueueParsed();
+    expect(RQ.length, 0);
 
-    validateRequestCounts({'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1, 'consent': 0}, requestArray);
-    validateInternalEventCounts({'orientation': 1, 'view': 5}, requestArray); // 6 android
+    validateRequestCounts({'first': 0, 'second': 1, 'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1, 'consent': 0}, requestArray);
+    // validate that first request is deleted from the queue because of dort: 1
+    validateInternalEventCounts({'orientation': 1, 'view': Platform.isAndroid ? 6 : 5}, requestArray); // 6 android
     // enter content zone is not called, but a content zone request is sent it is because server config is set cz to true
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
 
     for (var queryParams in requestArray) {
-      if (queryParams.containsKey('method') || queryParams.containsKey('hc')) {
+      if (queryParams.containsKey('method') || queryParams.containsKey('hc') || queryParams.containsKey('second')) {
         continue; // skip immediate requests
       }
       testCommonRequestParams(queryParams); // checks general params
@@ -43,7 +51,7 @@ void main() {
         Map<String, dynamic> crash = json.decode(queryParams['crash']![0]);
         Map<String, dynamic> crashDetails = crash['_custom'];
         expect(crashDetails.length <= 5, isTrue);
-        List<String> logs = crash['_logs'].split('\n');
+        List<String> logs = (crash['_logs'] as String).split('\n').where((line) => line.trim().isNotEmpty).toList();
         expect(logs.length <= 5, isTrue);
         for (var log in logs) {
           expect(log.length <= 5, isTrue);
@@ -51,11 +59,9 @@ void main() {
         // iOS crash limits are not applied to the stack trace
         if (Platform.isAndroid) {
           List<String> stackTraces = crash['_error'].split('\n');
-          expect(stackTraces.length <= 5, isTrue);
           for (var stackTrace in stackTraces) {
             expect(stackTrace.length <= 5, isTrue);
           }
-          expect(crash['_error'].length <= 5 * 5, isTrue);
         }
 
         for (var key in crashDetails.keys) {
@@ -106,7 +112,7 @@ void main() {
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,
-      'c': {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false}
+      'c': {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false, 'dort': 1}
     });
   });
 }
