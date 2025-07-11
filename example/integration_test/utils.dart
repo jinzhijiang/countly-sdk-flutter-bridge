@@ -52,6 +52,19 @@ Future<Map<String, dynamic>> getServerConfig() async {
   return Map<String, dynamic>.from(sc);
 }
 
+Future<void> recordReservedEvent(String key, Map<String, Object>? segmentation) async {
+  if (Platform.isIOS) {
+    // iOS uses a different method for reserved events
+    List<Object?> args = [];
+
+    args.add(key);
+    args.add(segmentation);
+    await _channelTest.invokeMethod('recordReservedEvent', <String, dynamic>{'data': json.encode(args.where((item) => item != null).toList())});
+  } else {
+    await Countly.instance.events.recordEvent(key, segmentation);
+  }
+}
+
 /// Verify the common request queue parameters
 void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);

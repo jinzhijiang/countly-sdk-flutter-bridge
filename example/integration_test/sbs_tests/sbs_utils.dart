@@ -14,6 +14,8 @@ Map<String, Map<String, bool>> reservedSegmentationKeys = {
   '[CLY]_nps': {'platform': false, 'app_version': false, 'widget_id': false, 'closed': false, 'rating': false, 'comment': false},
   '[CLY]_survey': {'platform': false, 'app_version': false, 'widget_id': false, 'closed': false},
   '[CLY]_star_rating': {'platform': false, 'app_version': false, 'widget_id': false, 'closed': false, 'rating': false, 'comment': false},
+  '[CLY]_push_action': {'p': false, 'i': false, 'b': false},
+  // '[CLY]_action': {} this is in android but not used, iOS does not have this
 };
 
 /// Validates the immediate counts in the request array.

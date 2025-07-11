@@ -32,6 +32,20 @@ void main() {
     validateInternalEventCounts({'nps': 1}, requestArray);
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
 
+    recordReservedEvent('[CLY]_orientation', {'mode': 'portrait'});
+    recordReservedEvent('[CLY]_orientation', {'mode': 'landscape'});
+    recordReservedEvent('[CLY]_star_rating', {'platform': 'Web', 'app_version': '1.0', 'widget_id': 'starRatingID', 'closed': false, 'rating': 5, 'comment': 'Loved it!'});
+    recordReservedEvent('[CLY]_star_rating', {'platform': 'Android', 'app_version': '1.0', 'widget_id': 'starRatingID', 'closed': false, 'rating': 3, 'comment': 'Meh'});
+    EQ = await getEventQueue();
+    expect(EQ.length, 4);
+
+    recordReservedEvent('[CLY]_star_rating', {'platform': 'iOS', 'app_version': '1.0', 'widget_id': 'starRatingID', 'closed': false, 'rating': 1, 'comment': 'NO'});
+    EQ = await getEventQueue();
+    expect(EQ.length, 0); // validate that event queue is cleared when hit the limit and recording internal events are not affected by the custom event tracking disablement
+    await Future.delayed(const Duration(seconds: 2));
+
+    validateInternalEventCounts({'nps': 1, 'star_rating': 3, 'orientation': 2}, requestArray);
+
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,
