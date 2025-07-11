@@ -16,7 +16,7 @@ void main() {
     createServerWithConfig(requestArray, {
       'v': 1,
       't': 1750748806695,
-      'c': {'st': false, 'cet': false, 'vt': false, 'eqs': 5, 'lt': false, 'crt': false, 'bom_at': 5, 'bom_d': 30, 'bom_rqp': 0.01, 'bom_ra': 1}
+      'c': {'st': false, 'cet': false, 'vt': false, 'eqs': 5, 'lt': false, 'crt': false, 'bom_at': 5, 'bom_d': 30, 'bom_rqp': 0.001, 'bom_ra': 1}
     });
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
@@ -49,7 +49,26 @@ void main() {
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,
-      'c': {'st': false, 'cet': false, 'vt': false, 'eqs': 5, 'lt': false, 'crt': false, 'bom_at': 5, 'bom_d': 30, 'bom_rqp': 0.01, 'bom_ra': 1}
+      'c': {'st': false, 'cet': false, 'vt': false, 'eqs': 5, 'lt': false, 'crt': false, 'bom_at': 5, 'bom_d': 30, 'bom_rqp': 0.001, 'bom_ra': 1}
     });
+
+    await Countly.instance.content.exitContentZone();
+    requestArray.clear();
+
+    sbsServerDelay = 5;
+    storeRequest({'first': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 65)).millisecondsSinceEpoch.toString()}); // this will be not backed off because ra 1
+    await Countly.recordNetworkTrace('Network Trace', 203, 123, 421, 542, 564); // this will be not backed off because rqp 0.001
+    await Countly.recordNetworkTrace('Network Trace', 200, 500, 600, 100, 150); // backoff will trigger here
+    await Countly.recordNetworkTrace('Network Trace', 201, 350, 222, 333, 111); // this will be backed off for 30 seconds
+    await Countly.instance.attemptToSendStoredRequests();
+    await Future.delayed(const Duration(seconds: 15));
+
+    validateRequestCounts({'apm': 2, 'first': 1}, requestArray);
+    await Countly.instance.attemptToSendStoredRequests(); // this will not take effect
+    await Future.delayed(const Duration(seconds: 5));
+    validateRequestCounts({'apm': 2, 'first': 1}, requestArray);
+
+    await Future.delayed(const Duration(seconds: 40));
+    validateRequestCounts({'apm': 3, 'first': 1}, requestArray);
   });
 }
