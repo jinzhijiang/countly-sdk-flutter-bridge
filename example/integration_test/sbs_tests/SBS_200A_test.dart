@@ -17,14 +17,15 @@ void main() {
       't': 1750748806695,
       'c': {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false, 'dort': 1}
     });
-    storeRequest({'first': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 65)).millisecondsSinceEpoch.toString()});
-    storeRequest({'second': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 45)).millisecondsSinceEpoch.toString()});
 
     // Initialize the SDK
     CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
 
     await Countly.initWithConfig(config);
     await Future.delayed(const Duration(seconds: 2));
+
+    storeRequest({'first': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 65)).millisecondsSinceEpoch.toString()});
+    storeRequest({'second': 'true', 'device_id': 'device_id_200C', 'app_key': APP_KEY, 'timestamp': DateTime.now().subtract(const Duration(minutes: 45)).millisecondsSinceEpoch.toString()});
 
     List<Map<String, List<String>>> RQ = await getRequestQueueParsed();
     validateRequestCounts({'first': 1, 'second': 1}, RQ); // validate that requests are stored correctly
@@ -33,7 +34,7 @@ void main() {
     RQ = await getRequestQueueParsed();
     expect(RQ.length, 0);
 
-    validateRequestCounts({'first': 0, 'second': 1, 'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': 1, 'consent': 0}, requestArray);
+    validateRequestCounts({'first': 0, 'second': 1, 'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1, 'consent': 0}, requestArray);
     // validate that first request is deleted from the queue because of dort: 1
     validateInternalEventCounts({'orientation': 1, 'view': Platform.isAndroid ? 6 : 5}, requestArray); // 6 android
     // enter content zone is not called, but a content zone request is sent it is because server config is set cz to true
