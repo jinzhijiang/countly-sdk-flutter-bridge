@@ -124,5 +124,6 @@ getAvaliableFeedbackWidgets= if no consent it broken iOS
 iOS crash limits not applied to the stack traces
 because health checks one of the earlier ones, in 200C if it was FS heath checks was sent because it runs before we fetch SBS.
 Android has scrolls, content, star-rating, clicks consents extra
+iOS reports all widget events directly but not android, android does not send rating report event immediately
 
 validation things with base test
