@@ -10,7 +10,10 @@ import '../utils.dart';
 /// For example mode in orientation is not truncable, but name in view is truncable
 Map<String, Map<String, bool>> reservedSegmentationKeys = {
   '[CLY]_view': {'name': true, 'visit': false, 'start': false, 'segment': false},
-  '[CLY]_orientation': {'mode': false}
+  '[CLY]_orientation': {'mode': false},
+  '[CLY]_nps': {'platform': false, 'app_version': false, 'widget_id': false, 'closed': false, 'rating': false, 'comment': false},
+  '[CLY]_survey': {'platform': false, 'app_version': false, 'widget_id': false, 'closed': false},
+  '[CLY]_star_rating': {'platform': false, 'app_version': false, 'widget_id': false, 'closed': false, 'rating': false, 'comment': false},
 };
 
 /// Validates the immediate counts in the request array.
@@ -119,7 +122,7 @@ Future<void> callAllFeatures({bool disableEnterContent = false, bool disableSend
   await Countly.instance.remoteConfig.exitABTestsForKeys(['key1', 'key2']);
 
   // END IMMEDIATE CALLS
-  await Countly.reportFeedbackWidgetManually(CountlyPresentableFeedback('test', 'nps', 'test'), {}, {});
+  await Countly.reportFeedbackWidgetManually(CountlyPresentableFeedback('npsID', 'nps', 'NPS Feedback'), {}, {'rating': 5, 'comment': 'Great app!'});
 
   await Future.delayed(const Duration(seconds: 2));
   await Countly.instance.sessions.updateSession();
@@ -155,20 +158,8 @@ void validateRequestCounts(Map<String, int> requests, List<Map<String, List<Stri
       }
     }
   }
-
-  if (Platform.isIOS) {
-    for (var entry in requests.entries) {
-      if (actualRequests[entry.key] == null) {
-        actualRequests[entry.key] = 0; // Ensure all keys are present in the actualRequests map
-      }
-    }
-    // iOS specific validation because until refactoring iOS, the request counts may differ due to its problematic RQ handling
-    expect(actualRequests.length, requests.length, reason: 'Mismatch in number of request methods actual: $actualRequests, expected: $requests');
-  } else {
-// Validate the counts
-    for (var entry in requests.entries) {
-      expect(actualRequests[entry.key] ?? 0, entry.value, reason: 'Mismatch for method ${entry.key}');
-    }
+  for (var entry in requests.entries) {
+    expect(actualRequests[entry.key] ?? 0, entry.value, reason: 'Mismatch for method ${entry.key}');
   }
 }
 
@@ -183,7 +174,13 @@ void createServerWithConfig(List<Map<String, List<String>>> requestArray, Map<St
       if (queryParams['method']!.first == 'sc') {
         responseJson = serverConfig;
       } else if (queryParams['method']!.first == 'feedback') {
-        responseJson = {'result': []};
+        responseJson = {
+          'result': [
+            {'_id': 'npsID', 'type': 'nps', 'name': 'NPS Feedback'},
+            {'_id': 'surveyID', 'type': 'survey', 'name': 'Survey Feedback'},
+            {'_id': 'starID', 'type': 'rating', 'name': 'Star Rating Feedback'},
+          ]
+        };
       }
     }
 

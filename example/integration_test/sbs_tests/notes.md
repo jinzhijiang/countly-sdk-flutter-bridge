@@ -17,8 +17,9 @@ Tests
 
 - A
 Call all features
-Provide SBS from server {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false}
+Provide SBS from server {'lkl': 5, 'lvs': 5, 'lsv': 5, 'lbc': 5, 'ltlpt': 5, 'ltl': 5, 'rcz': false, 'ecz': true, 'czi': 16, 'bom': false, 'dort': 1}
 Change all SDK internal limits and validate that all are applied
+Store couple of requests before starting the SDK and show that they are deleted by drop request age
 Trigger two requests that their response duration is above 10 seconds
 Validate that:
 - content zone is called after init
@@ -38,8 +39,7 @@ Validate that:
 
 - C
 Call all features
-Provide SBS from server {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10, 'dort': 1}
-Store couple of requests before starting the SDK and show that they are deleted by drop request age
+Provide SBS from storage {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
 Validate that:
 - No requests exist in the sent requestArray in mock server
 - RQ contains items
@@ -121,3 +121,8 @@ Notes iOS:
 In the base test iOS required more time then Android at the end
 Because there is a probability for iOS to duplicate requests, checking request counts were not good
 getAvaliableFeedbackWidgets= if no consent it broken iOS
+iOS crash limits not applied to the stack traces
+because health checks one of the earlier ones, in 200C if it was FS heath checks was sent because it runs before we fetch SBS.
+Android has scrolls, content, star-rating, clicks consents extra
+
+validation things with base test

@@ -34,9 +34,9 @@ void main() {
     RQ = await getRequestQueueParsed();
     expect(RQ.length, 0);
 
-    validateRequestCounts({'first': 0, 'second': 1, 'events': 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1, 'consent': 0}, requestArray);
+    validateRequestCounts({'first': 0, 'second': 1, 'events': Platform.isAndroid ? 3 : 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1, 'consent': 0}, requestArray);
     // validate that first request is deleted from the queue because of dort: 1
-    validateInternalEventCounts({'orientation': 1, 'view': Platform.isAndroid ? 6 : 5}, requestArray); // 6 android
+    validateInternalEventCounts({'orientation': 1, 'view': Platform.isAndroid ? 6 : 5, 'nps': 1}, requestArray); // 6 android
     // enter content zone is not called, but a content zone request is sent it is because server config is set cz to true
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
 
