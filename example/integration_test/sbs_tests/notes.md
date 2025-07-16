@@ -125,7 +125,7 @@ Provide SBS from server:
 {
       'v': 1,
       't': 1750748806695,
-      'c': {'lvs': 'hoho', 'lsv': 'hehe', 'lbc': -5, 'ltlpt': 0, 'ltl': 0, 'rcz': 'no', 'ecz': 'no', 'czi': -16, 'bom': 'test', 'dort': false, 'tracking': 'no', 'scui': 0.1, 'networking': 'yes', 'cr': '', 'rqs': -5, 'sui': -10}
+      'c': {'lvs': 'hoho', 'lsv': 'hehe', 'lbc': -5, 'ltlpt': 0, 'unkown': 'very_unkown', 'ltl': 0, 'rcz': 'no', 'ecz': 'no', 'czi': -16, 'bom': 'test', 'dort': false, 'tracking': 'no', 'scui': 0.1, 'networking': 'yes', 'cr': '', 'rqs': -5, 'sui': -10}
     }
 ```
 
@@ -135,7 +135,7 @@ Store SBS:
 {
       'v': 1,
       't': 1750748806695,
-      'c': {'st': 'yes', 'cet': 'no', 'vt': 0, 'eqs': 0, 'lt': 1, 'crt': 'value', 'bom_at': -1, 'bom_d': -1, 'bom_rqp': 50, 'bom_ra': -1, 'lkl': 'test'}
+      'c': {'st': 'yes', 'cet': 'no', 'vt': 0, 'eqs': 0, 'unkown1': 'very_unkown1', 'lt': 1, 'crt': 'value', 'bom_at': -1, 'bom_d': -1, 'bom_rqp': 50, 'bom_ra': -1, 'lkl': 'test'}
     }
 ```
 Validate that:
@@ -147,7 +147,7 @@ Provide SBS through configuration:
 {
       'v': 1,
       't': 1750748806695,
-      'c': {'st': 'yes', 'cet': 'no', 'vt': 0, 'eqs': 0, 'lt': 1, 'crt': 'value', 'bom_at': -1, 'bom_d': -1, 'bom_rqp': 50, 'bom_ra': -1, 'lkl': 'test'}
+      'c': {'st': 'yes', 'cet': 'no', 'vt': 0, 'eqs': 0, 'unkown1': 'very_unkown1', 'lt': 1, 'crt': 'value', 'bom_at': -1, 'bom_d': -1, 'bom_rqp': 50, 'bom_ra': -1, 'lkl': 'test'}
     }
 ```
 Validate that:
