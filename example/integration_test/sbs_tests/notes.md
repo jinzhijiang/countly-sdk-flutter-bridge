@@ -117,6 +117,47 @@ tests are:
 - 201D_DP_P_S_FS_temp_id
 - 201E_DP_P_FS_temp_id
 
+---------------------------------------------------------------------------------------------------------------------------------
+
+202X tests value validation where:
+Provide SBS from server:
+```json
+{
+      'v': 1,
+      't': 1750748806695,
+      'c': {'lvs': 'hoho', 'lsv': 'hehe', 'lbc': -5, 'ltlpt': 0, 'ltl': 0, 'rcz': 'no', 'ecz': 'no', 'czi': -16, 'bom': 'test', 'dort': false, 'tracking': 'no', 'scui': 0.1, 'networking': 'yes', 'cr': '', 'rqs': -5, 'sui': -10}
+    }
+```
+
+- A
+Store SBS:
+```json
+{
+      'v': 1,
+      't': 1750748806695,
+      'c': {'st': 'yes', 'cet': 'no', 'vt': 0, 'eqs': 0, 'lt': 1, 'crt': 'value', 'bom_at': -1, 'bom_d': -1, 'bom_rqp': 50, 'bom_ra': -1, 'lkl': 'test'}
+    }
+```
+Validate that:
+- Stored SBS at the end does not have any config values, only version and timestamp there.
+
+- B
+Provide SBS through configuration:
+```json
+{
+      'v': 1,
+      't': 1750748806695,
+      'c': {'st': 'yes', 'cet': 'no', 'vt': 0, 'eqs': 0, 'lt': 1, 'crt': 'value', 'bom_at': -1, 'bom_d': -1, 'bom_rqp': 50, 'bom_ra': -1, 'lkl': 'test'}
+    }
+```
+Validate that:
+- Stored SBS at the end does not have any config values, only version and timestamp there.
+
+tests are:
+- 202A_S_FS
+- 202B_P_FS
+
+---------------------------------------------------------------------------------------------------------------------------------
 Notes iOS:
 In the base test iOS required more time then Android at the end
 Because there is a probability for iOS to duplicate requests, checking request counts were not good
