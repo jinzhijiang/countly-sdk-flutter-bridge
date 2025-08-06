@@ -144,7 +144,7 @@ NSString *const kRBOMDuration = @"bom_d";
     
     if (!newConfig[kRVersion] || !newConfig[kRTimestamp])
     {
-        CLY_LOG_D(@"%s, version or timestamp is missing in the behavioır settings omitting", __FUNCTION__);
+        CLY_LOG_D(@"%s, version or timestamp is missing in the behavior settings omitting", __FUNCTION__);
         return;
     }
     
