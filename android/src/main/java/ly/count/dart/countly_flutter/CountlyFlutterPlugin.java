@@ -9,7 +9,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
+// import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import ly.count.android.sdk.Countly;
 import ly.count.android.sdk.CountlyConfig;
@@ -134,13 +134,13 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     //----------PLUGIN REGISTRATION (FlutterPlugin)-------------------
     
     // Required for pre Flutter 1.12 projects
-    public static void registerWith(Registrar registrar) {
-        final CountlyFlutterPlugin instance = new CountlyFlutterPlugin();
-        instance.activity = registrar.activity();
-        final Context __context = registrar.context();
-        instance.onAttachedToEngineInternal(__context, registrar.messenger());
-        log("registerWith", LogLevel.INFO);
-    }
+    // public static void registerWith(Registrar registrar) {
+    //     final CountlyFlutterPlugin instance = new CountlyFlutterPlugin();
+    //     instance.activity = registrar.activity();
+    //     final Context __context = registrar.context();
+    //     instance.onAttachedToEngineInternal(__context, registrar.messenger());
+    //     log("registerWith", LogLevel.INFO);
+    // }
 
     // Called from Android embedding v2
     @Override
@@ -456,6 +456,13 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                         }
                     }
                 });
+            } else if ("recordMetrics".equals(call.method)) {
+                if (args.length() > 0 ) {
+                    Countly.sharedInstance().recordMetrics(toMapString(args.getJSONObject(0)));
+                } else {
+                    Countly.sharedInstance().recordMetrics(null);
+                }
+                result.success("recordMetrics!");
             } else if ("beginSession".equals(call.method)) {
                 Countly.sharedInstance().sessions().beginSession();
                 result.success("beginSession!");
