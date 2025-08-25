@@ -35,6 +35,18 @@ class OthersPage extends StatelessWidget {
     Countly.disableLocation();
   }
 
+  void recordMetrics() {
+    Countly.recordMetrics({
+      'metric1': 1,
+      'metric2': 2.2,
+      'metric3': 'value3',
+      '_device': 'intel',
+      'os': 'sth',
+      '_os': 'iOS',
+      'ge': ['1', '2', '3']
+    });
+  }
+
   void randomListValues() {
     // string list
     List<String> list = ['value1', 'value2', 'value3'];
@@ -94,6 +106,7 @@ class OthersPage extends StatelessWidget {
             MyButton(text: 'Set Location', color: 'violet', onPressed: setLocation),
             MyButton(text: 'Disable Location', color: 'violet', onPressed: disableLocation),
             MyButton(text: 'Random List Values', color: 'violet', onPressed: randomListValues),
+            MyButton(text: 'Record Metrics', color: 'olive', onPressed: recordMetrics),
           ],
         )),
       ),

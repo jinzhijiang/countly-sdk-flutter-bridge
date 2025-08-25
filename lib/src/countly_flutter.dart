@@ -535,6 +535,21 @@ class Countly {
     return '';
   }
 
+  static Future<void> recordMetrics([Map<String, Object>? metrics]) async {
+    if (!_instance._countlyState.isInitialized) {
+      String message = '"initWithConfig" must be called before "recordMetrics"';
+      log('recordMetrics, $message', logLevel: LogLevel.ERROR);
+      return;
+    }
+    log('Calling "recordMetrics" with override: [$metrics]');
+    List<dynamic> args = [];
+    if (metrics != null) {
+      metrics.updateAll((key, value) => value.toString());
+      args.add(metrics);
+    }
+    await _channel.invokeMethod('recordMetrics', <String, dynamic>{'data': json.encode(args)});
+  }
+
   /// Starts session for manual session handling.
   /// This method needs to be called for starting a session only if manual session handling is enabled by calling the 'enableManualSessionHandling' method of 'CountlyConfig'.
   /// returns the error or success message

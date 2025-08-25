@@ -549,7 +549,11 @@ static dispatch_once_t onceToken;
     [CountlyConnectionManager.sharedInstance addDirectRequest:requestParameters];
 }
 
-
+- (void)recordMetrics:(NSDictionary<NSString *, NSString *> * _Nullable)metricsOverride
+{
+    CLY_LOG_I(@"%s %@", __FUNCTION__, metricsOverride);
+        [CountlyConnectionManager.sharedInstance recordMetrics:metricsOverride];
+}
 
 #pragma mark - Sessions
 

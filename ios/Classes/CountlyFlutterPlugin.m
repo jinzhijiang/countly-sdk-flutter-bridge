@@ -188,6 +188,16 @@ FlutterMethodChannel *_channel;
           result(@"setuserdata!");
         });
 
+    } else if ([@"recordMetrics" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+        NSMutableDictionary *metricsOverride = nil;
+        if (command.count > 0) {
+            metricsOverride = [command objectAtIndex:0];
+        }
+
+          [Countly.sharedInstance recordMetrics:metricsOverride];
+          result(@"recordMetrics!");
+        });
     } else if ([@"beginSession" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
           [Countly.sharedInstance beginSession];

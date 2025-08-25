@@ -37,6 +37,7 @@ typedef enum : NSUInteger
 + (NSString *)appVersion;
 + (NSString *)appBuild;
 
++ (NSDictionary *)metricsDictionary;
 + (NSString *)metrics;
 
 + (NSUInteger)connectionType;
