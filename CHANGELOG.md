@@ -1,3 +1,6 @@
+## 24.7.2-rc1-np
+* Improved metric reporting capabilities.
+
 ## 24.7.1
 * Added a new configuration option `enableTemporaryDeviceIDMode` to 'CountlyConfig' interface
 * Introduced a new `deviceID` interface for grouping device ID management related methods:
