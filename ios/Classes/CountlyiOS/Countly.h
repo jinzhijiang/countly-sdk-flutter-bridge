@@ -830,6 +830,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /* Combine all events in event queue into a request and attempt to process stored requests on demand
  */
+
+- (NSNumber *)isReservedEvent:(NSString *)key;
 - (void)attemptToSendStoredRequests;
 
 NS_ASSUME_NONNULL_END

@@ -1,5 +1,14 @@
+## 24.7.2-rc2-np
+* Added ability to record reserved events in ios.
+
+* Underlying Android SDK version is 24.7.2-rc1
+* Updated underlying iOS SDK version to 24.7.2-rc2
+
 ## 24.7.2-rc1-np
 * Improved metric reporting capabilities.
+
+* Updated underlying Android SDK version to 24.7.2-rc1
+* Updated underlying iOS SDK version to 24.7.2-rc1
 
 ## 24.7.1
 * Added a new configuration option `enableTemporaryDeviceIDMode` to 'CountlyConfig' interface
