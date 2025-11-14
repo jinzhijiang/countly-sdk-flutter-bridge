@@ -28,9 +28,6 @@ void main() {
 
     // Get request queue from native side
     List<Map<String, List<String>>> requestList = (await getRequestQueue()).map((e) => Uri.parse("?" + e).queryParametersAll).toList();
-    for (var req in requestList) {
-      print(req);
-    }
 
     // Currently
     // 0- user properties: beforeBeginSession
