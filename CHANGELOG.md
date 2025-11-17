@@ -1,4 +1,5 @@
 ## XX.XX.XX
+* Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
 * Default request method is now set to "POST"
 
 ## 25.4.1

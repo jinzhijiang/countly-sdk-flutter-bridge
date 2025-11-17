@@ -1692,6 +1692,25 @@ class Countly {
     await _channel.invokeMethod('attemptToSendStoredRequests');
   }
 
+  /// Add custom headers to all network requests made by the SDK.
+  Future<void> addCustomNetworkRequestHeaders(Map<String, String> customHeaderValues) async {
+    if (!_instance._countlyState.isInitialized) {
+      log('addCustomNetworkRequestHeaders, "initWithConfig" must be called before "addCustomNetworkRequestHeaders"', logLevel: LogLevel.ERROR);
+      return;
+    }
+
+    if (customHeaderValues.isEmpty) {
+      log('addCustomNetworkRequestHeaders, customHeaderValues cannot be empty', logLevel: LogLevel.WARNING);
+      return;
+    }
+
+    log('Calling "addCustomNetworkRequestHeaders" with headers count: [${customHeaderValues.length}]');
+    List<dynamic> args = [];
+    args.add(customHeaderValues);
+
+    await _channel.invokeMethod('addCustomNetworkRequestHeaders', <String, dynamic>{'data': json.encode(args)});
+  }
+
   /// starts a timed event
   /// returns error or success message
   @Deprecated('This function is deprecated, please use "startEvent" of events instead')
