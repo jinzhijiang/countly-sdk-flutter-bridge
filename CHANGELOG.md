@@ -1,6 +1,10 @@
-## XX.XX.XX
+## 25.4.2
 * Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
 * Default request method is now set to "POST"
+
+* Updated underlying Android SDK version to 25.4.6
+* Updated underlying iOS SDK version to 25.4.7
+* Updated underlying Web SDK version to 25.4.2
 
 ## 25.4.1
 * Added fullscreen support for feedback widgets.
