@@ -1,6 +1,13 @@
 ## 25.4.2
 * Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
 * Default request method is now set to "POST"
+* Updated user properties caching mechanism according to sessions.
+* Improved content error handling and display mechanics in Android.
+* Non window contexts also now uses POST requests by default in Web.
+
+* Mitigated a race condition that could happen when recording previous event name in iOS.
+* Mitigated a possible issue with request timeouts in IE11 in Web
+* Mitigated an issue where manual feedback reporting could have failed in Web.
 
 * Updated underlying Android SDK version to 25.4.6
 * Updated underlying iOS SDK version to 25.4.7
