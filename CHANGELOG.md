@@ -1,6 +1,8 @@
 ## XX.XX.XX
 * Added setting custom network request headers support for web platform.
-  
+* Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
+* Default request method is now set to "POST"
+
 ## 25.4.1
 * Added fullscreen support for feedback widgets.
 * Added "disableSDKBehaviorSettingsUpdates()" init config method to disable server config updates.

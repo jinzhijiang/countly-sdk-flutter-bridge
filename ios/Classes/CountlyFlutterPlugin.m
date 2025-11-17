@@ -1390,7 +1390,13 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance attemptToSendStoredRequests];
         });
         result(@"attemptToSendStoredRequests: success");
-    }  else {
+    } else if ([@"addCustomNetworkRequestHeaders" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary* customHeaderValues = [command objectAtIndex:0];
+            [Countly.sharedInstance addCustomNetworkRequestHeaders:customHeaderValues];
+            result(nil);
+        });
+    } else {
         result(FlutterMethodNotImplemented);
     }
 }
