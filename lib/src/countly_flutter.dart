@@ -907,7 +907,7 @@ class Countly {
     return result;
   }
 
-  /// Set to 'true' if you want HTTP POST to be used for all requests
+  /// Set to 'false' if you want HTTP POST not to be used for all requests
   /// Should be call before Countly init
   /// returns the error or success message
   @Deprecated('This functions is deprecated, please use "setHttpPostForced" of CountlyConfig instead')
@@ -1681,7 +1681,7 @@ class Countly {
     return result;
   }
 
-  /// Attempt to send all stored requests to the server.  
+  /// Attempt to send all stored requests to the server.
   Future<void> attemptToSendStoredRequests() async {
     if (!_instance._countlyState.isInitialized) {
       String message = '"initWithConfig" must be called before "attemptToSendStoredRequests"';
