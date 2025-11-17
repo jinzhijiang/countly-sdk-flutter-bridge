@@ -35,7 +35,7 @@ echo "🧹 Applying sparse-checkout rules from: scripts/config/sparse-checkout.l
 git sparse-checkout init --no-cone
 
 # Apply the rules inside Git internals
-cp "$MAIN_SPARSE_FILE" "$(git rev-parse --git-path info)/config/sparse-checkout"
+cp "$MAIN_SPARSE_FILE" "$(git rev-parse --git-path info)/sparse-checkout"
 
 # Apply to working tree
 git read-tree -mu HEAD
