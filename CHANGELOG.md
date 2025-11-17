@@ -1,3 +1,6 @@
+## XX.XX.XX
+* Default request method is now set to "POST"
+
 ## 25.4.1
 * Added fullscreen support for feedback widgets.
 * Added "disableSDKBehaviorSettingsUpdates()" init config method to disable server config updates.
