@@ -1,8 +1,11 @@
 #!/bin/bash
 
 ### CONFIGURATION ###
+
+CONFIG_FILE="$(dirname "$0")/config/sdk_versions.txt"
+
+IOS_SDK_VERSION=$(grep "^ios_sdk_version=" "$CONFIG_FILE" | cut -d '=' -f2)
 SUBMODULE_PATH="ios/Classes/countly-sdk-ios"
-IOS_SDK_VERSION="25.4.7"
 TAG="${1:-$IOS_SDK_VERSION}"   # default tag if none given
 MAIN_SPARSE_FILE="../../../scripts/config/sparse-checkout.list"  # relative path from submodule
 
