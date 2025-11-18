@@ -1396,6 +1396,12 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance addCustomNetworkRequestHeaders:customHeaderValues];
             result(nil);
         });
+    } else if ([@"recordMetrics" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary* metricsOverride = [command objectAtIndex:0];
+            [Countly.sharedInstance recordMetrics:metricsOverride];
+            result(nil);
+        });
     } else {
         result(FlutterMethodNotImplemented);
     }

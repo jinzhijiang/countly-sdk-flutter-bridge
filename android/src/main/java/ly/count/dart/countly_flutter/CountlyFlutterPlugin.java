@@ -341,6 +341,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Map<String, String> customHeaderValues = toMapString(args.getJSONObject(0));
                 Countly.sharedInstance().requestQueue().addCustomNetworkRequestHeaders(customHeaderValues);
                 result.success("addCustomNetworkRequestHeaders success!");
+            } else if ("recordMetrics".equals(call.method)) {
+                Map<String, String> metricsOverride = toMapString(args.getJSONObject(0));
+                Countly.sharedInstance().requestQueue().recordMetrics(metricsOverride);
+                result.success("recordMetrics success!");
             } else if ("setHttpPostForced".equals(call.method)) {
                 boolean isEnabled = args.getBoolean(0);
                 this.config.setHttpPostForced(isEnabled);
