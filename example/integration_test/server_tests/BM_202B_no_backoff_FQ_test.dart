@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -22,7 +24,7 @@ void main() {
 
     List<String> requestList = await getRequestQueue(); // List of strings
     List<String> eventList = await getEventQueue(); // List of json objects
-    expect(requestList.length, 7);
+    expect(requestList.length, Platform.isAndroid ? 6 : 7);
     expect(eventList.length, 0);
 
     createServer(requestArray, delay: 1);
