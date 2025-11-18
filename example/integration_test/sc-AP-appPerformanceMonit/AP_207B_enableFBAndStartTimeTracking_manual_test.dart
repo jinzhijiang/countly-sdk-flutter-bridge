@@ -23,7 +23,7 @@ void main() {
     // TODO: this automation is Android only, iOS automation is not supported yet
     FlutterForegroundTask.minimizeApp();
 
-    print("Waiting for 3 seconds in background");
+    print('Waiting for 3 seconds in background');
     await Future.delayed(const Duration(seconds: 3));
 
     FlutterForegroundTask.launchApp();
