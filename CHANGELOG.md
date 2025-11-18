@@ -1,6 +1,8 @@
 ## XX.XX.XX
 * Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
 * Default request method is now set to "POST"
+* Added a new function "recordMetrics: metricsOverride" to send a device metrics request.
+* Added a new Consent option "metrics" for controlling "recordMetrics" method. (This has no effect on Session metrics.)
 
 ## 25.4.1
 * Added fullscreen support for feedback widgets.
