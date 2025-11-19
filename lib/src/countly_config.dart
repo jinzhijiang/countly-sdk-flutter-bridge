@@ -47,6 +47,7 @@ class CountlyConfig {
   String? _sdkBehaviorSettings;
   bool _backoffMechanismDisabled = false;
   bool _sdkBehaviorSettingsUpdatesDisabled = false;
+  int? _requestTimeoutDuration;
 
   /// instance of CountlyConfigApm
   final CountlyConfigApm _countlyConfigApmInstance = CountlyConfigApm();
@@ -142,6 +143,8 @@ class CountlyConfig {
   bool get backoffMechanismDisabled => _backoffMechanismDisabled;
 
   bool get sdkBehaviorSettingsUpdatesDisabled => _sdkBehaviorSettingsUpdatesDisabled;
+
+  int? get requestTimeoutDuration => _requestTimeoutDuration;
 
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
@@ -399,6 +402,13 @@ class CountlyConfig {
   /// Disable the server config updates to the server
   CountlyConfig disableSDKBehaviorSettingsUpdates() {
     _sdkBehaviorSettingsUpdatesDisabled = true;
+    return this;
+  }
+
+  /// Set the request timeout duration in seconds
+  /// [int requestTimeoutDuration] - duration in seconds
+  CountlyConfig setRequestTimeoutDuration(int requestTimeoutDuration) {
+    _requestTimeoutDuration = requestTimeoutDuration;
     return this;
   }
 }

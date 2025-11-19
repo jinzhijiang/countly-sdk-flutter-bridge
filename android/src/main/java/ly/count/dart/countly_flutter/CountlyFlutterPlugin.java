@@ -1722,6 +1722,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.setRequestDropAgeHours(_config.getInt("requestDropAgeHours"));
         }
 
+        if (_config.has("requestTimeoutDuration")) {
+            this.config.setRequestTimeoutDuration(_config.getInt("requestTimeoutDuration"));
+        }
+
         if (_config.has("manualSessionEnabled") && _config.getBoolean("manualSessionEnabled")) {
             enableManualSessionControl();
         }

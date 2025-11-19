@@ -66,6 +66,7 @@ class CountlyConfiguration {
         //   ..setParameterTamperingProtectionSalt('salt') // Set the optional salt to be used for calculating the checksum of requested data which will be sent with each request
         //   ..enableManualSessionHandling() // Enable manual session handling
         //   ..setHttpPostForced(true) // Set to 'false' if you want HTTP POST not to be used for all requests
+        //   ..setRequestTimeoutDuration(15) // Set the request timeout duration to 15 seconds
         //   ..setCustomNetworkRequestHeaders({
         //           'Content-Type': 'application/json',
         //           'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
