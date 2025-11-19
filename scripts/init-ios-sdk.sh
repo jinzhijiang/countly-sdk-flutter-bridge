@@ -4,7 +4,7 @@
 
 #CONFIG_FILE="$(dirname "$0")/config/sdk_versions.txt"
 #$(grep "^ios_sdk_version=" "$CONFIG_FILE" | cut -d '=' -f2)
-IOS_SDK_VERSION=25.4.7
+IOS_SDK_VERSION=25.4.8
 SUBMODULE_PATH="ios/Classes/countly-sdk-ios"
 TAG="${1:-$IOS_SDK_VERSION}"   # default tag if none given
 MAIN_SPARSE_FILE="../../../scripts/config/sparse-checkout.list"  # relative path from submodule
@@ -35,7 +35,7 @@ echo "🧹 Applying sparse-checkout rules from: scripts/config/sparse-checkout.l
 git sparse-checkout init --no-cone
 
 # Apply the rules inside Git internals
-cp "$MAIN_SPARSE_FILE" "$(git rev-parse --git-path info)/config/sparse-checkout"
+cp "$MAIN_SPARSE_FILE" "$(git rev-parse --git-path info)/sparse-checkout"
 
 # Apply to working tree
 git read-tree -mu HEAD
