@@ -1,16 +1,17 @@
-import 'package:countly_flutter/countly_flutter.dart';
+import 'package:countly_flutter_np/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import '../utils.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('BM_201D_backoffDelay_both', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
-  
+
     // Initialize the SDK
     CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true).setMaxRequestQueueSize(5);
-    await Countly.initWithConfig(config); 
+    await Countly.initWithConfig(config);
 
     storeRequest({
       "azd": "begin_session",
