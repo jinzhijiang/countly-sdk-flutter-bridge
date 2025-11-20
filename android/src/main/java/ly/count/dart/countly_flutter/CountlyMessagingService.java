@@ -51,13 +51,17 @@ public class CountlyMessagingService extends FirebaseMessagingService {
 //            message.recordAction(getApplicationContext());
 //            return;
 //        }
+        if (message == null) {
+            Log.d(TAG, "Not a Countly message");
+            return;
+        }
 
         Context context = getApplicationContext();
         if(context == null){
             Log.d(Countly.TAG, "[CountlyMessagingService] getApplicationContext() returns null: context must be non-null to displayNotification");
             return;
         }
-        Boolean result = CountlyPush.displayNotification(context, message, context.getApplicationInfo().icon, null);
+        Boolean result = CountlyPush.displayNotification(getApplicationContext(), message, context.getApplicationInfo().icon, null);
         if (result == null) {
             Log.i(TAG, "Message wasn't sent from Countly server, so it cannot be handled by Countly SDK");
         } else if (result) {
