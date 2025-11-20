@@ -54,7 +54,7 @@ void main() {
     requestList = await getRequestQueue(); // List of strings
     eventList = await getEventQueue(); // List of json objects
 
-    expect(requestList.length, Platform.isAndroid ? 4 : 5);
+    expect(requestList.length, 5);
     expect(eventList.length, 0);
   });
 }

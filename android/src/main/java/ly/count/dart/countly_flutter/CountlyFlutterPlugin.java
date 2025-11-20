@@ -62,7 +62,7 @@ import ly.count.android.sdk.messaging.CountlyPush;
  */
 public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, ActivityAware, DefaultLifecycleObserver {
     private static final String TAG = "CountlyFlutterPlugin";
-    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "25.4.1";
+    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "25.4.2";
     private final String COUNTLY_FLUTTER_SDK_NAME = "dart-flutterb-android";
     private final String COUNTLY_FLUTTER_SDK_NAME_NO_PUSH = "dart-flutterbnp-android";
 
@@ -332,8 +332,15 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             else if ("attemptToSendStoredRequests".equals(call.method)) {
                 Countly.sharedInstance().requestQueue().attemptToSendStoredRequests();
                 result.success("attemptToSendStoredRequests success!");
-            }
-            else if ("setHttpPostForced".equals(call.method)) {
+            } else if ("addCustomNetworkRequestHeaders".equals(call.method)) {
+                Map<String, String> customHeaderValues = toMapString(args.getJSONObject(0));
+                Countly.sharedInstance().requestQueue().addCustomNetworkRequestHeaders(customHeaderValues);
+                result.success("addCustomNetworkRequestHeaders success!");
+            } else if ("recordMetrics".equals(call.method)) {
+                Map<String, String> metricsOverride = toMapString(args.getJSONObject(0));
+                Countly.sharedInstance().requestQueue().recordMetrics(metricsOverride);
+                result.success("recordMetrics success!");
+            } else if ("setHttpPostForced".equals(call.method)) {
                 boolean isEnabled = args.getBoolean(0);
                 this.config.setHttpPostForced(isEnabled);
                 result.success("setHttpPostForced");

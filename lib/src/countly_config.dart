@@ -15,7 +15,7 @@ class CountlyConfig {
   String? _locationCountryCode;
   bool? _loggingEnabled;
   bool _locationDisabled = false;
-  bool? _httpPostForced;
+  bool _httpPostForced = true;
   Map<String, String>? _customNetworkRequestHeaders;
   String? _locationGpsCoordinates;
   String? _daCampaignType;
@@ -140,9 +140,9 @@ class CountlyConfig {
   String? get sdkBehaviorSettings => _sdkBehaviorSettings;
 
   bool get backoffMechanismDisabled => _backoffMechanismDisabled;
-  
+
   bool get sdkBehaviorSettingsUpdatesDisabled => _sdkBehaviorSettingsUpdatesDisabled;
-  
+
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
 
@@ -235,7 +235,7 @@ class CountlyConfig {
     return this;
   }
 
-  /// Set to 'true' if you want HTTP POST to be used for all requests
+  /// Set to 'false' if you want HTTP POST to be not used for all requests
   CountlyConfig setHttpPostForced(bool isForced) {
     _httpPostForced = isForced;
     return this;
@@ -309,6 +309,7 @@ class CountlyConfig {
   }
 
   @Deprecated('This function is deprecated, please use remoteConfigRegisterGlobalCallback instead')
+
   /// If enable, will automatically download newest remote config values.
   /// enabled set true for enabling it
   /// callback callback called after the update was done
@@ -388,7 +389,7 @@ class CountlyConfig {
     _sdkBehaviorSettings = sdkBehaviorSettings;
     return this;
   }
-  
+
   /// Disable the backoff mechanism
   CountlyConfig disableBackoffMechanism() {
     _backoffMechanismDisabled = true;
