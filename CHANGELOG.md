@@ -21,7 +21,7 @@
 * Mitigated a possible issue with request timeouts in IE11 in Web
 * Mitigated an issue where manual feedback reporting could have failed in Web.
 
-* Updated underlying Android SDK version to 25.4.6
+* Updated underlying Android SDK version to 25.4.7
 * Updated underlying iOS SDK version to 25.4.8
 * Updated underlying Web SDK version to 25.4.2
 
