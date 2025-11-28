@@ -1671,6 +1671,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.disableSDKBehaviorSettingsUpdates();
         }
 
+        if (_config.has("disableStoringDefaultPushConsent")) {
+            this.config.disableStoringDefaultPushConsent();
+        }
+
         // APM ------------------------------------------------
         if (_config.has("trackAppStartTime")) {
             this.config.apm.enableAppStartTimeTracking();

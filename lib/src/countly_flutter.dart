@@ -1712,7 +1712,6 @@ class Countly {
     await _channel.invokeMethod('addCustomNetworkRequestHeaders', <String, dynamic>{'data': json.encode(args)});
   }
 
-
   /// Record device metrics manually as a standalone call
   /// [Map<String, String> metricsOverride] - map of key value pairs to override the default metrics
   Future<void> recordMetrics(Map<String, String> metricsOverride) async {
@@ -2268,6 +2267,11 @@ class Countly {
       if (config.sdkBehaviorSettingsUpdatesDisabled) {
         log('"_configToJson", value provided for sdkBehaviorSettingsUpdatesDisabled: [${config.sdkBehaviorSettingsUpdatesDisabled}]', logLevel: LogLevel.INFO);
         countlyConfig['sdkBehaviorSettingsUpdatesDisabled'] = config.sdkBehaviorSettingsUpdatesDisabled;
+      }
+
+      if (config.storingDefaultPushConsentDisabled) {
+        log('"_configToJson", value provided for disableStoringDefaultPushConsent: [${config.storingDefaultPushConsentDisabled}]', logLevel: LogLevel.INFO);
+        countlyConfig['disableStoringDefaultPushConsent'] = config.storingDefaultPushConsentDisabled;
       }
 
       /// Experimental ---------------------------
