@@ -2,6 +2,8 @@
 * Mitigated an issue where push notifications were not shown when consent was not required and app was killed in Android.
 
 * Updated underlying Android SDK version to 25.4.8
+* Underlying iOS SDK version is 25.4.8
+* Underlying Web SDK version is 25.4.2
 
 ## 25.4.2
 * Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
