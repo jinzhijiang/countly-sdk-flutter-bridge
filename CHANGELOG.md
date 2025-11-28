@@ -1,3 +1,6 @@
+## 25.4.3
+* Mitigated an issue where push notifications were not shown when consent was not required and app was killed.
+
 ## 25.4.2
 * Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
 * Default request method is now set to "POST"
