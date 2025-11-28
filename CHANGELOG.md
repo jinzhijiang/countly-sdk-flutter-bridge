@@ -1,5 +1,5 @@
 ## 25.4.3
-* Mitigated an issue where push notifications were not shown when consent was not required and app was killed.
+* Mitigated an issue where push notifications were not shown when consent was not required and app was killed in Android.
 
 * Updated underlying Android SDK version to 25.4.8
 
