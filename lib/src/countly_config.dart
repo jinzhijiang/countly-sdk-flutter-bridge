@@ -47,6 +47,7 @@ class CountlyConfig {
   String? _sdkBehaviorSettings;
   bool _backoffMechanismDisabled = false;
   bool _sdkBehaviorSettingsUpdatesDisabled = false;
+  bool _storingDefaultPushConsentDisabled = false;
 
   /// instance of CountlyConfigApm
   final CountlyConfigApm _countlyConfigApmInstance = CountlyConfigApm();
@@ -142,6 +143,8 @@ class CountlyConfig {
   bool get backoffMechanismDisabled => _backoffMechanismDisabled;
 
   bool get sdkBehaviorSettingsUpdatesDisabled => _sdkBehaviorSettingsUpdatesDisabled;
+
+  bool get storingDefaultPushConsentDisabled => _storingDefaultPushConsentDisabled;
 
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
@@ -399,6 +402,12 @@ class CountlyConfig {
   /// Disable the server config updates to the server
   CountlyConfig disableSDKBehaviorSettingsUpdates() {
     _sdkBehaviorSettingsUpdatesDisabled = true;
+    return this;
+  }
+
+  /// Disable storing the default push consent on initialization
+  CountlyConfig disableStoringDefaultPushConsent() {
+    _storingDefaultPushConsentDisabled = true;
     return this;
   }
 }

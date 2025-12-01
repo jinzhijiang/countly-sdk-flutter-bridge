@@ -88,7 +88,6 @@ void main() {
     validateView("V4", false, false, viewStr: eventList[index++]);
     validateView("V3", false, true, viewStr: eventList[index++]);
     validateEvent("[CLY]_orientation", <String, dynamic>{'mode': 'portrait'}, eventStr: eventList[index++]);
-    
 
     int iCached = index;
     try {

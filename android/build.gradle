@@ -38,5 +38,5 @@ android {
 }
 
 dependencies {
-    implementation 'ly.count.android:sdk:25.4.7'
+    implementation 'ly.count.android:sdk:25.4.8'
 }
