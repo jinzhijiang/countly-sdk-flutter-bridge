@@ -2270,19 +2270,11 @@ class Countly {
       }
 
       if (config.storingDefaultPushConsentDisabled) {
-        final value = BUILDING_WITH_PUSH_DISABLED ? true : config.storingDefaultPushConsentDisabled;
-        if (BUILDING_WITH_PUSH_DISABLED) {
-          log(
-            'storingDefaultPushConsentDisabled, $_pushDisabledMsg',
-            logLevel: LogLevel.ERROR,
-          );
-        } else {
-          log(
-            '"_configToJson", value provided for disableStoringDefaultPushConsent: [$value]',
-            logLevel: LogLevel.INFO,
-          );
-        }
-        countlyConfig['disableStoringDefaultPushConsent'] = value;
+        log(
+          '"_configToJson", value provided for disableStoringDefaultPushConsent: [${config.storingDefaultPushConsentDisabled}]',
+          logLevel: LogLevel.INFO,
+        );
+        countlyConfig['disableStoringDefaultPushConsent'] = config.storingDefaultPushConsentDisabled;
       }
 
       /// Experimental ---------------------------
