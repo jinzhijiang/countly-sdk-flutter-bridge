@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:countly_flutter/countly_flutter.dart';
+import 'package:countly_flutter_np/countly_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -44,8 +44,8 @@ void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);
   expect(
       requestObject['sdk_name']?[0],
-      "dart-flutterb-${kIsWeb ? 'web' : Platform.isIOS ? 'ios' : 'android'}");
-  expect(requestObject['sdk_version']?[0], '25.4.4');
+      "dart-flutterbnp-${kIsWeb ? 'web' : Platform.isIOS ? 'ios' : 'android'}");
+  expect(requestObject['sdk_version']?[0], '25.4.3');
   expect(
       requestObject['av']?[0],
       kIsWeb
