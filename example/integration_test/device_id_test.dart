@@ -14,7 +14,7 @@ void main() {
   if (!kIsWeb) {
     return;
   }
-  
+
   group("Device ID change tests", () {
     tearDown(() async {
       await Countly.instance.halt();
