@@ -11,7 +11,7 @@ import 'utils.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  if(!kIsWeb){
+  if (!kIsWeb) {
     return;
   }
   group("Device ID change tests", () {

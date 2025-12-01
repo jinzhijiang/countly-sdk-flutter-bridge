@@ -30,7 +30,6 @@ void main() {
 
     await Future.delayed(const Duration(seconds: 2));
 
-
     // check if there is 3 apm related requests in the queue
     List<String> apmRequests = await getAndPrintWantedElementsWithParamFromAllQueues('apm');
     expect(apmRequests.length, Platform.isIOS ? 3 : 1);

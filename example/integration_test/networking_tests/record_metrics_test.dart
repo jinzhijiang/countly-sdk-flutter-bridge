@@ -36,7 +36,7 @@ void main() {
       'empty_value': '',
     };
 
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       // Android SDK ignores empty key metrics
       customMetrics.remove('');
     }
