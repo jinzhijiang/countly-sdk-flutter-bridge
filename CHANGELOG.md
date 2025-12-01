@@ -1,3 +1,10 @@
+## 25.4.4
+* Mitigated an issue in iOS class paths. 
+
+* Underlying Android SDK version to 25.4.8
+* Underlying iOS SDK version is 25.4.8
+* Underlying Web SDK version is 25.4.2
+
 ## 25.4.3
 * Mitigated an issue where push notifications were not shown when consent was not required and app was killed in Android.
 
