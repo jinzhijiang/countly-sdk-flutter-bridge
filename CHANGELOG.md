@@ -1,4 +1,4 @@
-## 25.4.4-rc1
+## 25.4.4
 * Mitigated an issue in iOS class paths. 
 
 * Underlying Android SDK version to 25.4.8
