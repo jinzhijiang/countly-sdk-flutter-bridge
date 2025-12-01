@@ -1,7 +1,7 @@
 ## 25.4.3-np
 * Mitigated an issue in iOS class paths. 
 
-* Underlying Android SDK version to 25.4.8
+* Updated underlying Android SDK version to 25.4.8
 * Underlying iOS SDK version is 25.4.8
 * Underlying Web SDK version is 25.4.2
 
