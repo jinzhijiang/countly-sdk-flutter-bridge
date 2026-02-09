@@ -2194,6 +2194,11 @@ class Countly {
         countlyConfig['globalViewSegmentation'] = config.globalViewSegmentation;
       }
 
+      if (config.autoViewStartStopEnabled) {
+        log('"_configToJson", value provided for enableAutoViewStartStop: [${config.autoViewStartStopEnabled}]', logLevel: LogLevel.INFO);
+        countlyConfig['enableAutoViewStartStop'] = config.autoViewStartStopEnabled;
+      }
+
       if (config.enableAllConsents) {
         log('"_configToJson", value provided for enableAllConsents: [${config.enableAllConsents}]', logLevel: LogLevel.INFO);
         countlyConfig['enableAllConsents'] = config.enableAllConsents;

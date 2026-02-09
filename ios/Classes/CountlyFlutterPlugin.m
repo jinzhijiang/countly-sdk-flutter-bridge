@@ -1598,6 +1598,11 @@ FlutterMethodChannel *_channel;
         if (eventQueueSizeThreshold) {
             config.eventSendThreshold = [eventQueueSizeThreshold intValue];
         }
+
+        NSNumber *enableAutoViewStartStop = _config[@"enableAutoViewStartStop"];
+        if (enableAutoViewStartStop) {
+            config.enableAutoViewStartStop = [enableAutoViewStartStop boolValue];
+        }
         NSNumber *sessionUpdateTimerDelay = _config[@"sessionUpdateTimerDelay"];
         if (sessionUpdateTimerDelay) {
             config.updateSessionPeriod = [sessionUpdateTimerDelay intValue];

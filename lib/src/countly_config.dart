@@ -41,6 +41,7 @@ class CountlyConfig {
   final List<RCDownloadCallback> _remoteConfigGlobalCallbacks = [];
   bool _remoteConfigValueCaching = false;
   Map<String, Object>? _globalViewSegmentation;
+  bool _enableAutoViewStartStop = false;
   bool _enableAllConsents = false;
   bool _autoEnrollABOnDownload = false;
   int? _requestDropAgeHours;
@@ -127,6 +128,8 @@ class CountlyConfig {
   bool get remoteConfigValueCaching => _remoteConfigValueCaching;
 
   Map<String, Object>? get globalViewSegmentation => _globalViewSegmentation;
+
+  bool get autoViewStartStopEnabled => _enableAutoViewStartStop;
 
   bool get enableAllConsents => _enableAllConsents;
 
@@ -300,6 +303,7 @@ class CountlyConfig {
   }
 
   @Deprecated('This function is deprecated, please use remoteConfigRegisterGlobalCallback instead')
+
   /// If enable, will automatically download newest remote config values.
   /// enabled set true for enabling it
   /// callback callback called after the update was done
@@ -349,6 +353,12 @@ class CountlyConfig {
   /// Used to enable global view segmentation
   CountlyConfig setGlobalViewSegmentation(Map<String, Object> segmentation) {
     _globalViewSegmentation = segmentation;
+    return this;
+  }
+
+  /// Switches auto view tracking to use start/stop instead of pause/resume
+  CountlyConfig enableAutoViewStartStop() {
+    _enableAutoViewStartStop = true;
     return this;
   }
 
