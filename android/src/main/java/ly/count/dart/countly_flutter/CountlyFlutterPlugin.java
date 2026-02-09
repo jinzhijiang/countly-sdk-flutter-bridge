@@ -1734,7 +1734,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         }
 
         if (_config.has("enableAutoViewStartStop") && _config.getBoolean("enableAutoViewStartStop")) {
-            this.config.enableAutoViewStartStop();
+            this.config.setEnableAutoViewStartStop(true);
         }
 
         if (_config.has("enableAllConsents") && _config.getBoolean("enableAllConsents")) {
