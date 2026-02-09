@@ -1,3 +1,5 @@
 .idea/
+.dart_tool/
+.github/
 example/android/app/google-services.json
 example/ios/Podfile.lock
