@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:io' show Platform;
 
 import 'package:countly_flutter_np/countly_config.dart';
 import 'package:countly_flutter_np/countly_flutter.dart';
-import 'package:countly_flutter_lite/countly.dart' as C;
+import 'package:countly_flutter_lite/countly_flutter_lite.dart' as C;
 import 'package:countly_sdk_dart_core/src/networking.dart' as N;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -45,8 +44,7 @@ void main() {
 
   testWidgets('Migration does not re-populate legacy values on next core init', (WidgetTester tester) async {
     const markerEventKey = 'Old reinit marker event';
-    final oldConfig =
-        CountlyConfig('https://old.com', 'old-app-reinit').setLoggingEnabled(true).setDeviceId('old-device-reinit');
+    final oldConfig = CountlyConfig('https://old.com', 'old-app-reinit').setLoggingEnabled(true).setDeviceId('old-device-reinit');
     await Countly.initWithConfig(oldConfig);
 
     Countly.instance.userProfile.setProperty('specialReinitProperty', 'value');

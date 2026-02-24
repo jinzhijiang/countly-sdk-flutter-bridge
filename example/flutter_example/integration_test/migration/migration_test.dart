@@ -3,7 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:countly_flutter_np/countly_config.dart';
 import 'package:countly_flutter_np/countly_flutter.dart';
-import 'package:countly_flutter_lite/countly.dart' as C;
+import 'package:countly_flutter_lite/countly_flutter_lite.dart' as C;
 import 'package:countly_sdk_dart_core/src/networking.dart' as N;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -44,8 +44,7 @@ void main() {
   });
 
   testWidgets('Test SDK migrates data from flutter SDK', (WidgetTester tester) async {
-    final oldConfig =
-        CountlyConfig('https://old.com', 'old-app-key').setLoggingEnabled(true).setDeviceId('old-device-id');
+    final oldConfig = CountlyConfig('https://old.com', 'old-app-key').setLoggingEnabled(true).setDeviceId('old-device-id');
     await Countly.initWithConfig(oldConfig);
 
     Countly.instance.userProfile.setProperty('specialProperty', 'value');

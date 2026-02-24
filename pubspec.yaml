@@ -1,9 +1,10 @@
 name: countly_flutter_lite
-description: Flutter wrapper for countly_sdk_dart_core with platform adapters and native migration bridge.
+description: Lightweight and stable Flutter SDK for simple analytics integration.
 version: 26.1.0-rc.1
 homepage: https://countly.com
-repository: https://github.com/Countly/countly-sdk-dart
-issue_tracker: https://github.com/Countly/countly-sdk-dart/issues
+repository: https://github.com/Countly/countly-sdk-flutter-bridge
+issue_tracker: https://github.com/Countly/countly-sdk-flutter-bridge/issues
+topics: analytics, flutter, sdk, mobile, countly
 
 environment:
   sdk: ^3.0.0
@@ -19,6 +20,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  http: ^1.2.2
 
 flutter:
   plugin:

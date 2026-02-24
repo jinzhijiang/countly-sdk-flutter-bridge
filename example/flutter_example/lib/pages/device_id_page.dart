@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:countly_flutter_lite/countly.dart';
+import 'package:countly_flutter_lite/countly_flutter_lite.dart';
 
 class DeviceIdPage extends StatefulWidget {
   const DeviceIdPage({super.key});
