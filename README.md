@@ -13,9 +13,9 @@ Track, measure, and take action - all without leaving Countly.
 
 ## Integrating Countly SDK in your projects
 
-For a detailed description on how to use this SDK [check out our documentation](https://support.count.ly/hc/en-us/articles/).
+For a detailed description on how to use this SDK [check out our documentation](https://support.countly.com/hc/en-us/articles/360037944212-Flutter#h_01KV0E0M1GZPYV77YH6Z0M9QXH).
 
-For an example integration of this SDK, see the [Flutter example app in this repository](https://github.com/Countly/countly-sdk-dart/tree/main/example/flutter_example).
+For an example integration of this SDK, see the [Flutter example app in this repository](https://github.com/Countly/countly-sdk-flutter-bridge/tree/master-lite/example/flutter_example).
 
 This SDK supports the following features:
 
@@ -39,7 +39,7 @@ dependencies:
 ### Initialization
 
 ```dart
-import 'package:countly_flutter_lite/countly.dart';
+import 'package:countly_flutter_lite/countly_flutter_lite.dart';
 import 'package:flutter/widgets.dart';
 
 void main() async {

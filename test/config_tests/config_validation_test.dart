@@ -1,4 +1,4 @@
-import 'package:countly_flutter_lite/countly.dart';
+import 'package:countly_flutter_lite/countly_flutter_lite.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

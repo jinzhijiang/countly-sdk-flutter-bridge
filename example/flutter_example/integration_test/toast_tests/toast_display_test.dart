@@ -1,4 +1,4 @@
-import 'package:countly_flutter_lite/countly.dart';
+import 'package:countly_flutter_lite/countly_flutter_lite.dart';
 import 'package:countly_sdk_dart_core/src/networking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -385,8 +385,7 @@ void main() {
 
       // No toast
       final countlyTextFinder = find.textContaining('[Countly]');
-      expect(countlyTextFinder, findsNothing,
-          reason: 'Toast should NOT be displayed when enableVisualWarnings defaults to false');
+      expect(countlyTextFinder, findsNothing, reason: 'Toast should NOT be displayed when enableVisualWarnings defaults to false');
 
       await Countly.disposeAll();
     });
@@ -425,8 +424,7 @@ void main() {
 
       // No toast
       final countlyTextFinder = find.textContaining('[Countly]');
-      expect(countlyTextFinder, findsNothing,
-          reason: 'Toast should NOT be displayed for warning when enableVisualWarnings=false');
+      expect(countlyTextFinder, findsNothing, reason: 'Toast should NOT be displayed for warning when enableVisualWarnings=false');
 
       await Countly.disposeAll();
     });

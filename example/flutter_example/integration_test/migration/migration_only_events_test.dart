@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:countly_flutter_np/countly_config.dart';
 import 'package:countly_flutter_np/countly_flutter.dart';
-import 'package:countly_flutter_lite/countly.dart' as C;
+import 'package:countly_flutter_lite/countly_flutter_lite.dart' as C;
 import 'package:countly_sdk_dart_core/src/networking.dart' as N;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -40,10 +40,7 @@ void main() {
   });
 
   testWidgets('Migration with only old event data (no old requests)', (WidgetTester tester) async {
-    final oldConfig = CountlyConfig('https://old.com', 'old-app-only-events')
-        .setLoggingEnabled(true)
-        .enableManualSessionHandling()
-        .setDeviceId('old-only-events-device');
+    final oldConfig = CountlyConfig('https://old.com', 'old-app-only-events').setLoggingEnabled(true).enableManualSessionHandling().setDeviceId('old-only-events-device');
     await Countly.initWithConfig(oldConfig);
 
     Countly.recordEvent({'key': 'old_event_only', 'count': 1});

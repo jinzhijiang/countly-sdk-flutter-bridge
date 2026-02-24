@@ -1,4 +1,5 @@
 import 'package:countly_sdk_dart_core/countly_sdk_dart_core.dart';
+// ignore: implementation_imports
 import 'package:countly_sdk_dart_core/src/migration/legacy_native_types.dart';
 import 'package:flutter/services.dart';
 

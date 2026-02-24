@@ -1,0 +1,61 @@
+name: Flutter Tests and Coverage
+
+on:
+  pull_request:
+    branches:
+      - staging-lite
+
+permissions:
+  contents: read
+
+jobs:
+  package-tests:
+    name: Package tests (root)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run tests with coverage
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter test --coverage -r expanded | tee package-test-output.txt
+
+      - name: Print coverage summary
+        shell: bash
+        run: |
+          if [ ! -f coverage/lcov.info ]; then
+            echo "No coverage/lcov.info found"
+            exit 1
+          fi
+
+          awk -F: '
+          /^LF:/ { lf += $2 }
+          /^LH:/ { lh += $2 }
+          END {
+            pct = (lf > 0) ? (lh / lf) * 100 : 0
+            printf "Root package coverage: %.2f%% (%d/%d)\n", pct, lh, lf
+          }
+          ' coverage/lcov.info | tee package-coverage-summary.txt
+
+          {
+            echo "## Root package test coverage"
+            echo
+            cat package-coverage-summary.txt
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload root coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: root-lcov
+          path: coverage/lcov.info
