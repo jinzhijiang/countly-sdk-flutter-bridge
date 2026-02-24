@@ -1,0 +1,26 @@
+name: flutter_example
+description: Example Flutter app showcasing countly_flutter_lite usage.
+publish_to: 'none'
+version: 0.0.1+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  countly_flutter_lite:
+    path: ../..
+  countly_flutter_np: ^25.4.3
+  shared_preferences: ^2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

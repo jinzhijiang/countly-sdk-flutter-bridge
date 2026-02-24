@@ -1,0 +1,30 @@
+name: countly_flutter_lite
+description: Flutter wrapper for countly_sdk_dart_core with platform adapters and native migration bridge.
+version: 26.1.0-rc.1
+homepage: https://countly.com
+repository: https://github.com/Countly/countly-sdk-dart
+issue_tracker: https://github.com/Countly/countly-sdk-dart/issues
+
+environment:
+  sdk: ^3.0.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  countly_sdk_dart_core: 26.1.0-rc.3
+  shared_preferences: ^2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: ly.count.dart.countly_flutter_lite
+        pluginClass: CountlyFlutterLitePlugin
+      ios:
+        pluginClass: CountlyFlutterLitePlugin
