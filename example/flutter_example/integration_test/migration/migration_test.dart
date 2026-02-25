@@ -92,7 +92,7 @@ void main() {
       if (req['app_key'] == 'app-key') {
         sawNewSdkRequest = true;
         expect(req['device_id'], 'old-device-id');
-        expect(req['sdk_name'], 'countly_sdk_flutter_lite');
+        expect(req['sdk_name'], 'countly-sdk-flutter-lite');
         expect(req['sdk_version'], '26.1.0');
         expect(req['av'], '1.0.0');
       }

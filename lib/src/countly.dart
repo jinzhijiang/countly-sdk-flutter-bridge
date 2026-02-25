@@ -3,7 +3,7 @@ import 'package:countly_sdk_dart_core/countly_sdk_dart_core.dart' as core;
 import 'flutter_environment.dart';
 
 class Countly {
-  static const sdkName = 'countly_sdk_flutter_lite';
+  static const sdkName = 'countly-sdk-flutter-lite';
   static const sdkVersion = '26.1.0';
 
   static core.CountlyInstance? get defaultInstance => core.Countly.defaultInstance;
