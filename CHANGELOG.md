@@ -1,4 +1,4 @@
-## 26.1.0-rc.1
+## 26.1.0
 
 * Initial SDK release with the following functionalities:
 

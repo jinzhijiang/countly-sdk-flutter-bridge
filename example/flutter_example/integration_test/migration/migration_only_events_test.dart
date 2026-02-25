@@ -69,7 +69,7 @@ void main() {
 
     expect(migratedOldEventReq, isNotNull, reason: 'Expected migrated event to be sent');
     expect(migratedOldEventReq!['app_key'], equals('new-app-only-events'));
-    expect(migratedOldEventReq['sdk_name'], 'countly_sdk_flutter_lite');
+    expect(migratedOldEventReq['sdk_name'], 'countly-sdk-flutter-lite');
     expect(migratedOldEventReq['sdk_version'], '26.1.0');
   });
 }
