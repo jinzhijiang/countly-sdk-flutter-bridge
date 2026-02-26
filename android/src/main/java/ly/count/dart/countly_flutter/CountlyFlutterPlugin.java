@@ -21,6 +21,7 @@ import ly.count.android.sdk.ModuleFeedback.*;
 import ly.count.android.sdk.DeviceIdType;
 import ly.count.android.sdk.ContentCallback;
 import ly.count.android.sdk.ContentStatus;
+import ly.count.android.sdk.WebViewDisplayOption;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1791,6 +1792,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.setGlobalViewSegmentation(toMap(globalViewSegmentation));
         }
 
+        if (_config.has("disableViewRestartForManualRecording") && _config.getBoolean("disableViewRestartForManualRecording")) {
+            this.config.disableViewRestartForManualRecording();
+        }
+
         if (_config.has("enableAllConsents") && _config.getBoolean("enableAllConsents")) {
              this.config.giveAllConsents();
         }
@@ -1809,6 +1814,15 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
 
         if (_config.has("zoneTimerInterval")) {
             this.config.content.setZoneTimerInterval(_config.getInt("zoneTimerInterval"));
+        }
+
+        if (_config.has("webviewDisplayOption")) {
+            String option = _config.getString("webviewDisplayOption");
+            if ("IMMERSIVE".equals(option)) {
+                this.config.setWebviewDisplayOption(WebViewDisplayOption.IMMERSIVE);
+            } else if ("SAFE_AREA".equals(option)) {
+                this.config.setWebviewDisplayOption(WebViewDisplayOption.SAFE_AREA);
+            }
         }
 
         this.config.content.setGlobalContentCallback(new ContentCallback() {

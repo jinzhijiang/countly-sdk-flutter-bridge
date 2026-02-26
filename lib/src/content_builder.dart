@@ -1,6 +1,9 @@
 //indicates the content status
 enum ContentStatus { completed, closed }
 
+/// Defines how the webview content should be displayed
+enum WebViewDisplayOption { immersive, safeArea }
+
 typedef ContentCallback = void Function(ContentStatus contentStatus, Map<String, dynamic> contentData);
 
 abstract class ContentBuilder {

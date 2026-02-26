@@ -1755,6 +1755,11 @@ FlutterMethodChannel *_channel;
             config.globalViewSegmentation = globalViewSegmentation;
         }
 
+        NSNumber *disableViewRestartForManualRecording = _config[@"disableViewRestartForManualRecording"];
+        if (disableViewRestartForManualRecording && [disableViewRestartForManualRecording boolValue]) {
+            config.disableViewRestartForManualRecording = YES;
+        }
+
         NSString *gpsCoordinate = _config[@"locationGpsCoordinates"];
         CLLocationCoordinate2D coordinate = [self getCoordinate:gpsCoordinate];
         if (CLLocationCoordinate2DIsValid(coordinate)) {
@@ -1812,7 +1817,16 @@ FlutterMethodChannel *_channel;
         if (zoneTimerInterval) {
             [config.content setZoneTimerInterval:[zoneTimerInterval unsignedIntValue]];
         }
-       
+
+        NSString *webviewDisplayOption = _config[@"webviewDisplayOption"];
+        if (webviewDisplayOption) {
+            if ([webviewDisplayOption isEqualToString:@"IMMERSIVE"]) {
+                [config.content setWebviewDisplayOption:IMMERSIVE];
+            } else if ([webviewDisplayOption isEqualToString:@"SAFE_AREA"]) {
+                [config.content setWebviewDisplayOption:SAFE_AREA];
+            }
+        }
+
     } @catch (NSException *exception) {
         COUNTLY_FLUTTER_LOG(@"[populateConfig], Unable to parse Config object: %@", exception);
     }
