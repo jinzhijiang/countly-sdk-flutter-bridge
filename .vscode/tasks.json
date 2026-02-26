@@ -4,7 +4,7 @@
     {
       "label": "Sync SDK Versions",
       "type": "shell",
-      "command": "${workspaceFolder}/scripts/sync-sdk-versions.sh",
+      "command": "dart run \"${workspaceFolder}/scripts/sync_sdk_versions.dart\"",
       "group": "build",
       "presentation": {
         "reveal": "always",
