@@ -28,11 +28,15 @@ Future<List<String>> getEventQueue() async {
 
 /// Add request to native sides
 void storeRequest(Map<String, dynamic> request) async {
-  await _channelTest.invokeMethod('storeRequest', <String, dynamic>{'data': json.encode([Uri(queryParameters: request).query])});
+  await _channelTest.invokeMethod('storeRequest', <String, dynamic>{
+    'data': json.encode([Uri(queryParameters: request).query])
+  });
 }
 
 void addDirectRequest(Map<String, String> request) async {
-  await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{'data': json.encode([request])});
+  await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{
+    'data': json.encode([request])
+  });
 }
 
 /// Verify the common request queue parameters
@@ -41,7 +45,7 @@ void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(
       requestObject['sdk_name']?[0],
       "dart-flutterb-${kIsWeb ? 'web' : Platform.isIOS ? 'ios' : 'android'}");
-  expect(requestObject['sdk_version']?[0], '25.4.1');
+  expect(requestObject['sdk_version']?[0], '25.4.4');
   expect(
       requestObject['av']?[0],
       kIsWeb
@@ -111,8 +115,8 @@ Future<DeviceIdType> testDeviceIDType(DeviceIdType givenType) async {
   if (givenType == DeviceIdType.SDK_GENERATED) {
     String? id = await Countly.getCurrentDeviceId();
     String? newModuleId = await Countly.instance.deviceId.getID();
-    expect(id!.length, Platform.isIOS ? 36 : 16);
-    expect(newModuleId!.length, Platform.isIOS ? 36 : 16);
+    expect(id!.length, 36); // android does not use Android.SECURE_ID because of that now it uses UUID so length is 36
+    expect(newModuleId!.length, 36);
     expect(id, newModuleId);
   }
   return type!;
@@ -132,7 +136,16 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
     final requestTime = DateTime.now();
     print('[Test Server][${requestTime.toIso8601String()}] Request received: ${request.method} ${request.uri}');
 
-    final queryParams = request.uri.queryParametersAll;
+    var queryParams;
+
+    if (request.method == 'POST') {
+      String content = await utf8.decoder.bind(request).join();
+      queryParams = Uri.parse('?' + content).queryParametersAll;
+    } else if (request.method == 'GET') {
+      queryParams = request.uri.queryParametersAll;
+    } else {
+      print('[Test Server][${DateTime.now().toIso8601String()}] Unsupported request method: ${request.method}');
+    }
     print(queryParams.toString());
 
     // Store the request parameters for later verification

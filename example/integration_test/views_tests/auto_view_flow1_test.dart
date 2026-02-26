@@ -17,19 +17,19 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('Start auto stopped views and stop views', (WidgetTester tester) async {
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig(SERVER_URL, APP_KEY);
+    CountlyConfig config = CountlyConfig(SERVER_URL, APP_KEY).setLoggingEnabled(true);
     await Countly.initWithConfig(config);
 
     await Countly.instance.views.startView("V1");
     await Countly.instance.views.startAutoStoppedView("V2");
 
     FlutterForegroundTask.minimizeApp();
-    sleep(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     await Countly.instance.views.startAutoStoppedView("V4");
     await Countly.instance.views.startView("V3");
 
-    sleep(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     FlutterForegroundTask.launchApp();
     if (Platform.isIOS) {
@@ -88,7 +88,6 @@ void main() {
     validateView("V4", false, false, viewStr: eventList[index++]);
     validateView("V3", false, true, viewStr: eventList[index++]);
     validateEvent("[CLY]_orientation", <String, dynamic>{'mode': 'portrait'}, eventStr: eventList[index++]);
-    
 
     int iCached = index;
     try {

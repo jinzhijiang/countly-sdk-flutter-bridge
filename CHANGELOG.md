@@ -1,3 +1,44 @@
+## 25.4.4
+* Mitigated an issue in iOS class paths. 
+
+* Underlying Android SDK version to 25.4.8
+* Underlying iOS SDK version is 25.4.8
+* Underlying Web SDK version is 25.4.2
+
+## 25.4.3
+* Mitigated an issue where push notifications were not shown when consent was not required and app was killed in Android.
+
+* Updated underlying Android SDK version to 25.4.8
+* Underlying iOS SDK version is 25.4.8
+* Underlying Web SDK version is 25.4.2
+
+## 25.4.2
+* Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
+* Default request method is now set to "POST"
+* Updated user properties caching mechanism according to sessions.
+* Added a new function "recordMetrics: metricsOverride" to send a device metrics request.
+* Added a new Consent option "metrics" for controlling "recordMetrics" method. (This has no effect on Session metrics.)
+* Improved content error handling and display mechanics.
+* Improved Health Check metric information.
+* Improved disk size calculation in crash reports in Android.
+* Non window contexts also now uses POST requests by default in Web.
+* Improved CPU architecture detection capabilities in iOS.
+
+* Mitigated an issue where latest fetched behavior settings were replacing the current settings instead of merging.
+* Mitigated a possible Health Check network log recording issue.
+* Mitigated a potential issue where Remote Config calls could have blocked the main UI thread processes in Android.
+* Mitigated an issue that could have happened when navigating back from a Content in Android.
+* Mitigated a persistency issue with configuration provided SBS and its initial state in Android.
+* Mitigated an issue where SBS could have been fetched twice in Android.
+* Mitigated an SBS issue while in temporary ID mode in iOS.
+* Mitigated a race condition that could happen when recording previous event name in iOS.
+* Mitigated a possible issue with request timeouts in IE11 in Web
+* Mitigated an issue where manual feedback reporting could have failed in Web.
+
+* Updated underlying Android SDK version to 25.4.7
+* Updated underlying iOS SDK version to 25.4.8
+* Updated underlying Web SDK version to 25.4.2
+
 ## 25.4.1
 * Added fullscreen support for feedback widgets.
 * Added "disableSDKBehaviorSettingsUpdates()" init config method to disable server config updates.

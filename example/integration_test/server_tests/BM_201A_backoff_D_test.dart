@@ -75,6 +75,5 @@ void main() {
       expectedEventCount: 0,
       delaySeconds: 60,
     );
-
   });
 }
