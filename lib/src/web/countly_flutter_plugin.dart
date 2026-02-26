@@ -338,7 +338,7 @@ class CountlyFlutterPlugin {
     final head = querySelector('head');
 
     // try this as module
-    final scriptTag = _createScriptTag(CountlyFlutterPluginConfig.getWebSDKUrl());
+    final scriptTag = _createScriptTag(CountlyFlutterPluginConfig.WEB_SDK_URL);
     head?.children.add(scriptTag);
     await scriptTag.onLoad.first;
 

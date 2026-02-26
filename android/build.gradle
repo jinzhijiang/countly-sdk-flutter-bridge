@@ -21,21 +21,6 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 
-// ---- SDK VERSION PARSE ----
-def properties = new File("${rootDir}/../scripts/config/sdk_versions.txt")
-
-def androidSdkVersion = null
-
-properties.eachLine { line ->
-    line = line.trim()
-    if (line.startsWith("android_sdk_version=")) {
-        androidSdkVersion = line.split("=")[1].trim()
-    }
-}
-
-println("Using Android Countly SDK version: " + androidSdkVersion)
-// -------------------------------------
-
 android {
     namespace 'ly.count.dart.countly_flutter'
     compileSdk 35
@@ -51,6 +36,6 @@ android {
 }
 
 dependencies {
-    implementation "ly.count.android:sdk:${androidSdkVersion}"
+    implementation 'ly.count.android:sdk:26.1.0'
     implementation 'com.google.firebase:firebase-messaging:24.0.3'
 }
