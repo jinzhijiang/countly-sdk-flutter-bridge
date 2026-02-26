@@ -30,7 +30,6 @@ class CountlyConfiguration {
   };
 
   static CountlyConfig getConfig() {
-
     if (SERVER_URL == 'https://your.server.ly' || APP_KEY == 'YOUR_APP_KEY') {
       print('Please do not use default set of app key and server url');
     }
@@ -65,7 +64,7 @@ class CountlyConfiguration {
         //   ..setStarRatingTextMessage('Message for start rating dialog')
         //   ..setParameterTamperingProtectionSalt('salt') // Set the optional salt to be used for calculating the checksum of requested data which will be sent with each request
         //   ..enableManualSessionHandling() // Enable manual session handling
-        //   ..setHttpPostForced(false) // Set to 'true' if you want HTTP POST to be used for all requests
+        //   ..setHttpPostForced(true) // Set to 'false' if you want HTTP POST not to be used for all requests
         //   ..setCustomNetworkRequestHeaders({
         //           'Content-Type': 'application/json',
         //           'Authorization': 'Bearer YOUR_ACCESS_TOKEN',

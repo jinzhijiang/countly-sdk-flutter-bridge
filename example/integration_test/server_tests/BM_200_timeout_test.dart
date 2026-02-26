@@ -34,24 +34,16 @@ void main() {
     expect(eventList.isEmpty, true);
     expect(requestList[0], contains("begin_session"));
 
-    if (Platform.isAndroid) {
-      expect(requestArray.length, 5);
-      expect(requestArray[0]['method'], contains("sc"));
-      expect(requestArray[1]['begin_session'], ['1']);
-      expect(requestArray[2]['hc'], isNotNull);
-      expect(requestArray[3]['begin_session'], ['1']);
-      expect(requestArray[4]['method'], contains("sc"));
-    } else if (Platform.isIOS) {
-      expect(requestArray.length, 4);
-      int beginSessions = 0, scCount = 0, hcCount = 0;
-      for (final req in requestArray) {
-        if (req.containsKey('begin_session')) beginSessions++;
-        if (req.containsKey('method') && req['method']!.contains('sc')) scCount++;
-        if (req.containsKey('hc')) hcCount++;
-      }
-      expect(beginSessions, equals(2));
-      expect(scCount, equals(1));
-      expect(hcCount, equals(1));
+    expect(requestArray.length, 4);
+    int beginSessions = 0, scCount = 0, hcCount = 0;
+    for (final req in requestArray) {
+      print(req.toString());
+      if (req.containsKey('begin_session')) beginSessions++;
+      if (req.containsKey('method') && req['method']!.contains('sc')) scCount++;
+      if (req.containsKey('hc')) hcCount++;
     }
+    expect(beginSessions, equals(2));
+    expect(scCount, equals(1));
+    expect(hcCount, equals(1));
   });
 }

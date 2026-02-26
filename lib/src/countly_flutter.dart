@@ -57,6 +57,7 @@ abstract class CountlyConsent {
   static const String feedback = 'feedback';
   static const String remoteConfig = 'remote-config';
   static const String content = 'content';
+  static const String metrics = 'metrics';
 }
 
 class Countly {
@@ -907,7 +908,7 @@ class Countly {
     return result;
   }
 
-  /// Set to 'true' if you want HTTP POST to be used for all requests
+  /// Set to 'false' if you want HTTP POST not to be used for all requests
   /// Should be call before Countly init
   /// returns the error or success message
   @Deprecated('This functions is deprecated, please use "setHttpPostForced" of CountlyConfig instead')
@@ -1681,7 +1682,7 @@ class Countly {
     return result;
   }
 
-  /// Attempt to send all stored requests to the server.  
+  /// Attempt to send all stored requests to the server.
   Future<void> attemptToSendStoredRequests() async {
     if (!_instance._countlyState.isInitialized) {
       String message = '"initWithConfig" must be called before "attemptToSendStoredRequests"';
@@ -1690,6 +1691,39 @@ class Countly {
     }
     log('Calling "attemptToSendStoredRequests"');
     await _channel.invokeMethod('attemptToSendStoredRequests');
+  }
+
+  /// Add custom headers to all network requests made by the SDK.
+  Future<void> addCustomNetworkRequestHeaders(Map<String, String> customHeaderValues) async {
+    if (!_instance._countlyState.isInitialized) {
+      log('addCustomNetworkRequestHeaders, "initWithConfig" must be called before "addCustomNetworkRequestHeaders"', logLevel: LogLevel.ERROR);
+      return;
+    }
+
+    if (customHeaderValues.isEmpty) {
+      log('addCustomNetworkRequestHeaders, customHeaderValues cannot be empty', logLevel: LogLevel.WARNING);
+      return;
+    }
+
+    log('Calling "addCustomNetworkRequestHeaders" with headers count: [${customHeaderValues.length}]');
+    List<dynamic> args = [];
+    args.add(customHeaderValues);
+
+    await _channel.invokeMethod('addCustomNetworkRequestHeaders', <String, dynamic>{'data': json.encode(args)});
+  }
+
+  /// Record device metrics manually as a standalone call
+  /// [Map<String, String> metricsOverride] - map of key value pairs to override the default metrics
+  Future<void> recordMetrics(Map<String, String> metricsOverride) async {
+    if (!_instance._countlyState.isInitialized) {
+      log('recordMetrics, "initWithConfig" must be called before "recordMetrics"', logLevel: LogLevel.ERROR);
+      return;
+    }
+
+    List<dynamic> args = [];
+    args.add(metricsOverride);
+
+    await _channel.invokeMethod('recordMetrics', <String, dynamic>{'data': json.encode(args)});
   }
 
   /// starts a timed event
@@ -2233,6 +2267,11 @@ class Countly {
       if (config.sdkBehaviorSettingsUpdatesDisabled) {
         log('"_configToJson", value provided for sdkBehaviorSettingsUpdatesDisabled: [${config.sdkBehaviorSettingsUpdatesDisabled}]', logLevel: LogLevel.INFO);
         countlyConfig['sdkBehaviorSettingsUpdatesDisabled'] = config.sdkBehaviorSettingsUpdatesDisabled;
+      }
+
+      if (config.storingDefaultPushConsentDisabled) {
+        log('"_configToJson", value provided for disableStoringDefaultPushConsent: [${config.storingDefaultPushConsentDisabled}]', logLevel: LogLevel.INFO);
+        countlyConfig['disableStoringDefaultPushConsent'] = config.storingDefaultPushConsentDisabled;
       }
 
       /// Experimental ---------------------------
