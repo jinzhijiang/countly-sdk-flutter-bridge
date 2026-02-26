@@ -57,6 +57,7 @@ abstract class CountlyConsent {
   static const String feedback = 'feedback';
   static const String remoteConfig = 'remote-config';
   static const String content = 'content';
+  static const String metrics = 'metrics';
 }
 
 class Countly {
@@ -1711,6 +1712,20 @@ class Countly {
     await _channel.invokeMethod('addCustomNetworkRequestHeaders', <String, dynamic>{'data': json.encode(args)});
   }
 
+  /// Record device metrics manually as a standalone call
+  /// [Map<String, String> metricsOverride] - map of key value pairs to override the default metrics
+  Future<void> recordMetrics(Map<String, String> metricsOverride) async {
+    if (!_instance._countlyState.isInitialized) {
+      log('recordMetrics, "initWithConfig" must be called before "recordMetrics"', logLevel: LogLevel.ERROR);
+      return;
+    }
+
+    List<dynamic> args = [];
+    args.add(metricsOverride);
+
+    await _channel.invokeMethod('recordMetrics', <String, dynamic>{'data': json.encode(args)});
+  }
+
   /// starts a timed event
   /// returns error or success message
   @Deprecated('This function is deprecated, please use "startEvent" of events instead')
@@ -2252,6 +2267,11 @@ class Countly {
       if (config.sdkBehaviorSettingsUpdatesDisabled) {
         log('"_configToJson", value provided for sdkBehaviorSettingsUpdatesDisabled: [${config.sdkBehaviorSettingsUpdatesDisabled}]', logLevel: LogLevel.INFO);
         countlyConfig['sdkBehaviorSettingsUpdatesDisabled'] = config.sdkBehaviorSettingsUpdatesDisabled;
+      }
+
+      if (config.storingDefaultPushConsentDisabled) {
+        log('"_configToJson", value provided for disableStoringDefaultPushConsent: [${config.storingDefaultPushConsentDisabled}]', logLevel: LogLevel.INFO);
+        countlyConfig['disableStoringDefaultPushConsent'] = config.storingDefaultPushConsentDisabled;
       }
 
       /// Experimental ---------------------------

@@ -50,7 +50,7 @@ void main() {
     index = 0;
     validateView("V2", false, false, viewStr: eventList[index++]); // it is because auto view
     validateView("V3", false, true, viewStr: eventList[index++]); // begin session not called
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       validateEvent("[CLY]_orientation", <String, dynamic>{'mode': 'portrait'}, eventStr: eventList[index++]);
     }
     validateView("V4", true, true, viewStr: eventList[index++]); // after begin session called
@@ -61,10 +61,10 @@ void validateView(String name, bool start, bool visit, {String? viewStr, Map<Str
   Map<String, dynamic> segmentation = <String, dynamic>{'name': name, 'segment': Platform.isAndroid ? 'Android' : 'iOS'};
 
   if (visit) {
-    segmentation['visit'] = Platform.isAndroid ? '1': 1;
+    segmentation['visit'] = Platform.isAndroid ? '1' : 1;
   }
   if (start) {
-    segmentation['start'] = Platform.isAndroid ? '1': 1;
+    segmentation['start'] = Platform.isAndroid ? '1' : 1;
   }
   validateEvent("[CLY]_view", segmentation, eventGiven: viewGiven, eventStr: viewStr);
 }

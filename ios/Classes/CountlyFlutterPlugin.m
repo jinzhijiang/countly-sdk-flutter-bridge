@@ -28,7 +28,7 @@ BOOL BUILDING_WITH_PUSH_DISABLED = false;
 
 CLYPushTestMode const CLYPushTestModeProduction = @"CLYPushTestModeProduction";
 
-NSString *const kCountlyFlutterSDKVersion = @"25.4.1";
+NSString *const kCountlyFlutterSDKVersion = @"25.4.4";
 NSString *const kCountlyFlutterSDKName = @"dart-flutterb-ios";
 NSString *const kCountlyFlutterSDKNameNoPush = @"dart-flutterbnp-ios";
 
@@ -1394,6 +1394,12 @@ FlutterMethodChannel *_channel;
         dispatch_async(dispatch_get_main_queue(), ^{
             NSDictionary* customHeaderValues = [command objectAtIndex:0];
             [Countly.sharedInstance addCustomNetworkRequestHeaders:customHeaderValues];
+            result(nil);
+        });
+    } else if ([@"recordMetrics" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary* metricsOverride = [command objectAtIndex:0];
+            [Countly.sharedInstance recordMetrics:metricsOverride];
             result(nil);
         });
     } else {
