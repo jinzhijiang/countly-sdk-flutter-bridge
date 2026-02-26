@@ -1,7 +1,4 @@
-import 'dart:convert';
-
-import 'package:countly_flutter_lite/countly.dart';
-import 'package:countly_sdk_dart_core/src/constants.dart';
+import 'package:countly_flutter_lite/countly_flutter_lite.dart';
 import 'package:countly_sdk_dart_core/src/networking.dart';
 import '../helper/helper.dart' as helper;
 import 'package:flutter_test/flutter_test.dart';
@@ -102,9 +99,11 @@ void main() {
       await sdk.users.setProperties({'name': 'Consent'});
       await sdk.events.recordMetrics();
 
-      final events = helper.deconstructEventsRequest(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events')));
+      final events =
+          helper.deconstructEventsRequest(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events')));
 
-      final up = helper.deconstructUserPropertiesRequest(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details')));
+      final up = helper.deconstructUserPropertiesRequest(
+          sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details')));
 
       // init requests
       expect(network.sent, equals([helper.sdkBehaviorRequest, helper.healthCheckRequest]));
@@ -119,13 +118,15 @@ void main() {
       expect(sdk.debugRequestQueueSnapshot[0], equals(helper.trueConsentRequest));
       expect(sdk.debugRequestQueueSnapshot[1], equals(helper.locationRequest));
       expect(sdk.debugRequestQueueSnapshot[2], equals(helper.metricsRequest));
-      expect(sdk.debugRequestQueueSnapshot[3], equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events'))));
+      expect(sdk.debugRequestQueueSnapshot[3],
+          equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events'))));
       expect(events.length, equals(2));
       expect(events[0]['key'], equals('consent_event'));
       expect(events[1]['key'], equals('[CLY]_view'));
       expect(events[1]['segmentation']['name'], equals('ConsentView'));
 
-      expect(sdk.debugRequestQueueSnapshot[4], equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details'))));
+      expect(sdk.debugRequestQueueSnapshot[4],
+          equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details'))));
       expect(up.length, equals(1));
       expect(up[0]['name'], equals('Consent'));
 
@@ -146,9 +147,11 @@ void main() {
       await sdk.users.setProperties({'name': 'Consent'});
       await sdk.events.recordMetrics();
 
-      final events = helper.deconstructEventsRequest(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events')));
+      final events =
+          helper.deconstructEventsRequest(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events')));
 
-      final up = helper.deconstructUserPropertiesRequest(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details')));
+      final up = helper.deconstructUserPropertiesRequest(
+          sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details')));
 
       // init requests
       expect(network.sent, equals([helper.sdkBehaviorRequest, helper.healthCheckRequest]));
@@ -164,13 +167,15 @@ void main() {
       expect(sdk.debugRequestQueueSnapshot[1], equals(helper.locationRequest));
       expect(sdk.debugRequestQueueSnapshot[2], equals(helper.trueConsentRequest)); // after giveConsent
       expect(sdk.debugRequestQueueSnapshot[3], equals(helper.metricsRequest));
-      expect(sdk.debugRequestQueueSnapshot[4], equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events'))));
+      expect(sdk.debugRequestQueueSnapshot[4],
+          equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('events'))));
       expect(events.length, equals(2));
       expect(events[0]['key'], equals('consent_event'));
       expect(events[1]['key'], equals('[CLY]_view'));
       expect(events[1]['segmentation']['name'], equals('ConsentView'));
 
-      expect(sdk.debugRequestQueueSnapshot[5], equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details'))));
+      expect(sdk.debugRequestQueueSnapshot[5],
+          equals(sdk.debugRequestQueueSnapshot.firstWhere((r) => r.containsKey('user_details'))));
       expect(up.length, equals(1));
       expect(up[0]['name'], equals('Consent'));
 

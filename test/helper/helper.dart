@@ -6,16 +6,16 @@ final sdkBehaviorRequest = {
   'app_key': 'app-key',
   'device_id': 'test-device',
   'sdk_version': '26.1.0',
-  'sdk_name': 'countly_sdk_flutter_lite',
+  'sdk_name': 'countly-sdk-flutter-lite',
   'av': '1.0.0',
-  'method': 'sc',
+  'method': 'sc'
 };
 
 final healthCheckRequest = {
   'app_key': 'app-key',
   'device_id': 'test-device',
   'sdk_version': '26.1.0',
-  'sdk_name': 'countly_sdk_flutter_lite',
+  'sdk_name': 'countly-sdk-flutter-lite',
   'av': '1.0.0',
   'hc': {'el': 0, 'wl': 0, 'sc': '', 'em': ''},
   'metrics': {'_app_version': '1.0.0'},
@@ -29,7 +29,7 @@ final falseConsentRequest = {
   'app_key': 'app-key',
   'device_id': 'test-device',
   'sdk_version': '26.1.0',
-  'sdk_name': 'countly_sdk_flutter_lite',
+  'sdk_name': 'countly-sdk-flutter-lite',
   'av': '1.0.0',
   'consent': {
     'events': false,
@@ -43,7 +43,7 @@ final trueConsentRequest = {
   'app_key': 'app-key',
   'device_id': 'test-device',
   'sdk_version': '26.1.0',
-  'sdk_name': 'countly_sdk_flutter_lite',
+  'sdk_name': 'countly-sdk-flutter-lite',
   'av': '1.0.0',
   'consent': {
     'events': true,
@@ -57,18 +57,27 @@ final locationRequest = {
   'app_key': 'app-key',
   'device_id': 'test-device',
   'sdk_version': '26.1.0',
-  'sdk_name': 'countly_sdk_flutter_lite',
+  'sdk_name': 'countly-sdk-flutter-lite',
   'av': '1.0.0',
-  'location': '',
+  'location': ''
 };
 
 final metricsRequest = {
   'app_key': 'app-key',
   'device_id': 'test-device',
   'sdk_version': '26.1.0',
-  'sdk_name': 'countly_sdk_flutter_lite',
+  'sdk_name': 'countly-sdk-flutter-lite',
   'av': '1.0.0',
-  'metrics': {'_os': isA<String>(), '_device': isA<String>(), '_device_type': isA<String>(), '_resolution': isA<String>(), '_density': isA<num>(), '_orientation': isA<String>(), '_locale': isA<String>(), '_app_version': '1.0.0'},
+  'metrics': {
+    '_os': isA<String>(),
+    '_device': isA<String>(),
+    '_device_type': isA<String>(),
+    '_resolution': isA<String>(),
+    '_density': isA<num>(),
+    '_orientation': isA<String>(),
+    '_locale': isA<String>(),
+    '_app_version': '1.0.0'
+  },
 };
 
 /// Deconstructs an 'events' request map into a list of per-event maps.
@@ -78,7 +87,7 @@ final metricsRequest = {
 ///  'app_key': 'app-key',
 ///  'device_id': 'test-device',
 ///  'sdk_version': '26.1.0',
-///  'sdk_name': 'countly_sdk_flutter_lite',
+///  'sdk_name': 'countly-sdk-flutter-lite',
 ///  'av': '1.0.0',
 ///  'events': [ { ... }, { ... } ]
 /// }
@@ -133,5 +142,7 @@ List<Map<String, dynamic>> deconstructRequestByKey(Map<String, dynamic> request,
   return result;
 }
 
-List<Map<String, dynamic>> deconstructEventsRequest(Map<String, dynamic> request) => deconstructRequestByKey(request, 'events');
-List<Map<String, dynamic>> deconstructUserPropertiesRequest(Map<String, dynamic> request) => deconstructRequestByKey(request, 'user_details');
+List<Map<String, dynamic>> deconstructEventsRequest(Map<String, dynamic> request) =>
+    deconstructRequestByKey(request, 'events');
+List<Map<String, dynamic>> deconstructUserPropertiesRequest(Map<String, dynamic> request) =>
+    deconstructRequestByKey(request, 'user_details');

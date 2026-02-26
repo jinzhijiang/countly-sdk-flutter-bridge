@@ -62,7 +62,7 @@ class FlutterWarningPresenter implements CountlyWarningPresenter {
   }
 
   static OverlayState? _locateOverlay() {
-    final root = WidgetsBinding.instance.renderViewElement;
+    final root = WidgetsBinding.instance.rootElement;
     if (root == null) {
       return null;
     }
@@ -104,7 +104,7 @@ class _SdkToastWidget extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.only(top: 12),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(28), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 10, offset: const Offset(0, 4))], border: Border.all(color: Colors.white.withOpacity(0.9), width: 1)),
+              decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.circular(28), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 10, offset: const Offset(0, 4))], border: Border.all(color: Colors.white.withValues(alpha: 0.9), width: 1)),
               child: DefaultTextStyle(style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600, height: 1.2), child: Text('[Countly] $text', maxLines: 5, overflow: TextOverflow.ellipsis)),
             ),
           ),

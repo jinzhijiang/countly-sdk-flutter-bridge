@@ -1,4 +1,4 @@
-import 'package:countly_flutter_lite/countly.dart' as C;
+import 'package:countly_flutter_lite/countly_flutter_lite.dart' as C;
 import 'package:countly_sdk_dart_core/src/networking.dart' as N;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;

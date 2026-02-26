@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 A Flutter plugin shim to access legacy Countly native SDK storage for migration.
   DESC
-  s.homepage         = 'https://count.ly'
+  s.homepage         = 'https://countly.com'
   s.license          = { :file => '../../LICENSE' }
   s.author           = { 'Countly' => 'support@count.ly' }
   s.source           = { :path => '.' }

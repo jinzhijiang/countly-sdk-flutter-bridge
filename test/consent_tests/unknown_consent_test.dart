@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:countly_flutter_lite/countly.dart';
+import 'package:countly_flutter_lite/countly_flutter_lite.dart';
 import 'package:countly_sdk_dart_core/src/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:countly_sdk_dart_core/src/networking.dart';
@@ -307,8 +307,10 @@ void main() {
       await sdk.processEventsAndRequests();
 
       expect(sdk.debugEventQueueLength, 0, reason: 'Events must be dropped when consent is missing');
-      expect(network.sent.where((r) => r.containsKey('events')).length, 0, reason: 'No event requests should be sent without consent');
-      expect(network.sent.where((r) => r.containsKey('user_details')).length, 0, reason: 'User properties should be ignored without consent');
+      expect(network.sent.where((r) => r.containsKey('events')).length, 0,
+          reason: 'No event requests should be sent without consent');
+      expect(network.sent.where((r) => r.containsKey('user_details')).length, 0,
+          reason: 'User properties should be ignored without consent');
     });
 
     test('Consent provided at init enables all tracking flows', () async {
@@ -333,9 +335,12 @@ void main() {
       await sdk.processEventsAndRequests();
       await Future.delayed(const Duration(milliseconds: 150));
 
-      expect(network.sent.any((r) => r.containsKey('consent')), true, reason: 'Consent status request should be sent regardless of consent');
-      expect(network.sent.any((r) => r.containsKey('hc')), true, reason: 'Health check should be sent regardless of consent');
-      expect(network.sent.any((r) => r['method'] == 'sc'), true, reason: 'Behavior settings fetch should be sent regardless of consent');
+      expect(network.sent.any((r) => r.containsKey('consent')), true,
+          reason: 'Consent status request should be sent regardless of consent');
+      expect(network.sent.any((r) => r.containsKey('hc')), true,
+          reason: 'Health check should be sent regardless of consent');
+      expect(network.sent.any((r) => r['method'] == 'sc'), true,
+          reason: 'Behavior settings fetch should be sent regardless of consent');
     });
 
     test('Unknown consent mode keeps data in memory only', () async {
@@ -356,10 +361,13 @@ void main() {
       sdk.views.startAutoStoppedView('MemView');
       await sdk.processEventsAndRequests();
 
-      expect(storage.writes.containsKey(StorageSubKeys.eventQueue), false, reason: 'Event queue should not be persisted in unknown consent mode');
-      expect(storage.writes.containsKey(StorageSubKeys.requestQueue), false, reason: 'Request queue should not be persisted in unknown consent mode');
+      expect(storage.writes.containsKey(StorageSubKeys.eventQueue), false,
+          reason: 'Event queue should not be persisted in unknown consent mode');
+      expect(storage.writes.containsKey(StorageSubKeys.requestQueue), false,
+          reason: 'Request queue should not be persisted in unknown consent mode');
       expect(network.sent.isEmpty, true, reason: 'No requests should be sent while consent is unknown');
-      expect(sdk.debugEventQueueLength + sdk.debugRequestQueueLength, greaterThan(0), reason: 'Data should be kept in memory during unknown consent mode');
+      expect(sdk.debugEventQueueLength + sdk.debugRequestQueueLength, greaterThan(0),
+          reason: 'Data should be kept in memory during unknown consent mode');
     });
 
     test('Unknown consent mode still sends previously saved data', () async {
@@ -371,9 +379,9 @@ void main() {
           'app_key': 'app-key',
           'device_id': 'stored-device',
           'sdk_version': '26.1.0',
-          'sdk_name': 'countly_sdk_flutter_lite',
-          'offline': true,
-        }
+          'sdk_name': 'countly-sdk-flutter-lite',
+          'offline': true
+        },
       ]);
       storage.writes['default_${StorageSubKeys.deviceId}'] = 'stored-device';
       storage.writes['default_${StorageSubKeys.deviceIdType}'] = DeviceIdType.generated.toString();
@@ -391,7 +399,8 @@ void main() {
 
       await Future.delayed(const Duration(milliseconds: 100));
 
-      expect(network.sent.any((r) => r['offline'] == true), true, reason: 'Data stored from previous usage should be sent before entering unknown consent state');
+      expect(network.sent.any((r) => r['offline'] == true), true,
+          reason: 'Data stored from previous usage should be sent before entering unknown consent state');
     });
 
     test('Revoking consent in unknown mode clears collected data', () async {
@@ -432,7 +441,8 @@ void main() {
       sdk.views.startAutoStoppedView('ToBeCleared');
       await sdk.processEventsAndRequests();
       expect(sdk.debugEventQueueLength, 0, reason: 'Event queue should be empty after processing');
-      expect(sdk.debugRequestQueueLength, 1, reason: 'Consent request should be the only request after revoking consent');
+      expect(sdk.debugRequestQueueLength, 1,
+          reason: 'Consent request should be the only request after revoking consent');
       expect(sdk.debugRequestQueueSnapshot[0]['consent'], isNotNull);
     });
   });
