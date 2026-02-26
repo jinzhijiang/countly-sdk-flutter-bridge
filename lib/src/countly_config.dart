@@ -48,6 +48,7 @@ class CountlyConfig {
   bool _backoffMechanismDisabled = false;
   bool _sdkBehaviorSettingsUpdatesDisabled = false;
   int? _requestTimeoutDuration;
+  bool _storingDefaultPushConsentDisabled = false;
 
   /// instance of CountlyConfigApm
   final CountlyConfigApm _countlyConfigApmInstance = CountlyConfigApm();
@@ -145,6 +146,8 @@ class CountlyConfig {
   bool get sdkBehaviorSettingsUpdatesDisabled => _sdkBehaviorSettingsUpdatesDisabled;
 
   int? get requestTimeoutDuration => _requestTimeoutDuration;
+  
+  bool get storingDefaultPushConsentDisabled => _storingDefaultPushConsentDisabled;
 
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
@@ -409,6 +412,11 @@ class CountlyConfig {
   /// [int requestTimeoutDuration] - duration in seconds
   CountlyConfig setRequestTimeoutDuration(int requestTimeoutDuration) {
     _requestTimeoutDuration = requestTimeoutDuration;
+  }
+  
+  /// Disable storing the default push consent on initialization
+  CountlyConfig disableStoringDefaultPushConsent() {
+    _storingDefaultPushConsentDisabled = true;
     return this;
   }
 }
