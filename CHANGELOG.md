@@ -1,3 +1,6 @@
+## XX.XX.XX
+* Added "setRequestTimeoutDuration(requestTimeoutDuration)" init config method to change request timeout duration in seconds.
+
 ## 25.4.4
 * Mitigated an issue in iOS class paths. 
 
@@ -14,7 +17,6 @@
 
 ## 25.4.2
 * Added a new function "addCustomNetworkRequestHeaders: customHeaderValues" for providing or overriding custom headers after init.
-* Added "setRequestTimeoutDuration(requestTimeoutDuration)" init config method to change request timeout duration in seconds.
 * Default request method is now set to "POST"
 * Updated user properties caching mechanism according to sessions.
 * Added a new function "recordMetrics: metricsOverride" to send a device metrics request.
