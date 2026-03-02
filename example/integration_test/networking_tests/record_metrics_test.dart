@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import '../utils.dart';
-import '../views_tests/auto_view_flow2_test.dart';
+import '../views_tests/view_utils.dart';
 
 /// Tests for recording custom metrics using the Countly SDK.
 /// Verifies that metrics are correctly sent in the network request.
