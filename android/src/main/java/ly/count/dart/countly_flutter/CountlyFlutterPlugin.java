@@ -1436,6 +1436,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("refreshContentZone".equals(call.method)) {
                 Countly.sharedInstance().contents().refreshContentZone();
                 result.success(null);
+            } else if ("previewContent".equals(call.method)) {
+                String contentId = call.argument("contentId");
+                Countly.sharedInstance().contents().previewContent(contentId);
+                result.success(null);
             }
             //------------------End------------------------------------
 

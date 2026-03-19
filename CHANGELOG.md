@@ -1,3 +1,6 @@
+## XX.XX.XX
+* Added Content feature method `previewContent(String contentId)` (Experimental!).
+
 ## 25.4.4
 * Mitigated an issue in iOS class paths. 
 

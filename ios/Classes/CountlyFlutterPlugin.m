@@ -1385,6 +1385,12 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance.content refreshContentZone];
             result(nil);
         });
+    } else if ([@"previewContent" isEqualToString:call.method]) {
+        NSString* contentId = call.arguments[@"contentId"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [Countly.sharedInstance.content previewContent:contentId];
+            result(nil);
+        });
     } else if ([@"attemptToSendStoredRequests" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [Countly.sharedInstance attemptToSendStoredRequests];
