@@ -3,6 +3,8 @@
 * Added a new config option "setWebviewDisplayOption: WebViewDisplayOption" to control how Content and Feedback Widgets are presented.
   * IMMERSIVE mode (default): Full-screen display (except cutouts).
   * SAFE_AREA mode: Omits status bar, navigation bar and cutouts when displaying WebView.
+* Added "setRequestTimeoutDuration(requestTimeoutDuration)" init config method to change request timeout duration in seconds.
+* Added setting custom network request headers support for web platform.
 
 ## 25.4.4
 * Mitigated an issue in iOS class paths. 
