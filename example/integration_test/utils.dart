@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,31 @@ void addDirectRequest(Map<String, String> request) async {
   await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{
     'data': json.encode([request])
   });
+}
+
+void setServerConfig(Map<String, dynamic> serverConfig) async {
+  await _channelTest.invokeMethod('setServerConfig', <String, dynamic>{
+    'data': json.encode([serverConfig])
+  });
+}
+
+/// Retrieve the server configuration from the native side
+Future<Map<String, dynamic>> getServerConfig() async {
+  final Map<Object?, Object?> sc = await _channelTest.invokeMethod('getServerConfig');
+  return Map<String, dynamic>.from(sc);
+}
+
+Future<void> recordReservedEvent(String key, Map<String, Object>? segmentation) async {
+  if (Platform.isIOS) {
+    // iOS uses a different method for reserved events
+    List<Object?> args = [];
+
+    args.add(key);
+    args.add(segmentation);
+    await _channelTest.invokeMethod('recordReservedEvent', <String, dynamic>{'data': json.encode(args.where((item) => item != null).toList())});
+  } else {
+    await Countly.instance.events.recordEvent(key, segmentation);
+  }
 }
 
 /// Verify the common request queue parameters
@@ -127,8 +153,8 @@ var _serverDelay = 0;
 /// Start a server to receive the requests from the SDK and store them in a provided List.
 /// Use http://0.0.0.0:8080 as the server url.
 /// You can specify a delay in seconds for the server response.
-/// You can also provide a custom handler for the server response.
-void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, Future<void> Function(HttpRequest, HttpResponse)? customHandler}) async {
+/// You can also provide a custom handler for the server response. It takes the HttpRequest, query parameters, and HttpResponse as arguments.
+void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, Future<void> Function(HttpRequest, Map<String, List<String>>, HttpResponse)? customHandler}) async {
   var server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
   print('[Test Server]Server running on http://${server.address.address}:${server.port}');
   _serverDelay = delay;
@@ -148,11 +174,17 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
     }
     print(queryParams.toString());
 
+    if (request.method == 'POST') {
+      final body = await utf8.decodeStream(request);
+      queryParams = Uri.parse('?$body').queryParametersAll; // Update queryParams with POST body
+    }
+
+    print('[Test Server] queryParams: ${queryParams.toString()}');
     // Store the request parameters for later verification
     requestArray.add(queryParams);
 
     if (customHandler != null) {
-      await customHandler(request, request.response);
+      await customHandler(request, queryParams, request.response);
     } else {
       if (_serverDelay > 0) {
         print('[Test Server][${DateTime.now().toIso8601String()}] Applying delay of ${_serverDelay} seconds');
@@ -389,9 +421,10 @@ void checkUnchangingUserData(userDetails, MAX_KEY_LENGTH, MAX_VALUE_SIZE) {
 }
 
 /// Truncate a string to a given limit
-String truncate(string, limit) {
-  var length = string.length;
+String truncate(String string, int limit) {
+  int length = string.length;
   limit = limit != null ? limit : length;
+  limit = min(length, limit);
   return string.substring(0, limit);
 }
 
