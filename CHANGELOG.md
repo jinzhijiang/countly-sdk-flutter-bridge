@@ -1,4 +1,5 @@
 ## XX.XX.XX
+* Added "setRequestTimeoutDuration(requestTimeoutDuration)" init config method to change request timeout duration in seconds.
 * Added setting custom network request headers support for web platform.
 
 ## 25.4.4

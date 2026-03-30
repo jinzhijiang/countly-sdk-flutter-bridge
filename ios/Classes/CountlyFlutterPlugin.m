@@ -1756,6 +1756,11 @@ FlutterMethodChannel *_channel;
             config.requestDropAgeHours = [requestDropAgeHours intValue];
         }
 
+        NSNumber *requestTimeoutDuration = _config[@"requestTimeoutDuration"];
+        if (requestTimeoutDuration) {
+            config.requestTimeoutDuration = [requestTimeoutDuration intValue];
+        }
+
         NSNumber *manualSessionEnabled = _config[@"manualSessionEnabled"];
         if (manualSessionEnabled && [manualSessionEnabled boolValue]) {
             config.manualSessionHandling = YES;

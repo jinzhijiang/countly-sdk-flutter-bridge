@@ -2351,6 +2351,11 @@ class Countly {
 
       log('"_configToJson", value provided for remoteConfigValueCaching: [${config.remoteConfigValueCaching}]', logLevel: LogLevel.INFO);
       countlyConfig['remoteConfigValueCaching'] = config.remoteConfigValueCaching;
+
+      if (config.requestTimeoutDuration != null) {
+        log('"_configToJson", value provided for requestTimeoutDuration: [${config.requestTimeoutDuration}]', logLevel: LogLevel.INFO);
+        countlyConfig['requestTimeoutDuration'] = config.requestTimeoutDuration;
+      }
     } catch (e) {
       log('"_configToJson", Exception occur during converting config to json: $e', logLevel: LogLevel.ERROR);
     }
