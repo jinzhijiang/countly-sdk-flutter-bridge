@@ -1,3 +1,6 @@
+## XX.XX.XX
+* Added setting custom network request headers support for web platform.
+
 ## 25.4.4
 * Mitigated an issue in iOS class paths. 
 
