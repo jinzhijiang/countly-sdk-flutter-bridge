@@ -1,0 +1,4 @@
+flutter_sdk_version=25.4.4
+android_sdk_version=25.4.8
+ios_sdk_version=25.4.8
+web_sdk_version=25.4.2

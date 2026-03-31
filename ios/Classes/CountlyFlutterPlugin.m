@@ -144,6 +144,42 @@ FlutterMethodChannel *_channel;
             [Countly.sharedInstance addDirectRequest:requestMap];
             result(@"added request to queue");
         });
+    } else if ([@"setServerConfig" isEqualToString:call.method]) {
+         dispatch_async(dispatch_get_main_queue(), ^{
+            NSMutableDictionary *serverConfig = [command objectAtIndex:0];
+            [NSUserDefaults.standardUserDefaults setObject:serverConfig forKey:@"kCountlyServerConfigPersistencyKey"];
+            [NSUserDefaults.standardUserDefaults synchronize];
+            result(@"setServerConfig: success");
+        });
+    }else if ([@"getServerConfig" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          NSDictionary *storedConfig = [NSUserDefaults.standardUserDefaults objectForKey:@"kCountlyServerConfigPersistencyKey"];
+
+          NSMutableDictionary *serverConfig = nil;
+          if ([storedConfig isKindOfClass:[NSDictionary class]]) {
+              serverConfig = [storedConfig mutableCopy];
+          } else {
+              serverConfig = [NSMutableDictionary new];
+          }
+
+          result(serverConfig);
+        });
+    } else if ([@"recordReservedEvent" isEqualToString:call.method]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          NSString *key = [command objectAtIndex:0];
+          NSDictionary *segmentation;
+          if ((int)command.count > 1) {
+              segmentation = [command objectAtIndex:1];
+          } else {
+              segmentation = nil;
+          }
+
+          [[Countly sharedInstance] recordReservedEvent:key segmentation:segmentation];
+
+          NSString *resultString = @"recordReservedEvent for: ";
+          resultString = [resultString stringByAppendingString:key];
+          result(resultString);
+        });
     } else if ([@"recordEvent" isEqualToString:call.method]) {
         dispatch_async(dispatch_get_main_queue(), ^{
           NSString *key = [command objectAtIndex:0];
@@ -1726,6 +1762,11 @@ FlutterMethodChannel *_channel;
             config.requestDropAgeHours = [requestDropAgeHours intValue];
         }
 
+        NSNumber *requestTimeoutDuration = _config[@"requestTimeoutDuration"];
+        if (requestTimeoutDuration) {
+            config.requestTimeoutDuration = [requestTimeoutDuration intValue];
+        }
+
         NSNumber *manualSessionEnabled = _config[@"manualSessionEnabled"];
         if (manualSessionEnabled && [manualSessionEnabled boolValue]) {
             config.manualSessionHandling = YES;
@@ -1759,6 +1800,11 @@ FlutterMethodChannel *_channel;
         NSDictionary *globalViewSegmentation = _config[@"globalViewSegmentation"];
         if (globalViewSegmentation) {
             config.globalViewSegmentation = globalViewSegmentation;
+        }
+
+        NSNumber *disableViewRestartForManualRecording = _config[@"disableViewRestartForManualRecording"];
+        if (disableViewRestartForManualRecording && [disableViewRestartForManualRecording boolValue]) {
+            config.disableViewRestartForManualRecording = YES;
         }
 
         NSString *gpsCoordinate = _config[@"locationGpsCoordinates"];
@@ -1818,7 +1864,16 @@ FlutterMethodChannel *_channel;
         if (zoneTimerInterval) {
             [config.content setZoneTimerInterval:[zoneTimerInterval unsignedIntValue]];
         }
-       
+
+        NSString *webviewDisplayOption = _config[@"webviewDisplayOption"];
+        if (webviewDisplayOption) {
+            if ([webviewDisplayOption isEqualToString:@"IMMERSIVE"]) {
+                [config.content setWebviewDisplayOption:IMMERSIVE];
+            } else if ([webviewDisplayOption isEqualToString:@"SAFE_AREA"]) {
+                [config.content setWebviewDisplayOption:SAFE_AREA];
+            }
+        }
+
     } @catch (NSException *exception) {
         COUNTLY_FLUTTER_LOG(@"[populateConfig], Unable to parse Config object: %@", exception);
     }

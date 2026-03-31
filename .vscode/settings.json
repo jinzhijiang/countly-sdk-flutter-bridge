@@ -1,5 +1,13 @@
 {
   "dart.lineLength": 300,
   "editor.formatOnSave": true,
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "scripts/config/sdk_versions\\.txt$",
+        "cmd": "dart run \"${workspaceRoot}/scripts/sync_sdk_versions.dart\""
+      }
+    ]
+  }
 }
