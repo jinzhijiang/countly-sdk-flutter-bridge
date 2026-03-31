@@ -1,4 +1,5 @@
 ## XX.XX.XX
+* Added Content feature method `previewContent(String contentId)` (Experimental!).
 * Added a new config option disableViewRestartForManualRecording to disable auto close/restart behavior of manual views on app background/foreground actions.
 * Added a new config option "setWebviewDisplayOption: WebViewDisplayOption" to control how Content and Feedback Widgets are presented.
   * IMMERSIVE mode (default): Full-screen display (except cutouts).
