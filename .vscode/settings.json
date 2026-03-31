@@ -1,5 +1,6 @@
 {
   "dart.lineLength": 300,
+  "editor.formatOnSave": true,
   "java.configuration.updateBuildConfiguration": "interactive",
   "emeraldwalk.runonsave": {
     "commands": [

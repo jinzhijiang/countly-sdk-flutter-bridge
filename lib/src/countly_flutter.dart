@@ -2274,6 +2274,11 @@ class Countly {
         countlyConfig['disableStoringDefaultPushConsent'] = config.storingDefaultPushConsentDisabled;
       }
 
+      if (config.viewRestartForManualRecordingDisabled) {
+        log('"_configToJson", value provided for disableViewRestartForManualRecording is true', logLevel: LogLevel.INFO);
+        countlyConfig['disableViewRestartForManualRecording'] = config.viewRestartForManualRecordingDisabled;
+      }
+
       /// Experimental ---------------------------
       if (config.experimental.visibilityTracking) {
         log('"_configToJson", value provided for visibilityTracking: [${config.experimental.visibilityTracking}]', logLevel: LogLevel.INFO);
@@ -2290,6 +2295,11 @@ class Countly {
       if (config.content.zoneTimerInterval != null) {
         log('"_configToJson", value provided for zoneTimerInterval: [${config.content.zoneTimerInterval}]', logLevel: LogLevel.INFO);
         countlyConfig['zoneTimerInterval'] = config.content.zoneTimerInterval;
+      }
+      if (config.content.webviewDisplayOption != null) {
+        final optionStr = config.content.webviewDisplayOption == WebViewDisplayOption.immersive ? 'IMMERSIVE' : 'SAFE_AREA';
+        log('"_configToJson", value provided for webviewDisplayOption: [$optionStr]', logLevel: LogLevel.INFO);
+        countlyConfig['webviewDisplayOption'] = optionStr;
       }
 
       /// Content END ---------------------------
@@ -2351,6 +2361,11 @@ class Countly {
 
       log('"_configToJson", value provided for remoteConfigValueCaching: [${config.remoteConfigValueCaching}]', logLevel: LogLevel.INFO);
       countlyConfig['remoteConfigValueCaching'] = config.remoteConfigValueCaching;
+
+      if (config.requestTimeoutDuration != null) {
+        log('"_configToJson", value provided for requestTimeoutDuration: [${config.requestTimeoutDuration}]', logLevel: LogLevel.INFO);
+        countlyConfig['requestTimeoutDuration'] = config.requestTimeoutDuration;
+      }
     } catch (e) {
       log('"_configToJson", Exception occur during converting config to json: $e', logLevel: LogLevel.ERROR);
     }

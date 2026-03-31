@@ -60,17 +60,69 @@ class CountlyConfiguration {
         //   ..setUserProperties(userProperties)
         //   ..recordIndirectAttribution(attributionValues)
         //   ..recordDirectAttribution('countly', campaignData)
-        //   ..setRecordAppStartTime(true) // Enable APM features, which includes the recording of app start time.
+        //   ..setRecordAppStartTime(true) // (Deprecated) Enable APM features, use apm interface instead
+
+        // APM Configuration (new interface)
+        //------------------------------------------------------------
+        //   ..apm.enableForegroundBackgroundTracking() // Enable tracking of app foreground/background durations
+        //   ..apm.enableAppStartTimeTracking() // Enable tracking of app start time
+        //   ..apm.enableManualAppLoadedTrigger() // Enable manual trigger for app loaded (call Countly.appLoadingFinished())
+        //   ..apm.setAppStartTimestampOverride(0) // Override the app start timestamp (milliseconds since epoch)
+        //------------------------------------------------------------
+
+        // Experimental features
+        //------------------------------------------------------------
+        //   ..experimental.enableVisibilityTracking() // Enable visibility tracking of the application
+        //   ..experimental.enablePreviousNameRecording() // Enable recording previous event/view names
+        //------------------------------------------------------------
+
+        // SDK Internal Limits
+        //------------------------------------------------------------
+        //   ..sdkInternalLimits.setMaxKeyLength(128) // Max character size of all string keys (default 128)
+        //   ..sdkInternalLimits.setMaxValueSize(256) // Max character size of all values in key-value pairs (default 256)
+        //   ..sdkInternalLimits.setMaxSegmentationValues(100) // Max custom segmentation key-value pairs per event (default 100)
+        //   ..sdkInternalLimits.setMaxBreadcrumbCount(100) // Max breadcrumbs before oldest is deleted (default 100)
+        //   ..sdkInternalLimits.setMaxStackTraceLinesPerThread(30) // Max stack trace lines per thread (default 30)
+        //   ..sdkInternalLimits.setMaxStackTraceLineLength(200) // Max characters per stack trace line (default 200)
+        //------------------------------------------------------------
+
+        // Content features
+        //------------------------------------------------------------
+        //   ..content.setGlobalContentCallback((contentStatus, contentData) {
+        //     print('Content callback: status=$contentStatus, data=$contentData');
+        //   }) // Set a global callback for content actions
+        //   ..content.setZoneTimerInterval(30) // Set interval for automatic content zone refresh in seconds
+        //   ..content.setWebviewDisplayOption(WebViewDisplayOption.safeArea) // Set webview display mode (immersive or safeArea)
+        //------------------------------------------------------------
+
+        // Device ID configuration
+        //   ..setDeviceId('CUSTOM_DEVICE_ID') // Set a custom device ID
+        //   ..enableTemporaryDeviceIDMode() // Enable temporary device ID mode
+
+        // Queue and timing configuration
+        //   ..setEventQueueSizeToSend(10) // Set event queue threshold before sending (default 10)
+        //   ..setUpdateSessionTimerDelay(60) // Set session update interval in seconds (min: 1, max: 600)
+        //   ..setMaxRequestQueueSize(1000) // Max requests stored when server is unreachable (default 1000)
+        //   ..setRequestDropAgeHours(24) // Drop requests older than given hours
+
+        // SDK behavior configuration
+        //   ..disableBackoffMechanism() // Disable the backoff mechanism for request retries
+        //   ..disableSDKBehaviorSettingsUpdates() // Disable server config updates
+        //   ..disableStoringDefaultPushConsent() // Disable storing default push consent
+        //   ..disableViewRestartForManualRecording() // Disable view restart for manual recording
+        //   ..setSDKBehaviorSettings('{}') // Provide server config if not available at init time
+
         //   ..setStarRatingTextMessage('Message for start rating dialog')
         //   ..setParameterTamperingProtectionSalt('salt') // Set the optional salt to be used for calculating the checksum of requested data which will be sent with each request
         //   ..enableManualSessionHandling() // Enable manual session handling
         //   ..setHttpPostForced(true) // Set to 'false' if you want HTTP POST not to be used for all requests
+        //   ..setRequestTimeoutDuration(15) // Set the request timeout duration to 15 seconds
         //   ..setCustomNetworkRequestHeaders({
         //           'Content-Type': 'application/json',
         //           'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
         //           'Custom-Header': 'CustomValue'
-        //         }); // Set if you want custom HTTP headers to be used for all requests
-        // ..disableLocation() // Call if you want to disable location tracking
+        //         }) // Set if you want custom HTTP headers to be used for all requests
+        //   ..disableLocation() // Call if you want to disable location tracking
         ;
   }
 }

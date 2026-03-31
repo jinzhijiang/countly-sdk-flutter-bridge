@@ -6,6 +6,13 @@
   * Custom event-specific segmentation filters to control segmentation keys per custom event
   * User property cache limit to limit the number of user properties recorded per request (Android and iOS)
 * Added journey trigger events that automatically refresh content zones when journey trigger events are recorded.
+* Added Content feature method `previewContent(String contentId)` (Experimental!).
+* Added a new config option disableViewRestartForManualRecording to disable auto close/restart behavior of manual views on app background/foreground actions.
+* Added a new config option "setWebviewDisplayOption: WebViewDisplayOption" to control how Content and Feedback Widgets are presented.
+  * IMMERSIVE mode (default): Full-screen display (except cutouts).
+  * SAFE_AREA mode: Omits status bar, navigation bar and cutouts when displaying WebView.
+* Added "setRequestTimeoutDuration(requestTimeoutDuration)" init config method to change request timeout duration in seconds.
+* Added setting custom network request headers support for web platform.
 * Improved content display and refresh mechanics, including robust resource loading checks before displaying content.
 * Improved feedbacks response validation and added POST method support for contents in iOS.
 * Improved consent requirements and location info management when updated from server configuration in iOS.
