@@ -49,6 +49,7 @@ class CountlyConfig {
   bool _sdkBehaviorSettingsUpdatesDisabled = false;
   int? _requestTimeoutDuration;
   bool _storingDefaultPushConsentDisabled = false;
+  bool _viewRestartForManualRecordingDisabled = false;
 
   /// instance of CountlyConfigApm
   final CountlyConfigApm _countlyConfigApmInstance = CountlyConfigApm();
@@ -148,6 +149,8 @@ class CountlyConfig {
   int? get requestTimeoutDuration => _requestTimeoutDuration;
   
   bool get storingDefaultPushConsentDisabled => _storingDefaultPushConsentDisabled;
+
+  bool get viewRestartForManualRecordingDisabled => _viewRestartForManualRecordingDisabled;
 
   /// getter for CountlyConfigApm instance that is used to access CountlyConfigApm methods
   CountlyConfigApm get apm => _countlyConfigApmInstance;
@@ -417,6 +420,12 @@ class CountlyConfig {
   /// Disable storing the default push consent on initialization
   CountlyConfig disableStoringDefaultPushConsent() {
     _storingDefaultPushConsentDisabled = true;
+    return this;
+  }
+
+  /// Disable view restart for manual recording
+  CountlyConfig disableViewRestartForManualRecording() {
+    _viewRestartForManualRecordingDisabled = true;
     return this;
   }
 }
