@@ -415,6 +415,7 @@ class CountlyConfig {
   /// [int requestTimeoutDuration] - duration in seconds
   CountlyConfig setRequestTimeoutDuration(int requestTimeoutDuration) {
     _requestTimeoutDuration = requestTimeoutDuration;
+    return this;
   }
   
   /// Disable storing the default push consent on initialization
