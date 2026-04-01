@@ -2,7 +2,7 @@ import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
-import '../views_tests/auto_view_flow1_test.dart';
+import '../views_tests/view_utils.dart';
 
 /// Tests for the requestTimeoutDuration configuration option.
 /// Verifies that the SDK initializes correctly with the option set

@@ -20,7 +20,7 @@ void main() {
     List<HttpHeaders> headersArray = <HttpHeaders>[];
     createServer(
       <Map<String, List<String>>>[],
-      customHandler: (req, res) async {
+      customHandler: (req, queryParams, res) async {
         // Print request headers for debugging
         headersArray.add(req.headers);
       },

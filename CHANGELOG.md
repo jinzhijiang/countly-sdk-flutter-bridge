@@ -1,4 +1,11 @@
-## XX.XX.XX
+## 26.1.0
+* Added server-side listing filters support for controlling what data gets recorded:
+  * Event filters (blacklist/whitelist) to control which events are recorded
+  * User property filters (blacklist/whitelist) to control which user properties are recorded
+  * Custom event segmentation filters to control which segmentation keys are recorded across all events
+  * Custom event-specific segmentation filters to control segmentation keys per custom event
+  * User property cache limit to limit the number of user properties recorded per request (Android and iOS)
+* Added journey trigger events that automatically refresh content zones when journey trigger events are recorded.
 * Added Content feature method `previewContent(String contentId)` (Experimental!).
 * Added a new config option disableViewRestartForManualRecording to disable auto close/restart behavior of manual views on app background/foreground actions.
 * Added a new config option "setWebviewDisplayOption: WebViewDisplayOption" to control how Content and Feedback Widgets are presented.
@@ -6,6 +13,23 @@
   * SAFE_AREA mode: Omits status bar, navigation bar and cutouts when displaying WebView.
 * Added "setRequestTimeoutDuration(requestTimeoutDuration)" init config method to change request timeout duration in seconds.
 * Added setting custom network request headers support for web platform.
+* Improved content display and refresh mechanics, including robust resource loading checks before displaying content.
+* Improved feedbacks response validation and added POST method support for contents in iOS.
+* Improved consent requirements and location info management when updated from server configuration in iOS.
+* Added support for Feedback Widget resizing logic (will need server update to benefit) in Web.
+* Added filtering capability to content interface through enterContentZone(contentFilterCallback) in Web.
+* Improved user property recording order with respect to sessions and events in Web.
+* Improved device metric detection capabilities and testing consistency of queuing system in Web.
+
+* Mitigated an issue where closing surveys presented via journeys was triggering an exception in Android.
+* Mitigated an issue where opening a new activity while content was loading could hide it in Android.
+* Mitigated an issue about early health check requests in temporary ID mode in iOS.
+* Mitigated issues in iOS where multiple contents could be displayed in parallel and when returning from external content links.
+* Mitigated an issue where an unintended URL was opened when closing a feedback widget after a content block was closed in Web.
+
+* Updated underlying Android SDK version to 26.1.1
+* Updated underlying iOS SDK version is 26.1.1
+* Updated underlying Web SDK version is 26.1.1
 
 ## 25.4.4
 * Mitigated an issue in iOS class paths. 
