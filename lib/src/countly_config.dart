@@ -147,7 +147,7 @@ class CountlyConfig {
   bool get sdkBehaviorSettingsUpdatesDisabled => _sdkBehaviorSettingsUpdatesDisabled;
 
   int? get requestTimeoutDuration => _requestTimeoutDuration;
-  
+
   bool get storingDefaultPushConsentDisabled => _storingDefaultPushConsentDisabled;
 
   bool get viewRestartForManualRecordingDisabled => _viewRestartForManualRecordingDisabled;
@@ -417,7 +417,7 @@ class CountlyConfig {
     _requestTimeoutDuration = requestTimeoutDuration;
     return this;
   }
-  
+
   /// Disable storing the default push consent on initialization
   CountlyConfig disableStoringDefaultPushConsent() {
     _storingDefaultPushConsentDisabled = true;

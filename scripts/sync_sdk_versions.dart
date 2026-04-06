@@ -164,20 +164,23 @@ void main(List<String> args) {
   // ---- Stage all modified files ----
   print('');
   print('📋 Staging changed files...');
-  run('git', [
-    'add',
-    'scripts/config/sdk_versions.txt',
-    'pubspec.yaml',
-    'ios/countly_flutter.podspec',
-    'android/src/main/java/ly/count/dart/countly_flutter/CountlyFlutterPlugin.java',
-    'ios/Classes/CountlyFlutterPlugin.m',
-    'lib/src/web/plugin_config.dart',
-    'scripts/no-push-files/pubspec.yaml',
-    'scripts/no-push-files/countly_flutter_np.podspec',
-    'android/build.gradle',
-    'scripts/no-push-files/build.gradle',
-    'ios/Classes/countly-sdk-ios',
-  ], rootDir);
+  run(
+      'git',
+      [
+        'add',
+        'scripts/config/sdk_versions.txt',
+        'pubspec.yaml',
+        'ios/countly_flutter.podspec',
+        'android/src/main/java/ly/count/dart/countly_flutter/CountlyFlutterPlugin.java',
+        'ios/Classes/CountlyFlutterPlugin.m',
+        'lib/src/web/plugin_config.dart',
+        'scripts/no-push-files/pubspec.yaml',
+        'scripts/no-push-files/countly_flutter_np.podspec',
+        'android/build.gradle',
+        'scripts/no-push-files/build.gradle',
+        'ios/Classes/countly-sdk-ios',
+      ],
+      rootDir);
   print('✅ All changed files staged');
 
   // ---- Flutter clean & pub get ----
