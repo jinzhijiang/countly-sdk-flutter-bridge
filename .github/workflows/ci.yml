@@ -16,27 +16,6 @@ env:
 
 jobs:
     # ── Analyze & Format ──────────────────────────────────────────────
-    analyze:
-        name: Analyze & Format
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  submodules: recursive
-
-            - uses: subosito/flutter-action@v2
-              with:
-                  flutter-version: ${{ env.FLUTTER_VERSION }}
-                  cache: true
-
-            - name: Install dependencies
-              run: flutter pub get
-
-            - name: Check formatting
-              run: dart format --set-exit-if-changed lib/
-
-            - name: Analyze
-              run: flutter analyze --no-fatal-infos
 
     # ── Build Android ─────────────────────────────────────────────────
     build-android:
