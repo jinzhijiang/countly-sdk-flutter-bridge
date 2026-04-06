@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:countly_flutter/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -69,10 +71,18 @@ void main() {
     expect(c.containsKey('eb'), isFalse, reason: 'Event blacklist should be removed when server provides event whitelist');
     expect(c.containsKey('sb'), isFalse, reason: 'Segmentation blacklist should be removed when server provides segmentation whitelist');
 
-    // Invalid boundary values should be rejected
-    expect(c.containsKey('czi'), isFalse, reason: 'czi: 15 should be rejected (minimum is 16)');
-    expect(c.containsKey('bom_rqp'), isFalse, reason: 'bom_rqp: 1.0 should be rejected (must be < 1.0)');
-    expect(c.containsKey('dort'), isFalse, reason: 'dort: -1 should be rejected (must be >= 0)');
+    // Invalid boundary values from server should be rejected
+    // iOS removes invalid keys from the dictionary entirely
+    // Android rejects invalid server values but stored valid values persist from setServerConfig
+    if (Platform.isIOS) {
+      expect(c.containsKey('czi'), isFalse, reason: 'iOS: czi: 15 should be rejected and removed');
+      expect(c.containsKey('bom_rqp'), isFalse, reason: 'iOS: bom_rqp: 1.0 should be rejected and removed');
+      expect(c.containsKey('dort'), isFalse, reason: 'iOS: dort: -1 should be rejected and removed');
+    } else {
+      expect(c['czi'], 16, reason: 'Android: czi: 15 from server rejected, stored 16 persists');
+      expect(c['bom_rqp'], 0.5, reason: 'Android: bom_rqp: 1.0 from server rejected, stored 0.5 persists');
+      expect(c['dort'], 0, reason: 'Android: dort: -1 from server rejected, stored 0 persists');
+    }
 
     // Invalid filter types should be rejected
     expect(c.containsKey('esb'), isFalse, reason: 'esb: string should be rejected (must be object)');

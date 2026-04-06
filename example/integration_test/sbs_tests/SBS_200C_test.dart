@@ -76,8 +76,11 @@ void main() {
     expectedConsent['sessions'] = true; // now sessions consent is true
     expect(jsonDecode(rq[2]['consent']![0]), expectedConsent); // second request is consent request
 
-    expect(rq[3]['session_duration']![0], '5'); // fourth request is session duration request
-    expect(rq[4]['session_duration']![0], '10'); // fifth request is session duration request and it is 10
+    // Session duration values depend on wall-clock timing; allow ±2s tolerance
+    int dur1 = int.parse(rq[3]['session_duration']![0]);
+    int dur2 = int.parse(rq[4]['session_duration']![0]);
+    expect(dur1, inInclusiveRange(3, 7), reason: 'first session_duration ~5s'); // ~5s after begin_session
+    expect(dur2, inInclusiveRange(8, 12), reason: 'second session_duration ~10s'); // ~10s after first update
 
     expect(await getServerConfig(), {
       'v': 1,
