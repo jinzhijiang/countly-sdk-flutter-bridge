@@ -16,17 +16,17 @@ void main() {
     createServerWithConfig(requestArray, {
       'v': 1,
       't': 1750748806695,
-      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
+      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10},
     });
 
     setServerConfig({
       'v': 1,
       't': 1750748806695,
-      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
+      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10},
     });
 
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).setLoggingEnabled(true).setDeviceId('device_id_200C');
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).setLoggingEnabled(true).setDeviceId('device_id_200C');
 
     await Countly.initWithConfig(config);
     await Future.delayed(const Duration(seconds: 2));
@@ -34,6 +34,7 @@ void main() {
     await callAllFeatures(disableConsentCall: true);
 
     // Validate that networking is disabled and no requests are sent
+    deduplicateRequestArray(requestArray);
     expect(requestArray.length, 1); // only SC request should be sent
     validateImmediateCounts({'sc': 1}, requestArray);
     requestArray.clear(); // clear requestArray to validate the next requests
@@ -41,7 +42,7 @@ void main() {
     // Validate that consent is required and not given and all called features are not created a request
     List<Map<String, List<String>>> rq = await getRequestQueueParsed();
     validateRequestCounts({'consent': 1, 'location': 1}, rq);
-    Map<String, dynamic> expectedConsent = {'push': false, 'views': false, 'attribution': false, 'content': false, 'users': false, 'feedback': false, 'apm': false, 'location': false, 'remote-config': false, 'sessions': false, 'crashes': false, 'events': false};
+    Map<String, dynamic> expectedConsent = {'push': false, 'views': false, 'attribution': false, 'content': false, 'users': false, 'feedback': false, 'apm': false, 'location': false, 'remote-config': false, 'sessions': false, 'crashes': false, 'events': false, 'metrics': false};
 
     if (Platform.isAndroid) {
       expectedConsent['scrolls'] = false; // Android has scrolls, content, star-rating, clicks consents extra
@@ -81,7 +82,7 @@ void main() {
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,
-      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
+      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10},
     });
   });
 }

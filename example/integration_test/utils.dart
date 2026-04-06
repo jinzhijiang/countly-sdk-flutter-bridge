@@ -14,6 +14,8 @@ final String SERVER_URL = 'https://xxx.count.ly';
 final String SERVER_URL_RC = 'https://xxx.count.ly';
 final String APP_KEY = 'SHOULD_BE_YOUR_APP_KEY';
 final String APP_KEY_RC = 'SHOULD_BE_YOUR_APP_KEY';
+final int TEST_SERVER_PORT = int.tryParse(const String.fromEnvironment('TEST_SERVER_PORT')) ?? 8080;
+final String TEST_SERVER_URL = 'http://0.0.0.0:$TEST_SERVER_PORT';
 
 /// Get request queue from native side (list of strings)
 Future<List<String>> getRequestQueue() async {
@@ -30,26 +32,37 @@ Future<List<String>> getEventQueue() async {
 /// Add request to native sides
 void storeRequest(Map<String, dynamic> request) async {
   await _channelTest.invokeMethod('storeRequest', <String, dynamic>{
-    'data': json.encode([Uri(queryParameters: request).query])
+    'data': json.encode([Uri(queryParameters: request).query]),
   });
 }
 
 void addDirectRequest(Map<String, String> request) async {
   await _channelTest.invokeMethod('addDirectRequest', <String, dynamic>{
-    'data': json.encode([request])
+    'data': json.encode([request]),
   });
 }
 
 void setServerConfig(Map<String, dynamic> serverConfig) async {
   await _channelTest.invokeMethod('setServerConfig', <String, dynamic>{
-    'data': json.encode([serverConfig])
+    'data': json.encode([serverConfig]),
   });
 }
 
 /// Retrieve the server configuration from the native side
 Future<Map<String, dynamic>> getServerConfig() async {
   final Map<Object?, Object?> sc = await _channelTest.invokeMethod('getServerConfig');
-  return Map<String, dynamic>.from(sc);
+  return _deepCastMap(sc);
+}
+
+Map<String, dynamic> _deepCastMap(Map<Object?, Object?> map) {
+  return map.map((key, value) {
+    if (value is Map) {
+      return MapEntry(key.toString(), _deepCastMap(Map<Object?, Object?>.from(value)));
+    } else if (value is List) {
+      return MapEntry(key.toString(), value.map((e) => e is Map ? _deepCastMap(Map<Object?, Object?>.from(e)) : e).toList());
+    }
+    return MapEntry(key.toString(), value);
+  });
 }
 
 Future<void> recordReservedEvent(String key, Map<String, Object>? segmentation) async {
@@ -69,16 +82,22 @@ Future<void> recordReservedEvent(String key, Map<String, Object>? segmentation) 
 void testCommonRequestParams(Map<String, List<String>> requestObject) {
   expect(requestObject['app_key']?[0], APP_KEY);
   expect(
-      requestObject['sdk_name']?[0],
-      "dart-flutterb-${kIsWeb ? 'web' : Platform.isIOS ? 'ios' : 'android'}");
-  expect(requestObject['sdk_version']?[0], '25.4.4');
+    requestObject['sdk_name']?[0],
+    "dart-flutterb-${kIsWeb
+        ? 'web'
+        : Platform.isIOS
+        ? 'ios'
+        : 'android'}",
+  );
+  expect(requestObject['sdk_version']?[0], '26.1.0');
   expect(
-      requestObject['av']?[0],
-      kIsWeb
-          ? '0.0'
-          : Platform.isIOS
-              ? '0.0.1'
-              : '1.0.0');
+    requestObject['av']?[0],
+    kIsWeb
+        ? '0.0'
+        : Platform.isIOS
+        ? '0.0.1'
+        : '1.0.0',
+  );
   assert(requestObject['timestamp']?[0] != null);
 
   expect(requestObject['hour']?[0], DateTime.now().hour.toString());
@@ -150,12 +169,19 @@ Future<DeviceIdType> testDeviceIDType(DeviceIdType givenType) async {
 
 var _serverDelay = 0;
 
+HttpServer? _activeServer;
+
 /// Start a server to receive the requests from the SDK and store them in a provided List.
 /// Use http://0.0.0.0:8080 as the server url.
 /// You can specify a delay in seconds for the server response.
 /// You can also provide a custom handler for the server response. It takes the HttpRequest, query parameters, and HttpResponse as arguments.
 void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, Future<void> Function(HttpRequest, Map<String, List<String>>, HttpResponse)? customHandler}) async {
-  var server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
+  if (_activeServer != null) {
+    await _activeServer!.close(force: true);
+    _activeServer = null;
+  }
+  var server = await HttpServer.bind(InternetAddress.anyIPv4, TEST_SERVER_PORT);
+  _activeServer = server;
   print('[Test Server]Server running on http://${server.address.address}:${server.port}');
   _serverDelay = delay;
   server.listen((HttpRequest request) async {
@@ -171,14 +197,10 @@ void createServer(List<Map<String, List<String>>> requestArray, {int delay = 0, 
       queryParams = request.uri.queryParametersAll;
     } else {
       print('[Test Server][${DateTime.now().toIso8601String()}] Unsupported request method: ${request.method}');
+      request.response.statusCode = HttpStatus.methodNotAllowed;
+      await request.response.close();
+      return;
     }
-    print(queryParams.toString());
-
-    if (request.method == 'POST') {
-      final body = await utf8.decodeStream(request);
-      queryParams = Uri.parse('?$body').queryParametersAll; // Update queryParams with POST body
-    }
-
     print('[Test Server] queryParams: ${queryParams.toString()}');
     // Store the request parameters for later verification
     requestArray.add(queryParams);
@@ -365,7 +387,7 @@ Future<void> createTruncableEvents() async {
     'gender': 'M',
     'byear': 1919,
     'special_value': 'something special',
-    'not_special_value': 'something special cooking'
+    'not_special_value': 'something special cooking',
   };
   await Countly.instance.userProfile.setUserProperties(userProperties);
   await Countly.instance.userProfile.setProperty('a12345', 'My Property');
@@ -380,14 +402,14 @@ Future<void> createTruncableEvents() async {
   await Countly.instance.userProfile.pull('k12345', 'morning');
 
   // TODO: Report feedback widgets manually (will need some extra work)
-//   Map<String, Object> surSeg = {};
-//   surSeg['answ-12'] = 'answ-12';
-//   surSeg['answ-13'] = 'answ-13';
-//   await Countly.reportFeedbackWidgetManually(new CountlyPresentableFeedback('1', 'survey', 'fake_survey'), {}, surSeg);
-//   Map<String, Object> npsSeg = {'rating': 2, 'comment': 'Filled out comment'};
-//   await Countly.reportFeedbackWidgetManually(new CountlyPresentableFeedback('1', 'nps', 'fake_nps'), {}, npsSeg);
-//   Map<String, Object> ratSeg = {'rating': 3, 'comment': 'Filled out comment', 'email': 'test@yahoo.com'};
-//   await Countly.reportFeedbackWidgetManually(new CountlyPresentableFeedback('1', 'rating', 'fake_rating'), {}, ratSeg);
+  //   Map<String, Object> surSeg = {};
+  //   surSeg['answ-12'] = 'answ-12';
+  //   surSeg['answ-13'] = 'answ-13';
+  //   await Countly.reportFeedbackWidgetManually(new CountlyPresentableFeedback('1', 'survey', 'fake_survey'), {}, surSeg);
+  //   Map<String, Object> npsSeg = {'rating': 2, 'comment': 'Filled out comment'};
+  //   await Countly.reportFeedbackWidgetManually(new CountlyPresentableFeedback('1', 'nps', 'fake_nps'), {}, npsSeg);
+  //   Map<String, Object> ratSeg = {'rating': 3, 'comment': 'Filled out comment', 'email': 'test@yahoo.com'};
+  //   await Countly.reportFeedbackWidgetManually(new CountlyPresentableFeedback('1', 'rating', 'fake_rating'), {}, ratSeg);
 
   await Countly.instance.userProfile.save();
 }
@@ -421,9 +443,9 @@ void checkUnchangingUserData(userDetails, MAX_KEY_LENGTH, MAX_VALUE_SIZE) {
 }
 
 /// Truncate a string to a given limit
-String truncate(String string, int limit) {
+String truncate(String string, int? limit) {
   int length = string.length;
-  limit = limit != null ? limit : length;
+  limit = limit ?? length;
   limit = min(length, limit);
   return string.substring(0, limit);
 }
@@ -547,7 +569,7 @@ void checkMerge(Map<String, List<String>> queryParams, {String deviceID = '', St
 
 void checkEndSession(Map<String, List<String>> queryParams, {String deviceID = ''}) {
   expect(queryParams['end_session']?[0].isNotEmpty, true);
-//   expect(queryParams['session_duration']?[0].isNotEmpty, true); TODO: check this
+  //   expect(queryParams['session_duration']?[0].isNotEmpty, true); TODO: check this
   if (deviceID.isNotEmpty) {
     expect(queryParams['device_id']?[0], deviceID);
   }

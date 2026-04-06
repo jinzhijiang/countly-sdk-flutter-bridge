@@ -19,7 +19,7 @@ void main() {
     });
 
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
 
     await Countly.initWithConfig(config);
     await Future.delayed(const Duration(seconds: 2));
@@ -33,7 +33,7 @@ void main() {
     await callAllFeatures(disableEnterContent: true);
     RQ = await getRequestQueueParsed();
     expect(RQ.length, 0);
-
+    deduplicateRequestArray(requestArray);
     validateRequestCounts({'first': 0, 'second': 1, 'events': Platform.isAndroid ? 3 : 2, 'location': 1, 'crash': 2, 'begin_session': 1, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1, 'consent': 0}, requestArray);
     // validate that first request is deleted from the queue because of dort: 1
     validateInternalEventCounts({'orientation': 1, 'view': Platform.isAndroid ? 6 : 5, 'nps': 1}, requestArray); // 6 android

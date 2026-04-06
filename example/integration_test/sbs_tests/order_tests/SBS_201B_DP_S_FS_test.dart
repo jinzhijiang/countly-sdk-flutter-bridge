@@ -32,7 +32,7 @@ void main() {
     });
 
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     config.sdkInternalLimits.setMaxKeyLength(3).setMaxValueSize(5).setMaxSegmentationValues(2);
 
     await Countly.initWithConfig(config);
