@@ -30,7 +30,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  countly_flutter_np: 1cc179181ca2e51bed042526c43b5f8e1a0d8c59
+  countly_flutter_np: 24a199c32d6bcb916f751e7cbafbdfe3947dc3fb
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_foreground_task: 21ef182ab0a29a3005cc72cd70e5f45cb7f7f817
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
