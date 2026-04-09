@@ -26,7 +26,7 @@ void main() {
       },
     );
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     config.setCustomNetworkRequestHeaders({"Initial-Header": "InitialValue"});
     await Countly.initWithConfig(config);
     await Future.delayed(const Duration(seconds: 1));

@@ -10,7 +10,7 @@ void main() {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
     createServer(requestArray);
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config);
 
     Countly.instance.sessions.beginSession();

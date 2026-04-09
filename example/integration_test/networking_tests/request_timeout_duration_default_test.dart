@@ -15,7 +15,7 @@ void main() {
     createServer(requestArray, delay: 3);
 
     // Initialize SDK with default request timeout
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true); // Use default timeout
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true); // Use default timeout
 
     await Countly.initWithConfig(config);
 

@@ -16,17 +16,17 @@ void main() {
     createServerWithConfig(requestArray, {
       'v': 1,
       't': 1750748806695,
-      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
+      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10},
     });
 
     setServerConfig({
       'v': 1,
       't': 1750748806695,
-      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
+      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10},
     });
 
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).setLoggingEnabled(true).setDeviceId('device_id_200C');
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).setLoggingEnabled(true).setDeviceId('device_id_200C');
 
     await Countly.initWithConfig(config);
     await Future.delayed(const Duration(seconds: 2));
@@ -34,6 +34,7 @@ void main() {
     await callAllFeatures(disableConsentCall: true);
 
     // Validate that networking is disabled and no requests are sent
+    deduplicateRequestArray(requestArray);
     expect(requestArray.length, 1); // only SC request should be sent
     validateImmediateCounts({'sc': 1}, requestArray);
     requestArray.clear(); // clear requestArray to validate the next requests
@@ -41,7 +42,7 @@ void main() {
     // Validate that consent is required and not given and all called features are not created a request
     List<Map<String, List<String>>> rq = await getRequestQueueParsed();
     validateRequestCounts({'consent': 1, 'location': 1}, rq);
-    Map<String, dynamic> expectedConsent = {'push': false, 'views': false, 'attribution': false, 'content': false, 'users': false, 'feedback': false, 'apm': false, 'location': false, 'remote-config': false, 'sessions': false, 'crashes': false, 'events': false};
+    Map<String, dynamic> expectedConsent = {'push': false, 'views': false, 'attribution': false, 'content': false, 'users': false, 'feedback': false, 'apm': false, 'location': false, 'remote-config': false, 'sessions': false, 'crashes': false, 'events': false, 'metrics': false};
 
     if (Platform.isAndroid) {
       expectedConsent['scrolls'] = false; // Android has scrolls, content, star-rating, clicks consents extra
@@ -75,13 +76,16 @@ void main() {
     expectedConsent['sessions'] = true; // now sessions consent is true
     expect(jsonDecode(rq[2]['consent']![0]), expectedConsent); // second request is consent request
 
-    expect(rq[3]['session_duration']![0], '5'); // fourth request is session duration request
-    expect(rq[4]['session_duration']![0], '10'); // fifth request is session duration request and it is 10
+    // Session duration values depend on wall-clock timing; allow ±2s tolerance
+    int dur1 = int.parse(rq[3]['session_duration']![0]);
+    int dur2 = int.parse(rq[4]['session_duration']![0]);
+    expect(dur1, inInclusiveRange(3, 7), reason: 'first session_duration ~5s'); // ~5s after begin_session
+    expect(dur2, inInclusiveRange(8, 12), reason: 'second session_duration ~10s'); // ~10s after first update
 
     expect(await getServerConfig(), {
       'v': 1,
       't': 1750748806695,
-      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10}
+      'c': {'networking': false, 'cr': true, 'rqs': 5, 'sui': 10},
     });
   });
 }

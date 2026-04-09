@@ -87,7 +87,6 @@ class _OthersPageState extends State<OthersPage> {
     Countly.instance.views.stopAllViews();
   }
 
-
   Future<void> checkIsInitialized() async {
     bool result = await Countly.isInitialized();
     if (mounted) {

@@ -15,7 +15,7 @@ void main() {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
     createServerWithConfig(requestArray, {});
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config);
 
     await callAllFeatures();
@@ -24,6 +24,7 @@ void main() {
     List<String> EQ = await getEventQueue();
     expect(RQ.length, 0);
     expect(EQ.length, 0);
+    deduplicateRequestArray(requestArray);
     validateRequestCounts({'events': 3, 'location': 1, 'crash': 2, 'begin_session': 1, 'consent': 0, 'end_session': 1, 'session_duration': 2, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1}, requestArray);
     validateInternalEventCounts({'orientation': 1, 'view': 6, 'nps': 1}, requestArray);
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);

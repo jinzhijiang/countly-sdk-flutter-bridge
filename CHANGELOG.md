@@ -27,7 +27,7 @@
 * Mitigated issues in iOS where multiple contents could be displayed in parallel and when returning from external content links.
 * Mitigated an issue where an unintended URL was opened when closing a feedback widget after a content block was closed in Web.
 
-* Updated underlying Android SDK version to 26.1.1
+* Updated underlying Android SDK version to 26.1.2
 * Updated underlying iOS SDK version is 26.1.1
 * Updated underlying Web SDK version is 26.1.1
 

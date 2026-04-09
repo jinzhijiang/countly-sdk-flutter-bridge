@@ -16,7 +16,7 @@ void main() {
     });
 
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     config.setSDKBehaviorSettings('{"c":{"st":"yes","cet":"no","vt":0,"eqs":0,"lt":1,"unkown1": "very_unkown1","crt":"value","bom_at":-1,"bom_d":-1,"bom_rqp":50,"bom_ra":-1,"lkl":"test"}}');
 
     await Countly.initWithConfig(config);

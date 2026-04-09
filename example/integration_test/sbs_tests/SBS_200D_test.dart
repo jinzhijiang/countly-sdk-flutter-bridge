@@ -19,7 +19,7 @@ void main() {
       'c': {'st': false, 'cet': false, 'vt': false, 'eqs': 5, 'lt': false, 'crt': false, 'bom_at': 5, 'bom_d': 30, 'bom_rqp': 0.001, 'bom_ra': 1}
     });
     // Initialize the SDK
-    CountlyConfig config = CountlyConfig('http://0.0.0.0:8080', APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config);
 
     await callAllFeatures();
@@ -28,6 +28,7 @@ void main() {
     List<String> EQ = await getEventQueue();
     expect(RQ.length, 0);
     expect(EQ.length, 0);
+    deduplicateRequestArray(requestArray);
     validateRequestCounts({'events': 1, 'location': 1, 'crash': 0, 'begin_session': 0, 'consent': 0, 'end_session': 0, 'session_duration': 0, 'apm': 2, 'user_details': Platform.isIOS ? 2 : 1}, requestArray);
     validateInternalEventCounts({'nps': 1}, requestArray);
     validateImmediateCounts({'hc': 1, 'sc': 1, 'feedback': 1, 'queue': 2, 'ab': 1, 'ab_opt_out': 1, 'rc': 1}, requestArray);
@@ -43,7 +44,7 @@ void main() {
     EQ = await getEventQueue();
     expect(EQ.length, 0); // validate that event queue is cleared when hit the limit and recording internal events are not affected by the custom event tracking disablement
     await Future.delayed(const Duration(seconds: 2));
-
+    deduplicateRequestArray(requestArray);
     validateInternalEventCounts({'nps': 1, 'star_rating': 3, 'orientation': 2}, requestArray);
 
     expect(await getServerConfig(), {

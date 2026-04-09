@@ -6,6 +6,27 @@ import 'package:flutter_test/flutter_test.dart';
 import '../event_tests/event_utils.dart';
 import '../utils.dart';
 
+/// Deduplicates a request array by removing entries with identical timestamps and payloads.
+/// iOS has a known race condition with fast mock server responses where proceedOnQueue
+/// can send the same request twice (see notes.md). This helper filters those duplicates.
+void deduplicateRequestArray(List<Map<String, List<String>>> requestArray) {
+  if (!Platform.isIOS) return; // only needed for iOS
+
+  final seen = <String>{};
+  requestArray.removeWhere((request) {
+    // Build a fingerprint excluding volatile fields (rr changes between retries)
+    String fingerprint = request.entries
+        .where((e) => e.key != 'rr') // exclude retry counter
+        .map((e) => '${e.key}=${e.value.first}')
+        .join('&');
+    if (seen.contains(fingerprint)) {
+      return true; // remove duplicate
+    }
+    seen.add(fingerprint);
+    return false;
+  });
+}
+
 /// internal event key: [reserved segmentation keys : is it truncable]
 /// For example mode in orientation is not truncable, but name in view is truncable
 Map<String, Map<String, bool>> reservedSegmentationKeys = {

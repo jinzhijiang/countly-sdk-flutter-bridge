@@ -158,6 +158,59 @@ tests are:
 - 202B_P_FS
 
 ---------------------------------------------------------------------------------------------------------------------------------
+
+200X continued - Filtering feature validation tests
+where
+E = Event Blacklist + Segmentation Blacklist + Event Segmentation Whitelist
+F = User Property Blacklist + User Property Cache Limit + Journey Trigger Events + Content Zone
+G = Event Whitelist + Segmentation Whitelist + Event Segmentation Blacklist + User Property Whitelist
+
+- E
+Call features and record events
+Provide SBS from server {'eb': ['blocked_event', 'another_blocked'], 'sb': ['blocked_key', 'secret_key'], 'esw': {'filtered_event': ['allowed_key1', 'allowed_key2']}}
+Validate that:
+- Events in event blacklist are not recorded
+- Segmentation keys in segmentation blacklist are removed from all events
+- Event segmentation whitelist only allows listed keys for the specified event
+- Non-filtered events and keys pass through normally
+
+- F
+Call features and record events
+Provide SBS from server {'upb': ['blocked_prop', 'secret_prop'], 'upcl': 3, 'jte': ['journey_event'], 'ecz': true}
+Validate that:
+- User properties in user property blacklist are not sent
+- Recording a journey trigger event causes content zone refresh
+- Recording a non-journey event does NOT cause content zone refresh
+
+- G
+Call features and record events
+Provide SBS from server {'ew': ['allowed_event', 'special_event'], 'sw': ['country', 'platform'], 'esb': {'special_event': ['platform']}, 'upw': ['name', 'email']}
+Validate that:
+- Only whitelisted events are recorded, all others are blocked
+- Only whitelisted segmentation keys remain in events
+- Event segmentation blacklist removes specific keys for specified event
+- Only whitelisted user properties are sent
+
+tests are:
+- 200E (eb + sb + esw)
+- 200F (upb + upcl + jte)
+- 200G (ew + sw + esb + upw)
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+202C - Filter mutual exclusivity + boundary validation
+Store blacklists in storage, provide whitelists from server
+Provide invalid boundary values from server (czi: 15, bom_rqp: 1.0, dort: -1)
+Provide invalid filter types (eb: string, esb: string, jte: integer, upb: boolean)
+Validate that:
+- Whitelists from server override stored blacklists (mutual exclusivity)
+- Invalid boundary values are rejected
+- Invalid filter types are rejected
+
+tests are:
+- 202C
+
+---------------------------------------------------------------------------------------------------------------------------------
 Notes iOS:
 In the base test iOS required more time then Android at the end
 Because there is a probability for iOS to duplicate requests, checking request counts were not good
