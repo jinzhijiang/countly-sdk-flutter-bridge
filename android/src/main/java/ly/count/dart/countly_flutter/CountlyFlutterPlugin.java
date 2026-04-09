@@ -58,11 +58,6 @@ import ly.count.android.sdk.RequestResult;
 import ly.count.android.sdk.StarRatingCallback;
 import ly.count.android.sdk.messaging.CountlyPush;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.FirebaseApp;
-
 /**
  * CountlyFlutterPlugin
  */
@@ -72,8 +67,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     private final String COUNTLY_FLUTTER_SDK_NAME = "dart-flutterb-android";
     private final String COUNTLY_FLUTTER_SDK_NAME_NO_PUSH = "dart-flutterbnp-android";
 
-    private final boolean BUILDING_WITH_PUSH_DISABLED = false;
-    private static final int DATA_SCHEMA_VERSIONS = 4;
+    private final boolean BUILDING_WITH_PUSH_DISABLED = true;
 
     public void notifyPublicChannelRCDL(RequestResult downloadResult, String error, boolean fullValueUpdate, Map<String, RCData> downloadedValues, Integer requestID) {
         Map<String, Object> data = new HashMap<>();
@@ -452,21 +446,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                     }
                 }
                 CountlyPush.init(activity.getApplication(), pushTokenType);
-                FirebaseApp.initializeApp(context);
-                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            log("[askForNotificationPermission], Fetching FCM registration token failed", task.getException(), LogLevel.WARNING);
-                            return;
-                        }
-
-                        String token = task.getResult();
-                        log("FCM Token: " + token, LogLevel.INFO);
-                        CountlyPush.onTokenRefresh(token);
-                    }
-                });
-                result.success("askForNotificationPermission!");
+                result.success(" askForNotificationPermission!");
             } else if ("pushTokenType".equals(call.method)) {
                 String tokenType = args.getString(0);
                 if ("2".equals(tokenType)) {

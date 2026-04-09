@@ -15,5 +15,6 @@ Pod::Spec.new do |s|
   s.swift_version = '5.0'
   s.ios.deployment_target = '10.0'
   s.static_framework = true
+  s.pod_target_xcconfig = { 'HEADER_SEARCH_PATHS' => '"${PODS_TARGET_SRCROOT}/Classes/countly-sdk-ios"' }
 end
 
