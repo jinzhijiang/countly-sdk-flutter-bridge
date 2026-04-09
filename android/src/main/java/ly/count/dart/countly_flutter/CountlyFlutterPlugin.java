@@ -68,7 +68,8 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     private final String COUNTLY_FLUTTER_SDK_NAME_NO_PUSH = "dart-flutterbnp-android";
 
     private final boolean BUILDING_WITH_PUSH_DISABLED = true;
-
+    private static final int DATA_SCHEMA_VERSIONS = 4;
+    
     public void notifyPublicChannelRCDL(RequestResult downloadResult, String error, boolean fullValueUpdate, Map<String, RCData> downloadedValues, Integer requestID) {
         Map<String, Object> data = new HashMap<>();
         data.put("error", error);
