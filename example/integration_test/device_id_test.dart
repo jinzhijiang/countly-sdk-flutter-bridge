@@ -6,19 +6,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'utils.dart';
+import 'web_utils_stub.dart' if (dart.library.html) 'web_utils.dart';
 
-/// Check if we can get stored queues from native side
+/// Web-only device ID change tests.
+/// On non-web platforms, a single placeholder test passes so the runner doesn't fail.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
+    testWidgets('device_id_test (web-only, skipped on native)', (WidgetTester tester) async {
+      // This test suite is web-only. On native platforms, this placeholder passes.
+    });
     return;
   }
 
   group("Device ID change tests", () {
     tearDown(() async {
       await Countly.instance.halt();
-      window.localStorage.clear();
+      clearWebLocalStorage();
     });
     test("Check init time temp mode with setID", () async {
       CountlyConfig config = CountlyConfig(SERVER_URL, APP_KEY).setLoggingEnabled(true).enableTemporaryDeviceIDMode();

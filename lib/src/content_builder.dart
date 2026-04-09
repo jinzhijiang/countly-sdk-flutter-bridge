@@ -1,6 +1,9 @@
 //indicates the content status
 enum ContentStatus { completed, closed }
 
+/// Defines how the webview content should be displayed
+enum WebViewDisplayOption { immersive, safeArea }
+
 typedef ContentCallback = void Function(ContentStatus contentStatus, Map<String, dynamic> contentData);
 
 abstract class ContentBuilder {
@@ -18,4 +21,9 @@ abstract class ContentBuilder {
   /// This method forces an update by fetching the latest content,
   /// ensuring the user receives the most up-to-date information.
   Future<void> refreshContentZone();
+
+  ///  This is an experimental feature and it can have breaking changes
+  /// Previews the content associated with the given [contentId].
+  /// This method fetches and displays the content for preview purposes.
+  Future<void> previewContent(String contentId);
 }

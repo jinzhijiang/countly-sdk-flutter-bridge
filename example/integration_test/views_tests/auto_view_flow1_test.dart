@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'dart:io';
 
@@ -7,6 +6,7 @@ import 'package:countly_flutter_np/countly_flutter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import '../utils.dart';
+import 'view_utils.dart';
 
 ///
 /// This test is to check the flow of views is auto stopped and restarted
@@ -100,43 +100,4 @@ void main() {
       validateView("V2", false, true, viewStr: eventList[index++]);
     }
   });
-}
-
-void validateView(String name, bool start, bool visit, {String? viewStr, Map<String, dynamic>? viewGiven}) {
-  Map<String, dynamic> segmentation = <String, dynamic>{'name': name, 'segment': Platform.isAndroid ? 'Android' : 'iOS'};
-
-  if (visit) {
-    segmentation['visit'] = Platform.isAndroid ? '1' : 1;
-  }
-  if (start) {
-    segmentation['start'] = Platform.isAndroid ? '1' : 1;
-  }
-  validateEvent("[CLY]_view", segmentation, eventGiven: viewGiven, eventStr: viewStr);
-}
-
-void validateBeginSessionRequest(String request) {
-  Map<String, List<String>> queryParams = Uri.parse('?$request').queryParametersAll;
-  testCommonRequestParams(queryParams);
-
-  expect(queryParams['begin_session'], ['1']);
-  expect(queryParams['metrics'], isNotNull);
-}
-
-void validateEndSessionRequest(String request) {
-  Map<String, List<String>> queryParams = Uri.parse('?$request').queryParametersAll;
-  testCommonRequestParams(queryParams);
-
-  expect(queryParams['end_session'], ['1']);
-  expect(queryParams['metrics'], isNull);
-}
-
-void validateEvent(String key, Map<String, dynamic> segmentation, {String? eventStr, Map<String, dynamic>? eventGiven}) {
-  Map<String, dynamic> event = eventStr != null ? jsonDecode(eventStr) : eventGiven!;
-  print("================");
-  print(event);
-  expect(event['key'], key);
-  expect(segmentation.length, event['segmentation'].length);
-  for (var key in segmentation.keys) {
-    expect(event['segmentation'][key], segmentation[key]);
-  }
 }

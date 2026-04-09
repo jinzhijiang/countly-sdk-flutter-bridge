@@ -11,7 +11,7 @@ void main() {
   testWidgets('BM_200_timeoutDelay', (WidgetTester tester) async {
     List<Map<String, List<String>>> requestArray = <Map<String, List<String>>>[];
     createServer(requestArray, delay: 31);
-    CountlyConfig config = CountlyConfig("http://0.0.0.0:8080", APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
+    CountlyConfig config = CountlyConfig(TEST_SERVER_URL, APP_KEY).enableManualSessionHandling().setLoggingEnabled(true);
     await Countly.initWithConfig(config);
 
     Countly.instance.sessions.beginSession();
