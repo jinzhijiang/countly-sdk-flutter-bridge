@@ -9,7 +9,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
+// import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import ly.count.android.sdk.Countly;
 import ly.count.android.sdk.CountlyConfig;
@@ -21,6 +21,7 @@ import ly.count.android.sdk.ModuleFeedback.*;
 import ly.count.android.sdk.DeviceIdType;
 import ly.count.android.sdk.ContentCallback;
 import ly.count.android.sdk.ContentStatus;
+import ly.count.android.sdk.WebViewDisplayOption;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -67,11 +68,12 @@ import com.google.firebase.FirebaseApp;
  */
 public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, ActivityAware, DefaultLifecycleObserver {
     private static final String TAG = "CountlyFlutterPlugin";
-    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "24.11.2";
+    private final String COUNTLY_FLUTTER_SDK_VERSION_STRING = "26.1.0";
     private final String COUNTLY_FLUTTER_SDK_NAME = "dart-flutterb-android";
     private final String COUNTLY_FLUTTER_SDK_NAME_NO_PUSH = "dart-flutterbnp-android";
 
     private final boolean BUILDING_WITH_PUSH_DISABLED = false;
+    private static final int DATA_SCHEMA_VERSIONS = 4;
 
     public void notifyPublicChannelRCDL(RequestResult downloadResult, String error, boolean fullValueUpdate, Map<String, RCData> downloadedValues, Integer requestID) {
         Map<String, Object> data = new HashMap<>();
@@ -141,13 +143,13 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     //----------PLUGIN REGISTRATION (FlutterPlugin)-------------------
     
     // Required for pre Flutter 1.12 projects
-    public static void registerWith(Registrar registrar) {
-        final CountlyFlutterPlugin instance = new CountlyFlutterPlugin();
-        instance.activity = registrar.activity();
-        final Context __context = registrar.context();
-        instance.onAttachedToEngineInternal(__context, registrar.messenger());
-        log("registerWith", LogLevel.INFO);
-    }
+    // public static void registerWith(Registrar registrar) {
+    //     final CountlyFlutterPlugin instance = new CountlyFlutterPlugin();
+    //     instance.activity = registrar.activity();
+    //     final Context __context = registrar.context();
+    //     instance.onAttachedToEngineInternal(__context, registrar.messenger());
+    //     log("registerWith", LogLevel.INFO);
+    // }
 
     // Called from Android embedding v2
     @Override
@@ -335,8 +337,18 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().deviceId().enableTemporaryIdMode();
                 result.success("enableTemporaryIDMode success");
             } // END DEVICE ID METHODS
-
-            else if ("setHttpPostForced".equals(call.method)) {
+            else if ("attemptToSendStoredRequests".equals(call.method)) {
+                Countly.sharedInstance().requestQueue().attemptToSendStoredRequests();
+                result.success("attemptToSendStoredRequests success!");
+            } else if ("addCustomNetworkRequestHeaders".equals(call.method)) {
+                Map<String, String> customHeaderValues = toMapString(args.getJSONObject(0));
+                Countly.sharedInstance().requestQueue().addCustomNetworkRequestHeaders(customHeaderValues);
+                result.success("addCustomNetworkRequestHeaders success!");
+            } else if ("recordMetrics".equals(call.method)) {
+                Map<String, String> metricsOverride = toMapString(args.getJSONObject(0));
+                Countly.sharedInstance().requestQueue().recordMetrics(metricsOverride);
+                result.success("recordMetrics success!");
+            } else if ("setHttpPostForced".equals(call.method)) {
                 boolean isEnabled = args.getBoolean(0);
                 this.config.setHttpPostForced(isEnabled);
                 result.success("setHttpPostForced");
@@ -514,6 +526,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 String startEvent = args.getString(0);
                 Countly.sharedInstance().events().startEvent(startEvent);
                 result.success("startEvent for: " + startEvent);
+            } else if ("cancelEvent".equals(call.method)) {
+                String cancelEvent = args.getString(0);
+                Countly.sharedInstance().events().cancelEvent(cancelEvent);
+                result.success("cancelEvent for: " + cancelEvent);
             } else if ("endEvent".equals(call.method)) {
                 String key = args.getString(0);
                 int count = Integer.parseInt(args.getString(1));
@@ -1398,17 +1414,59 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             } else if ("getEventQueue".equals(call.method)) {
                 CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
                 result.success(Arrays.asList(countlyStore.getEvents()));
+            } else if ("storeRequest".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                countlyStore.addRequest(args.getString(0), true);
+                result.success("storeRequest: success");
+            } else if ("setServerConfig".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                JSONObject jsonObject = args.getJSONObject(0);
+                countlyStore.setServerConfig(jsonObject.toString());
+                // Why this added here, it is that because when it is set something in storage
+                // sdk assumes that it is an older version so it start migrations that needs to be done
+                // but in this case we only want to use setting server config and do not want migrations
+                // to mess up our process flow. So in here we are setting it to latest known to get away with it.
+                // Normally in a fresh install migrations are first to run and they run once.
+                countlyStore.setDataSchemaVersion(DATA_SCHEMA_VERSIONS);
+                result.success("setServerConfig: success");
+            } else if ("getServerConfig".equals(call.method)) {
+                CountlyStore countlyStore = new CountlyStore(context, new ModuleLog());
+                String sc = countlyStore.getServerConfig();
+                Map<String, Object> serverConfigMap = new HashMap<>();
+                try {
+                    serverConfigMap = toMap(new JSONObject(sc));
+                } catch (JSONException ignored) {
+                }
+                result.success(serverConfigMap);
+            } else if ("addDirectRequest".equals(call.method)) {
+                JSONObject jsonObject = args.getJSONObject(0);
+                Map<String, String> requestMap = new HashMap<>();
+                for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    requestMap.put(key, jsonObject.get(key).toString());
+                }
+                Countly.sharedInstance().requestQueue().addDirectRequest(requestMap);
+                result.success("addDirectRequest: success");
             } else if ("halt".equals(call.method)) {
                 Countly.sharedInstance().halt();
                 result.success("halt: success");
-            } else if ("enterContentZone".equals(call.method)) {
+            }
+            //------------------End------------------------------------
+
+            else if ("enterContentZone".equals(call.method)) {
                 Countly.sharedInstance().contents().enterContentZone();
                 result.success(null);
             } else if ("exitContentZone".equals(call.method)) {
                 Countly.sharedInstance().contents().exitContentZone();
                 result.success(null);
+            } else if ("refreshContentZone".equals(call.method)) {
+                Countly.sharedInstance().contents().refreshContentZone();
+                result.success(null);
+            } else if ("previewContent".equals(call.method)) {
+                String contentId = call.argument("contentId");
+                Countly.sharedInstance().contents().previewContent(contentId);
+                result.success(null);
             }
-            //------------------End------------------------------------
 
             else {
                 result.notImplemented();
@@ -1633,6 +1691,19 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         if (_config.has("starRatingTextDismiss")) {
             this.config.setStarRatingTextDismiss(_config.getString("starRatingTextDismiss"));
         }
+        
+        if (_config.has("sdkBehaviorSettings")) {
+            this.config.setSDKBehaviorSettings(_config.getString("sdkBehaviorSettings"));
+        }
+
+        if (_config.has("sdkBehaviorSettingsUpdatesDisabled")) {
+            this.config.disableSDKBehaviorSettingsUpdates();
+        }
+
+        if (_config.has("disableStoringDefaultPushConsent")) {
+            this.config.disableStoringDefaultPushConsent();
+        }
+
         // APM ------------------------------------------------
         if (_config.has("trackAppStartTime")) {
             this.config.apm.enableAppStartTimeTracking();
@@ -1682,6 +1753,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
 
         if (_config.has("requestDropAgeHours")) {
             this.config.setRequestDropAgeHours(_config.getInt("requestDropAgeHours"));
+        }
+
+        if (_config.has("requestTimeoutDuration")) {
+            this.config.setRequestTimeoutDuration(_config.getInt("requestTimeoutDuration"));
         }
 
         if (_config.has("manualSessionEnabled") && _config.getBoolean("manualSessionEnabled")) {
@@ -1749,6 +1824,10 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.setGlobalViewSegmentation(toMap(globalViewSegmentation));
         }
 
+        if (_config.has("disableViewRestartForManualRecording") && _config.getBoolean("disableViewRestartForManualRecording")) {
+            this.config.disableViewRestartForManualRecording();
+        }
+
         if (_config.has("enableAllConsents") && _config.getBoolean("enableAllConsents")) {
              this.config.giveAllConsents();
         }
@@ -1760,8 +1839,22 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         if (_config.has("visibilityTracking")) {
             this.config.experimental.enableVisibilityTracking();
         }
+
         if (_config.has("previousNameRecording")) {
             this.config.experimental.enablePreviousNameRecording();
+        }
+
+        if (_config.has("zoneTimerInterval")) {
+            this.config.content.setZoneTimerInterval(_config.getInt("zoneTimerInterval"));
+        }
+
+        if (_config.has("webviewDisplayOption")) {
+            String option = _config.getString("webviewDisplayOption");
+            if ("IMMERSIVE".equals(option)) {
+                this.config.setWebviewDisplayOption(WebViewDisplayOption.IMMERSIVE);
+            } else if ("SAFE_AREA".equals(option)) {
+                this.config.setWebviewDisplayOption(WebViewDisplayOption.SAFE_AREA);
+            }
         }
 
         this.config.content.setGlobalContentCallback(new ContentCallback() {
