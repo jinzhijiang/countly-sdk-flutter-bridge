@@ -85,7 +85,15 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             data.put("id", requestID);
         }
         log("notifyPublicChannelRCDL, downloaded values: " + downloadedValues + ", error: " + error + ", fullValueUpdate: " + fullValueUpdate + ", requestID: " + requestID, LogLevel.VERBOSE);
-        methodChannel.invokeMethod("remoteConfigDownloadCallback", data);
+        safeInvokeMethod("remoteConfigDownloadCallback", data);
+    }
+
+    private void safeInvokeMethod(String method, Object arguments) {
+        if (methodChannel == null) {
+            log("safeInvokeMethod: methodChannel is null, dropping '" + method + "'. The Flutter engine is likely detached.", LogLevel.WARNING);
+            return;
+        }
+        methodChannel.invokeMethod(method, arguments);
     }
 
     public final Map<String, Object> transformMapIntoSendableForm(Map<String, RCData> map) {
@@ -1019,7 +1027,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                     data.put("error", error);
                     data.put("requestResult", resultResponder(rResult));
                     data.put("id", requestID);
-                    methodChannel.invokeMethod("remoteConfigVariantCallback", data);
+                    safeInvokeMethod("remoteConfigVariantCallback", data);
                 });
 
                 result.success(null);
@@ -1037,7 +1045,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                     data.put("error", error);
                     data.put("requestResult", resultResponder(rResult));
                     data.put("id", requestID);
-                    methodChannel.invokeMethod("remoteConfigVariantCallback", data);
+                    safeInvokeMethod("remoteConfigVariantCallback", data);
                 });
 
                 result.success(null);
@@ -1071,7 +1079,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                     data.put("error", error);
                     data.put("requestResult", resultResponder(rResult));
                     data.put("id", requestID);
-                    methodChannel.invokeMethod("remoteConfigVariantCallback", data);
+                    safeInvokeMethod("remoteConfigVariantCallback", data);
                 });
 
                 result.success(null);
@@ -1091,7 +1099,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                         } else {
                             result.success("presentRatingWidgetWithID success.");
                         }
-                        methodChannel.invokeMethod("ratingWidgetCallback", error);
+                        safeInvokeMethod("ratingWidgetCallback", error);
                     }
                 });
             } else if (call.method.equals("setStarRatingDialogTexts")) {
@@ -1158,21 +1166,21 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                             if (error != null) {
                                 result.error("presentFeedbackWidget", error, null);
                             } else {
-                                methodChannel.invokeMethod("widgetShown", null);
+                                safeInvokeMethod("widgetShown", null);
                                 result.success("presentFeedbackWidget success");
                             }
                         }
 
                         @Override
                         public void onClosed() {
-                            methodChannel.invokeMethod("widgetClosed", null);
+                            safeInvokeMethod("widgetClosed", null);
                         }
                     });
                 }
             } else if("presentNPS".equals(call.method)){
                 if (activity == null) {
                     log("presentNPS failed : Activity is null", LogLevel.ERROR);
-                    methodChannel.invokeMethod("feedbackCallback_onFinished", "Activity is null");
+                    safeInvokeMethod("feedbackCallback_onFinished", "Activity is null");
                     return;
                 }
                 String nameIDorTag = args.optString(0, "");
@@ -1180,18 +1188,18 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().feedback().presentNPS(activity, nameIDorTag, new FeedbackCallback() {
                     @Override
                     public void onFinished(String error) {
-                        methodChannel.invokeMethod("feedbackCallback_onFinished", error);
+                        safeInvokeMethod("feedbackCallback_onFinished", error);
                     }
 
                     @Override
                     public void onClosed() {
-                        methodChannel.invokeMethod("feedbackCallback_onClosed", null);
+                        safeInvokeMethod("feedbackCallback_onClosed", null);
                     }
                 });
             } else if("presentSurvey".equals(call.method)){
                 if (activity == null) {
                     log("presentSurvey failed : Activity is null", LogLevel.ERROR);
-                    methodChannel.invokeMethod("feedbackCallback_onFinished", "Activity is null");
+                    safeInvokeMethod("feedbackCallback_onFinished", "Activity is null");
                     return;
                 }
                 String nameIDorTag = args.optString(0, "");
@@ -1199,18 +1207,18 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().feedback().presentSurvey(activity, nameIDorTag, new FeedbackCallback() {
                     @Override
                     public void onFinished(String error) {
-                        methodChannel.invokeMethod("feedbackCallback_onFinished", error);
+                        safeInvokeMethod("feedbackCallback_onFinished", error);
                     }
 
                     @Override
                     public void onClosed() {
-                        methodChannel.invokeMethod("feedbackCallback_onClosed", null);
+                        safeInvokeMethod("feedbackCallback_onClosed", null);
                     }
                 });
             } else if("presentRating".equals(call.method)){
                 if (activity == null) {
                     log("presentRating failed : Activity is null", LogLevel.ERROR);
-                    methodChannel.invokeMethod("feedbackCallback_onFinished", "Activity is null");
+                    safeInvokeMethod("feedbackCallback_onFinished", "Activity is null");
                     return;
                 }
                 String nameIDorTag = args.optString(0, "");
@@ -1218,12 +1226,12 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 Countly.sharedInstance().feedback().presentRating(activity, nameIDorTag, new FeedbackCallback() {
                     @Override
                     public void onFinished(String error) {
-                        methodChannel.invokeMethod("feedbackCallback_onFinished", error);
+                        safeInvokeMethod("feedbackCallback_onFinished", error);
                     }
 
                     @Override
                     public void onClosed() {
-                        methodChannel.invokeMethod("feedbackCallback_onClosed", null);
+                        safeInvokeMethod("feedbackCallback_onClosed", null);
                     }
                 });
             }
@@ -1504,7 +1512,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         if (error != null) {
             feedbackWidgetData.put("error", error);
         }
-        methodChannel.invokeMethod("feedbackWidgetDataCallback", feedbackWidgetData);
+        safeInvokeMethod("feedbackWidgetDataCallback", feedbackWidgetData);
     }
 
     public String registerForNotification(JSONArray args, final Callback theCallback) {
@@ -1767,7 +1775,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
             this.config.setRemoteConfigAutomaticDownload(enableRemoteConfigAutomaticDownload, new RemoteConfigCallback() {
                 @Override
                 public void callback(String error) {
-                    methodChannel.invokeMethod("remoteConfigCallback", error);
+                    safeInvokeMethod("remoteConfigCallback", error);
                 }
             });
         }
@@ -1867,7 +1875,7 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
                 contentCallbackData.put("contentResult", contentResult);
                 contentCallbackData.put("contentData", contentData);
                 
-                methodChannel.invokeMethod("contentCallback", contentCallbackData);
+                safeInvokeMethod("contentCallback", contentCallbackData);
             }
         });
     }
