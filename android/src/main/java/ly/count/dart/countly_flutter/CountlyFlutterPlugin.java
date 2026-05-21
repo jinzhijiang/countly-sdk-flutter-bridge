@@ -89,11 +89,22 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     }
 
     private void safeInvokeMethod(String method, Object arguments) {
-        if (methodChannel == null) {
-            log("safeInvokeMethod: methodChannel is null, dropping '" + method + "'. The Flutter engine is likely detached.", LogLevel.WARNING);
+        // Native SDK callbacks (RC, content, feedback, ...) are registered once at init and close
+        // over the plugin instance that performed it. When the Flutter engine is recreated
+        // (hot restart, activity.recreate(), multi-engine setups), a fresh plugin instance attaches
+        // with a fresh MethodChannel, but the native SDK still fires the old callback. Routing
+        // through the static reference lets those old callbacks reach the currently-live channel
+        // instead of silently dropping.
+        MethodChannel mc = sharedChannel;
+        if (mc == null) {
+            log("safeInvokeMethod: no live channel, dropping '" + method + "'. The Flutter engine is detached.", LogLevel.WARNING);
             return;
         }
-        methodChannel.invokeMethod(method, arguments);
+        try {
+            mc.invokeMethod(method, arguments);
+        } catch (Exception e) {
+            log("safeInvokeMethod: invoke failed for '" + method + "'", e, LogLevel.WARNING);
+        }
     }
 
     public final Map<String, Object> transformMapIntoSendableForm(Map<String, RCData> map) {
@@ -142,6 +153,9 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     private static Callback notificationListener = null;
     private static String lastStoredNotification = null;
     private MethodChannel methodChannel;
+    // Latest live channel, used by safeInvokeMethod so that callbacks registered against an
+    // older plugin instance still reach the currently-attached Flutter engine.
+    private static volatile MethodChannel sharedChannel;
     private Lifecycle lifecycle;
     static final int requestIDNoCallback = -1;
     static final int requestIDGlobalCallback = -2;
@@ -170,8 +184,18 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         context = null;
-        methodChannel.setMethodCallHandler(null);
+        MethodChannel mc = methodChannel;
+        if (mc != null) {
+            mc.setMethodCallHandler(null);
+        }
         methodChannel = null;
+        // Only clear the static if it still points at this plugin's channel — a newer engine
+        // may have already attached and taken over the slot.
+        synchronized (CountlyFlutterPlugin.class) {
+            if (sharedChannel == mc) {
+                sharedChannel = null;
+            }
+        }
         log("onDetachedFromEngine", LogLevel.INFO);
     }
 
@@ -180,6 +204,9 @@ public class CountlyFlutterPlugin implements MethodCallHandler, FlutterPlugin, A
         this.context = context;
         methodChannel = new MethodChannel(messenger, "countly_flutter");
         methodChannel.setMethodCallHandler(this);
+        synchronized (CountlyFlutterPlugin.class) {
+            sharedChannel = methodChannel;
+        }
         log("onAttachedToEngineInternal", LogLevel.INFO);
     }
 
