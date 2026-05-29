@@ -1,0 +1,11 @@
+{
+  "module": {
+    "name": "countly_flutter",
+    "type": "har",
+    "description": "Countly OHOS plugin for HarmonyOS NEXT",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ]
+  }
+}

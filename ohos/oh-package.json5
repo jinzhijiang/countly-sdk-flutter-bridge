@@ -1,0 +1,11 @@
+{
+  "name": "countly_flutter",
+  "version": "1.0.0",
+  "description": "Countly OHOS plugin for HarmonyOS NEXT.",
+  "main": "index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@ohos/flutter_ohos": "file:./har/flutter.har"
+  }
+}
