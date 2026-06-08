@@ -15,7 +15,8 @@ Pod::Spec.new do |s|
   ]
   s.exclude_files = [
     'Classes/countly-sdk-ios/Countly.xcodeproj/**/*',
-    'Classes/countly-sdk-ios/CountlyTests/**/*'
+    'Classes/countly-sdk-ios/CountlyTests/**/*',
+    'Classes/countly-sdk-ios/Package.swift'
   ]
   s.public_header_files = 'Classes/CountlyFlutterPlugin.h'
   s.resource_bundles = {
